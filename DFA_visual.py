@@ -32,6 +32,8 @@ class DFA(QMainWindow, Ui_DFAWindow):
 
         self.actionSolve.triggered.connect(self.solve)
 
+        self.actionDisconnect.triggered.connect(self.delete_connection)
+
         self.show()
 
     def new_node(self):
@@ -56,7 +58,7 @@ class DFA(QMainWindow, Ui_DFAWindow):
         if ok:
             node_dest, ok = QInputDialog.getItem(self, "New Connection", "Destiny: ", [node.name for node in nodes], 0, False)
             node = [node for node in nodes if node.name == node_source][0]
-            if ok and node_dest not in [path.destNode().name for path in node.edges()]:
+            if ok: # and node_dest not in [path.destNode().name for path in node.edges()]:
                 path_condition, ok = QInputDialog.getText(self, "New Connection", "Condition: ", QLineEdit.Normal, "")
                 if ok and path_condition[0] not in [path.condition for path in node.edges()]:
                     self.graphicsView.scene().addItem(Edge(node, [node for node in nodes if node.name == node_dest][0], path_condition[0]))
@@ -64,6 +66,18 @@ class DFA(QMainWindow, Ui_DFAWindow):
                     print("NAH!")
             else:
                 print("NAH!")
+
+    def delete_connection(self):
+        nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
+        node_source, ok = QInputDialog.getItem(self, "Delete Connection", "Source: ", [node.name for node in nodes], 0, False)
+        if ok:
+            node = [node for node in nodes if node.name == node_source][0]
+            options = [("%s, %c"%(connection.destNode().name, connection.condition)) for connection in node.edges()]
+            selected, ok = QInputDialog.getItem(self, "Delete Connection", "Connection: ", options, 0, False)
+            if ok:
+                self.graphicsView.scene().removeItem(node.edgeList[options.index(selected)])
+                node.deleteEdge(options.index(selected))
+
 
     def solve(self):
         states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)])

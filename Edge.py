@@ -1,7 +1,7 @@
 import math
 from PyQt5.QtWidgets import QGraphicsItem
 from PyQt5.QtCore import Qt, QPointF, QLineF, QRectF, QSizeF
-from PyQt5.QtGui import *
+from PyQt5.QtGui import QPolygonF, QPen
 
 class Edge(QGraphicsItem):
     Pi = math.pi
@@ -15,14 +15,13 @@ class Edge(QGraphicsItem):
         self.arrowSize = sourceNode.getDrawSize()*0.35
         self.sourcePoint = QPointF()
         self.destPoint = QPointF()
-
         self.setAcceptedMouseButtons(Qt.NoButton)
         self.source = sourceNode
         self.dest = destNode
         self.condition = condition
         self.source.addEdge(self)
         self.dest.addNodeToUpdate(self.source)
-        # self.dest.addEdge(self)
+
         self.adjust()
 
     def type(self):
@@ -90,11 +89,17 @@ class Edge(QGraphicsItem):
         if line.dy() >= 0:
             angle = Edge.TwoPi - angle
 
-        sourceArrowP1 = self.sourcePoint + QPointF(math.sin(angle + Edge.Pi / 3) * self.arrowSize, math.cos(angle + Edge.Pi / 3) * self.arrowSize)
-        sourceArrowP2 = self.sourcePoint + QPointF(math.sin(angle + Edge.Pi - Edge.Pi / 3) * self.arrowSize, math.cos(angle + Edge.Pi - Edge.Pi / 3) * self.arrowSize)
         destArrowP1 = self.destPoint + QPointF(math.sin(angle - Edge.Pi / 3) * self.arrowSize, math.cos(angle - Edge.Pi / 3) * self.arrowSize)
         destArrowP2 = self.destPoint + QPointF(math.sin(angle - Edge.Pi + Edge.Pi / 3) * self.arrowSize, math.cos(angle - Edge.Pi + Edge.Pi / 3) * self.arrowSize)
 
+        conditionPoint = self.sourcePoint + QPointF(math.sin(angle + Edge.Pi / 3) * self.arrowSize, math.cos(angle + Edge.Pi / 3) * self.arrowSize)
+        textToPrint = self.condition
+        for path in self.source.edges():
+            if path.destNode().name == self.dest.name and path.condition != self.condition:
+                textToPrint += ", %c"%(path.condition)
+                if path.condition > self.condition:
+                    return
+
         painter.setBrush(Qt.black)
-        # painter.drawPolygon(QPolygonF([line.p1(), sourceArrowP1, sourceArrowP2]))
         painter.drawPolygon(QPolygonF([line.p2(), destArrowP1, destArrowP2]))
+        painter.drawText(conditionPoint, textToPrint)

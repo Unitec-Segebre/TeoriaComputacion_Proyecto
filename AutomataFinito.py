@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from ui_mainwindow import Ui_MainWindow
-from DFA import DFA
+from DFA_visual import DFA
 
 class Main(QMainWindow, Ui_MainWindow):
     def __init__(self, app):

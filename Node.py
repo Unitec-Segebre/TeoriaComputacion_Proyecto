@@ -125,6 +125,10 @@ class Node(QGraphicsItem):
     def addNodeToUpdate(self, node):
         self.nodesToUpdate.append(node)
 
+    def deleteEdge(self, index):
+        name = self.edgeList[index].condition
+        del self.edgeList[index]
+        print("Deleted %d from %s\n"%(index, name))
         #Uncomment to color when clicked
         # def mousePressEvent(self, event):
         #     self.update()
