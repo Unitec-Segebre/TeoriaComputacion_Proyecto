@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DFAWindow</class>
+ <widget class="QMainWindow" name="DFAWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>DFA</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QGraphicsView" name="graphicsView"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionSave"/>
+   </widget>
+   <widget class="QMenu" name="menuNode">
+    <property name="title">
+     <string>Node</string>
+    </property>
+    <widget class="QMenu" name="menuEdit">
+     <property name="title">
+      <string>Edit</string>
+     </property>
+     <addaction name="actionChange_Name"/>
+     <addaction name="actionChange_State"/>
+    </widget>
+    <addaction name="actionNew"/>
+    <addaction name="actionConnect"/>
+    <addaction name="menuEdit"/>
+    <addaction name="actionDisconnect"/>
+    <addaction name="actionDelete"/>
+   </widget>
+   <widget class="QMenu" name="menuDFA">
+    <property name="title">
+     <string>DFA</string>
+    </property>
+    <addaction name="actionSolve"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuNode"/>
+   <addaction name="menuDFA"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionConnect">
+   <property name="text">
+    <string>Connect</string>
+   </property>
+  </action>
+  <action name="actionDisconnect">
+   <property name="text">
+    <string>Disconnect</string>
+   </property>
+  </action>
+  <action name="actionDelete">
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </action>
+  <action name="actionSolve">
+   <property name="text">
+    <string>Solve</string>
+   </property>
+  </action>
+  <action name="actionChange_Name">
+   <property name="text">
+    <string>Change Name</string>
+   </property>
+  </action>
+  <action name="actionChange_State">
+   <property name="text">
+    <string>Change State</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

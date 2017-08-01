@@ -3,6 +3,7 @@ from PyQt5.QtGui import QPainter
 from PyQt5.QtCore import QTime, qsrand
 
 from Node import Node
+from Edge import Edge
 
 
 class GraphWidget(QGraphicsView):
@@ -38,7 +39,7 @@ class GraphWidget(QGraphicsView):
         # scene.addItem(node7)
         # scene.addItem(node8)
         # scene.addItem(node9)
-        # scene.addItem(Edge(node1, node2))
+        scene.addItem(Edge(node1, node2))
         # scene.addItem(Edge(node2, node3))
         # scene.addItem(Edge(node2, self.centerNode))
         # scene.addItem(Edge(node3, node6))
@@ -89,13 +90,13 @@ class GraphWidget(QGraphicsView):
     def add_node(self):
         self.scene().addItem(Node(self))
 
-# if __name__ == '__main__':
-#     import sys
-#
-#     app = QApplication(sys.argv)
-#     # qsrand(QTime(0, 0, 0).secsTo(QTime.currentTime()))
-#
-#     widget = GraphWidget()
-#     widget.show()
-#
-#     sys.exit(app.exec_())
+if __name__ == '__main__':
+    import sys
+
+    app = QApplication(sys.argv)
+    # qsrand(QTime(0, 0, 0).secsTo(QTime.currentTime()))
+
+    widget = GraphWidget()
+    widget.show()
+
+    sys.exit(app.exec_())
