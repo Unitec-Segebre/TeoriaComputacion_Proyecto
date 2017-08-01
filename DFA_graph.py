@@ -1,15 +1,13 @@
-import sys
 from PyQt5.QtWidgets import QMainWindow, QGraphicsScene, QGraphicsView, QInputDialog, QLineEdit, QMessageBox
 from PyQt5.QtGui import QPainter
-from PyQt5.QtCore import *
 from ui_dfawindow import Ui_DFAWindow
-from automata.fa.dfa import DFA
+# from automata.fa.dfa import DFA
 from Node import Node, State
 from Edge import Edge
 
-class DFA(QMainWindow, Ui_DFAWindow):
+class DFA_graph(QMainWindow, Ui_DFAWindow):
     def __init__(self, parent=None):
-        super(DFA, self).__init__(parent)
+        super(DFA_graph, self).__init__(parent)
         self.setupUi(self)
         self.timerId = 0
 
