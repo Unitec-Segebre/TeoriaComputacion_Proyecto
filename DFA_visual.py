@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QMainWindow, QGraphicsScene, QGraphicsView, QInputDialog, QLineEdit
+from PyQt5.QtWidgets import QMainWindow, QGraphicsScene, QGraphicsView, QInputDialog, QLineEdit, QMessageBox
 from PyQt5.QtGui import QPainter
 from PyQt5.QtCore import *
 from ui_dfawindow import Ui_DFAWindow
@@ -30,6 +30,8 @@ class DFA(QMainWindow, Ui_DFAWindow):
 
         self.actionChange_State.triggered.connect(self.change_state)
 
+        self.actionChange_Name.triggered.connect(self.change_name)
+
         self.actionSolve.triggered.connect(self.solve)
 
         self.actionDisconnect.triggered.connect(self.delete_connection)
@@ -37,9 +39,46 @@ class DFA(QMainWindow, Ui_DFAWindow):
         self.show()
 
     def new_node(self):
-        name, ok = QInputDialog.getText(self, "New Node", "Name: ", QLineEdit.Normal, "")
-        if ok and name not in [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)]:
-            self.graphicsView.scene().addItem(Node(self, name))
+        while True:
+            name, ok = QInputDialog.getText(self, "New Node", "Name: ", QLineEdit.Normal, "")
+            if ok:
+                if name == "":
+                    QMessageBox.critical(self, "Warning!", "Name field must not be empty.")
+                elif name in [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)]:
+                    QMessageBox.warning(self, "Warning!", "Node %s already exists."%(name))
+                else:
+                    break
+            elif not ok:
+                return
+        # if ok and name not in [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)]:
+        self.graphicsView.scene().addItem(Node(self, name))
+
+    def change_name(self):
+        nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
+        if not nodes:
+            QMessageBox.critical(self, "Warning!", "There are no nodes on the graph.")
+            return
+        while True:
+            node_source, ok = QInputDialog.getItem(self, "Change Name", "Node: ", [node.name for node in nodes], 0, False)
+            if ok:
+                node = [node for node in nodes if node.name == node_source][0]
+                while True:
+                    name, ok = QInputDialog.getText(self, "Change Name", "Name: ", QLineEdit.Normal, "")
+                    if ok:
+                        if name == "":
+                            QMessageBox.critical(self, "Warning!", "Name field must not be empty.")
+                        elif name == node.name:
+                            QMessageBox.critical(self, "Warning!", "Can rename to same name.")
+                        elif name in [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)]:
+                            QMessageBox.warning(self, "Warning!", "Node %s already exists."%(name))
+                        else:
+                            break
+                    elif not ok:
+                        return
+                break
+            elif not ok:
+                return
+        node.setName(name)
 
     def change_state(self):
         nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
@@ -69,14 +108,24 @@ class DFA(QMainWindow, Ui_DFAWindow):
 
     def delete_connection(self):
         nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
-        node_source, ok = QInputDialog.getItem(self, "Delete Connection", "Source: ", [node.name for node in nodes], 0, False)
-        if ok:
+        if not nodes:
+            QMessageBox.critical(self, "Warning!", "There are no nodes on the graph.")
+            return
+        while True:
+            node_source, ok = QInputDialog.getItem(self, "Delete Connection", "Source: ", [node.name for node in nodes], 0, False)
             node = [node for node in nodes if node.name == node_source][0]
-            options = [("%s, %c"%(connection.destNode().name, connection.condition)) for connection in node.edges()]
-            selected, ok = QInputDialog.getItem(self, "Delete Connection", "Connection: ", options, 0, False)
             if ok:
-                self.graphicsView.scene().removeItem(node.edgeList[options.index(selected)])
-                node.deleteEdge(options.index(selected))
+                if not node.edges():
+                    QMessageBox.warning(self, "Warning!", "Node %s has no edges." % (node.name))
+                else:
+                    break
+            elif not ok:
+                return
+        options = [("%c -> %s"%(connection.condition, connection.destNode().name)) for connection in node.edges()]
+        selected, ok = QInputDialog.getItem(self, "Delete Connection", "Connection: ", options, 0, False)
+        if ok:
+            self.graphicsView.scene().removeItem(node.edgeList[options.index(selected)])
+            node.deleteEdge(options.index(selected))
 
 
     def solve(self):

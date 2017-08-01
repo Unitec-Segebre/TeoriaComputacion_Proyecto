@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import QGraphicsItem, QGraphicsProxyWidget, QStyle, QLabel
-from PyQt5.QtCore import QPointF, Qt, QRectF, QRect
+from PyQt5.QtCore import QPointF, Qt, QRectF
 from PyQt5.QtGui import QPen, QRadialGradient, QBrush, QColor, QPainterPath, QFont
-from Edge import Edge
 from itertools import count
 from enum import Enum
 
@@ -12,8 +11,8 @@ class State(Enum):
 
 class Node(QGraphicsItem):
     Type = QGraphicsItem.UserType + 1
-    __draw_size = 40
-    __node_count = count(0)
+    _draw_size = 40
+    _node_count = count(0)
 
     def __init__(self, graphWidget, name=None, state=State.TRANSITION):
         super(Node, self).__init__()
@@ -21,19 +20,18 @@ class Node(QGraphicsItem):
         self.graph = graphWidget
         self.edgeList = []
         self.newPos = QPointF()
-        self.name = ("Unnamed %d"%(next(self.__node_count))) if (name is None) else name
+        self.name = name
         self.state = state
         self.nodesToUpdate = []
 
         font = QFont()
         font.setBold(True)
-        font.setPointSize(self.__draw_size*0.2)
-        line = QLabel(self.name)
-        line.setGeometry(-self.__draw_size*0.7, -self.__draw_size*0.8, self.__draw_size, self.__draw_size*0.5)
-        line.setAttribute(Qt.WA_TranslucentBackground)
-        line.setFont(font)
-        prox = QGraphicsProxyWidget(self)
-        prox.setWidget(line)
+        font.setPointSize(self._draw_size*0.2)
+        self.line = QLabel(self.name)
+        self.line.setGeometry(-self._draw_size*0.7, -self._draw_size*0.8, self._draw_size, self._draw_size*0.5)
+        self.line.setAttribute(Qt.WA_TranslucentBackground)
+        self.line.setFont(font)
+        QGraphicsProxyWidget(self).setWidget(self.line)
 
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
@@ -42,8 +40,8 @@ class Node(QGraphicsItem):
 
     # noinspection PyMethodOverriding
     def paint(self, painter, option, widget):
-        start_draw = -self.__draw_size
-        end_draw = self.__draw_size
+        start_draw = -self._draw_size
+        end_draw = self._draw_size
 
         painter.setPen(Qt.NoPen)
         painter.setBrush(Qt.darkGray)
@@ -54,24 +52,24 @@ class Node(QGraphicsItem):
             gradient.setCenter(3, 3)
             gradient.setFocalPoint(3, 3)
             if self.state == State.INITIAL:
-                gradient.setColorAt(1, QColor(Qt.blue)) #.light(120))
-                gradient.setColorAt(0, QColor(Qt.darkBlue)) #.light(120))
+                gradient.setColorAt(1, QColor(Qt.darkMagenta)) #.light(120))
+                gradient.setColorAt(0, QColor(Qt.magenta)) #.light(120))
             elif self.state == State.TRANSITION:
-                gradient.setColorAt(1, QColor(Qt.yellow))  # .light(120))
-                gradient.setColorAt(0, QColor(Qt.darkYellow))  # .light(120))
+                gradient.setColorAt(1, QColor(Qt.darkCyan))  # .light(120))
+                gradient.setColorAt(0, QColor(Qt.cyan))  # .light(120))
             elif self.state == State.FINAL:
-                gradient.setColorAt(1, QColor(Qt.green))  # .light(120))
-                gradient.setColorAt(0, QColor(Qt.darkGreen))  # .light(120))
+                gradient.setColorAt(1, QColor(Qt.darkGreen))  # .light(120))
+                gradient.setColorAt(0, QColor(Qt.green))  # .light(120))
         else:
             if self.state == State.INITIAL:
-                gradient.setColorAt(1, QColor(Qt.blue)) #.light(120))
-                gradient.setColorAt(0, QColor(Qt.darkBlue)) #.light(120))
+                gradient.setColorAt(1, QColor(Qt.darkMagenta)) #.light(120))
+                gradient.setColorAt(0, QColor(Qt.magenta)) #.light(120))
             elif self.state == State.TRANSITION:
-                gradient.setColorAt(1, QColor(Qt.yellow))  # .light(120))
-                gradient.setColorAt(0, QColor(Qt.darkYellow))  # .light(120))
+                gradient.setColorAt(1, QColor(Qt.darkCyan))  # .light(120))
+                gradient.setColorAt(0, QColor(Qt.cyan))  # .light(120))
             elif self.state == State.FINAL:
-                gradient.setColorAt(1, QColor(Qt.green))  # .light(120))
-                gradient.setColorAt(0, QColor(Qt.darkGreen))  # .light(120))
+                gradient.setColorAt(1, QColor(Qt.darkGreen))  # .light(120))
+                gradient.setColorAt(0, QColor(Qt.green))  # .light(120))
 
         painter.setBrush(QBrush(gradient))
         painter.setPen(QPen(Qt.black, 0))
@@ -79,14 +77,14 @@ class Node(QGraphicsItem):
 
     def boundingRect(self):
         adjust = 2.0
-        start_draw = -self.__draw_size
-        end_draw = self.__draw_size + 3
+        start_draw = -self._draw_size
+        end_draw = self._draw_size + 3
         return QRectF(start_draw - adjust, start_draw - adjust, end_draw + adjust,
                       end_draw + adjust)
 
     def shape(self):
         path = QPainterPath()
-        path.addEllipse(-self.__draw_size, -self.__draw_size, self.__draw_size, self.__draw_size)
+        path.addEllipse(-self._draw_size, -self._draw_size, self._draw_size, self._draw_size)
         return path
 
     def type(self):
@@ -103,6 +101,9 @@ class Node(QGraphicsItem):
         self.edgeList.append(edge)
         edge.adjust()
 
+    def deleteEdge(self, index):
+        del self.edgeList[index]
+
     def edges(self):
         return self.edgeList
 
@@ -112,30 +113,43 @@ class Node(QGraphicsItem):
                 edge.adjust()
             for node in self.nodesToUpdate:
                 for edge_back in node.edges():
-                    edge_back.adjust()
-                # self.graph.itemMoved()
+                    if edge_back.destNode() == self:
+                        edge_back.adjust()
         return super(Node, self).itemChange(change, value)
 
+    def getName(self):
+        return self.name
+
+    def setName(self, name):
+        self.name = name
+        self.line.setText(name)
+
     def getDrawSize(self):
-        return self.__draw_size
+        return self._draw_size
+
+    def getState(self):
+        return self.state
 
     def setState(self, state):
         self.state = state
 
+    def getNodesToUpdate(self, node):
+        return self.nodesToUpdate
+
     def addNodeToUpdate(self, node):
         self.nodesToUpdate.append(node)
 
-    def deleteEdge(self, index):
-        name = self.edgeList[index].condition
-        del self.edgeList[index]
-        print("Deleted %d from %s\n"%(index, name))
-        #Uncomment to color when clicked
-        # def mousePressEvent(self, event):
-        #     self.update()
-        #     super(Node, self).mousePressEvent(event)
-        #
-        # def mouseReleaseEvent(self, event):
-        #     self.update()
-        #     super(Node, self).mouseReleaseEvent(event)
+    def removeNodeToUpdate(self, node):
+        if node in self.nodesToUpdate:
+            self.nodesToUpdate.remove(node)
+
+    #Uncomment to color when clicked
+    def mousePressEvent(self, event):
+        self.update()
+        super(Node, self).mousePressEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        self.update()
+        super(Node, self).mouseReleaseEvent(event)
 
 
