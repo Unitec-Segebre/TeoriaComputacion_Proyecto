@@ -9,6 +9,7 @@ class Main(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         self.actionAFD.triggered.connect(self.new_DFA_graph)
+        self.actionAFD.setShortcut("Ctrl+1")
 
 
         self.show()

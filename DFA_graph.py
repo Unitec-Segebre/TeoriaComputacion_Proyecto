@@ -1,9 +1,9 @@
 from PyQt5.QtWidgets import QMainWindow, QGraphicsScene, QGraphicsView, QInputDialog, QLineEdit, QMessageBox
 from PyQt5.QtGui import QPainter
 from ui_dfawindow import Ui_DFAWindow
-# from automata.fa.dfa import DFA
 from Node import Node, State
 from Edge import Edge
+from AutomataSolver import Automata_DFA
 
 class DFA_graph(QMainWindow, Ui_DFAWindow):
     def __init__(self, parent=None):
@@ -143,6 +143,19 @@ class DFA_graph(QMainWindow, Ui_DFAWindow):
         print(transitions)
         print(initial_state)
         print(final_states)
-        # dfa = DFA(states, input_symbols, transitions, initial_state, final_states)#(states=states, imput_symbols=imput_symbols, transitions=transitions, initial_state=initial_state, final_states=final_states) #
-        # print(dfa.validate_input('01'))
+        dfa = Automata_DFA(states, input_symbols, transitions, initial_state, final_states)
+        try:
+            print("01: %s"%(dfa.solve('01')))
+        except Exception as exception:
+            print(exception.args[0])
+
+        try:
+            print("011: %s" % (dfa.solve('011')))
+        except Exception as exception:
+            print(exception.args[0])
+
+        try:
+            print("10: "%(dfa.solve('10')))
+        except Exception as exception:
+            print(exception.args[0])
 
