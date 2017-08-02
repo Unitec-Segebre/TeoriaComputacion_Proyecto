@@ -102,7 +102,13 @@ class Node(QGraphicsItem):
         edge.adjust()
 
     def deleteEdge(self, index):
+        if sum(edge.destNode() == self.edgeList[index].destNode() for edge in self.edgeList) <= 1: #node in self.edgeList[index].destNode().getNodesToUpdate():
+            self.edgeList[index].destNode().removeNodeToUpdate(self)
+        print("%s: %d"%(self.name, self.edgeList[index].destNode().getNodesToUpdate().count(self)))
         del self.edgeList[index]
+
+    def popEdge(self):
+        return self.edgeList.pop()
 
     def edges(self):
         return self.edgeList
@@ -133,7 +139,7 @@ class Node(QGraphicsItem):
     def setState(self, state):
         self.state = state
 
-    def getNodesToUpdate(self, node):
+    def getNodesToUpdate(self):
         return self.nodesToUpdate
 
     def addNodeToUpdate(self, node):

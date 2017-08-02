@@ -20,7 +20,8 @@ class Edge(QGraphicsItem):
         self.dest = destNode
         self.condition = condition
         self.source.addEdge(self)
-        self.dest.addNodeToUpdate(self.source)
+        if self.source not in self.dest.getNodesToUpdate():
+            self.dest.addNodeToUpdate(self.source)
 
         self.adjust()
 
