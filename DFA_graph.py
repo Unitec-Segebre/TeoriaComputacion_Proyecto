@@ -71,15 +71,17 @@ class DFA_graph(QMainWindow, Ui_DFAWindow):
                 return
             node = [node for node in nodes if node.name == node_selected][0]
             node_count = node.getNodesToUpdate()
+            i = 0
             while len(node_count) > 0:
-                i = 0
-                if node.getNodesToUpdate()[0].edges()[i].destNode() == node:
+                if i < len(node.getNodesToUpdate()[0].edges()) and node.getNodesToUpdate()[0].edges()[i].destNode() == node:
                     self.graphicsView.scene().removeItem(node.getNodesToUpdate()[0].edges()[i])
                     node.getNodesToUpdate()[0].deleteEdge(i)
                 else:
-                    i += 1
-                if node_count != node.getNodesToUpdate():
-                    node_count = node.getNodesToUpdate()
+                    if node_count != node.getNodesToUpdate():
+                        node_count = node.getNodesToUpdate()
+                        i = 0
+                    else:
+                        i += 1
             while len(node.edges()):
                 self.graphicsView.scene().removeItem(node.popEdge())
             self.graphicsView.scene().removeItem(node)
