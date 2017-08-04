@@ -83,6 +83,7 @@ class DFA_graph(QMainWindow, Ui_DFAWindow):
                     else:
                         i += 1
             while len(node.edges()):
+            #     print("%s, %s"%(node.name, [nodie.name for nodie in node.edges()[-1].destNode().getNodesToUpdate()]))
                 self.graphicsView.scene().removeItem(node.popEdge())
             self.graphicsView.scene().removeItem(node)
         return
@@ -179,42 +180,27 @@ class DFA_graph(QMainWindow, Ui_DFAWindow):
 
 
     def solve(self):
-        states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)])
-        input_symbols = set([item.condition for item in self.graphicsView.scene().items() if isinstance(item, Edge)])
-        transitions = {}
-        for item in self.graphicsView.scene().items():
-            if isinstance(item, Node):
-                paths = {}
-                for path in item.edges():
-                    paths[path.condition] = path.destNode().name
-                transitions[item.name] = paths
-        initial_state = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
-        if len(initial_state) == 0:
+        dfa = self.convert_graph_to_class()
+        initial_states = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
+        if len(initial_states) == None:
             QMessageBox.critical(self, "Warning!", "An initial state is required to solve.")
             return
-        elif len(initial_state) > 1:
+        elif len(initial_states) > 1:
             QMessageBox.critical(self, "Warning!", "There must only be one initial state to solve.")
             return
-        elif len(initial_state) == 1:
-            initial_state = initial_state[0]
-            print(initial_state)
-        final_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.FINAL])
-        if len(final_states) == 0:
+        if len(dfa.final_states) == 0:
             QMessageBox.critical(self, "Warning!", "At least one final state is required to solve.")
             return
-        print(states)
-        print(input_symbols)
-        print(transitions)
-        print(initial_state)
-        print(final_states)
-        dfa = Automata_DFA(states, input_symbols, transitions, initial_state, final_states)
-        statement, ok = QInputDialog.getText(self, "Solve", "Statement: ", QLineEdit.Normal, "")
-        if ok:
-            try:
-                dfa.solve(statement)
-                QMessageBox.information(self, "Result!", "'%s' is a solution"%(statement))
-            except:
-                QMessageBox.critical(self, "Result!", "'%s' is NOT a solution" % (statement))
+        while True:
+            statement, ok = QInputDialog.getText(self, "Solve", "Statement: ", QLineEdit.Normal, "")
+            if ok:
+                try:
+                    dfa.solve(statement)
+                    QMessageBox.information(self, "Result!", "'%s' is a solution"%(statement))
+                except Exception as exception:
+                    QMessageBox.critical(self, "Solve", str(exception))
+            else:
+                return
 
     def save_graph(self):
         try:
@@ -237,24 +223,12 @@ class DFA_graph(QMainWindow, Ui_DFAWindow):
                 for path in item.edges():
                     paths[path.condition] = path.destNode().name
                 transitions[item.name] = paths
-        initial_state = [item.name for item in self.graphicsView.scene().items() if
-                         isinstance(item, Node) and item.state == State.INITIAL]
-        if len(initial_state) == 1:
-            initial_state = initial_state[0]
-        else:
-            initial_state = None
-        final_states = set([item.name for item in self.graphicsView.scene().items() if
-                            isinstance(item, Node) and item.state == State.FINAL])
+        initial_state = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL][0]
+        final_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.FINAL])
 
         return Automata_DFA(states, input_symbols, transitions, initial_state, final_states)
 
     def open_graph(self, items):
-        # try:
-        #     file_name = QFileDialog.getOpenFileName(self, 'Open graph')
-        #     file_name = file_name[0]
-        #     file = open(str(file_name), 'rb')
-        #     items = pickle.load(file)
-
         for state in items.states:
             self.graphicsView.scene().addItem(Node(self, state))
 
@@ -272,9 +246,3 @@ class DFA_graph(QMainWindow, Ui_DFAWindow):
             node = [node for node in nodes if node.name == final_state][0]
             node.setState(State(State.FINAL))
             node.update()
-
-        #     file.close()
-        # except Exception as exception:
-        #     QMessageBox.warning(self, "Open graph", "%s." % (exception))
-        #     print(exception)
-
