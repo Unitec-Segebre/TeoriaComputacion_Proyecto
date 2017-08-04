@@ -12,12 +12,26 @@ class Main(QMainWindow, Ui_MainWindow):
         self.actionAFD.triggered.connect(self.new_DFA_graph)
         self.actionAFD.setShortcut("Ctrl+1")
 
+        self.actionOpen.triggered.connect(self.open_DFA_graph)
+
 
         self.show()
         sys.exit(app.exec_())
 
     def new_DFA_graph(self):
         DFA_graph(self)
+
+    def open_DFA_graph(self):
+        try:
+            file_name = QFileDialog.getOpenFileName(self, 'Open graph')
+            file_name = file_name[0]
+            file = open(str(file_name), 'rb')
+            items = pickle.load(file)
+            file.close()
+            DFA_graph(self, items)
+        except Exception as exception:
+            QMessageBox.warning(self, "Open graph", "%s." % (exception))
+            print(exception)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

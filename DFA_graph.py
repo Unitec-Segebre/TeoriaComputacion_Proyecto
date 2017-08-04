@@ -7,7 +7,7 @@ from AutomataSolver import Automata_DFA
 import pickle
 
 class DFA_graph(QMainWindow, Ui_DFAWindow):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, load=None):
         super(DFA_graph, self).__init__(parent)
         self.setupUi(self)
 
@@ -39,6 +39,9 @@ class DFA_graph(QMainWindow, Ui_DFAWindow):
         self.actionSave.triggered.connect(self.save_graph)
 
         self.actionOpen.triggered.connect(self.open_graph)
+
+        if load != None:
+            self.open_graph(load)
 
         self.show()
 
@@ -244,85 +247,33 @@ class DFA_graph(QMainWindow, Ui_DFAWindow):
 
         return Automata_DFA(states, input_symbols, transitions, initial_state, final_states)
 
-    def open_graph(self):
-        try:
-            file_name = QFileDialog.getOpenFileName(self, 'Open graph')
-            file_name = file_name[0]
-            file = open(str(file_name), 'rb')
-            items = pickle.load(file)
+    def open_graph(self, items):
+        # try:
+        #     file_name = QFileDialog.getOpenFileName(self, 'Open graph')
+        #     file_name = file_name[0]
+        #     file = open(str(file_name), 'rb')
+        #     items = pickle.load(file)
 
-            for state in items.states:
-                self.graphicsView.scene().addItem(Node(self, state))
+        for state in items.states:
+            self.graphicsView.scene().addItem(Node(self, state))
 
-            nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
-            for origin in items.transitions:
-                for condition in items.transitions[origin]:
-                    self.graphicsView.scene().addItem(Edge([node for node in nodes if node.name == origin][0], [node for node in nodes if node.name == items.transitions[origin][condition]][0], condition))
-                    print("%s--%c-->%s"%(origin, condition, items.transitions[origin][condition]))
+        nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
+        for origin in items.transitions:
+            for condition in items.transitions[origin]:
+                self.graphicsView.scene().addItem(Edge([node for node in nodes if node.name == origin][0], [node for node in nodes if node.name == items.transitions[origin][condition]][0], condition))
+                print("%s--%c-->%s"%(origin, condition, items.transitions[origin][condition]))
 
-            node = [node for node in nodes if node.name == items.initial_state][0]
-            node.setState(State(State.INITIAL))
+        node = [node for node in nodes if node.name == items.initial_state][0]
+        node.setState(State(State.INITIAL))
+        node.update()
+
+        for final_state in items.final_states:
+            node = [node for node in nodes if node.name == final_state][0]
+            node.setState(State(State.FINAL))
             node.update()
 
-            for final_state in items.final_states:
-                node = [node for node in nodes if node.name == final_state][0]
-                node.setState(State(State.FINAL))
-                node.update()
+        #     file.close()
+        # except Exception as exception:
+        #     QMessageBox.warning(self, "Open graph", "%s." % (exception))
+        #     print(exception)
 
-            file.close()
-        except Exception as exception:
-            QMessageBox.warning(self, "Open graph", "%s." % (exception))
-            print(exception)
-
-    # def save_graph(self):
-    #     try:
-    #         file_name = QFileDialog.getSaveFileName(self, 'Save graph')
-    #         file_name = ("%s.af"%(file_name[0]))
-    #         file = open(str(file_name), 'wb')
-    #         items = []
-    #         for item in self.graphicsView.scene().items():
-    #             if isinstance(item, Node) or isinstance(item, Edge):
-    #                 items.append(item)
-    #         pickle.dump(items, file, pickle.HIGHEST_PROTOCOL)
-    #         file.close()
-    #     except Exception as exception:
-    #         QMessageBox.warning(self, "Save graph", "%s." % (exception))
-    #         print(exception)
-    #
-    # def save_graph(self):
-    #     try:
-    #         file_name = QFileDialog.getSaveFileName(self, 'Save graph')
-    #         file_name = ("%s.af"%(file_name[0]))
-    #         file = open(str(file_name), 'wb')
-    #         items = []
-    #         for item in self.graphicsView.scene().items():
-    #             if isinstance(item, Node):
-    #                 temporal_node = {}
-    #                 temporal_node['type'] = "Node"
-    #                 temporal_node['name'] = item.getName()
-    #                 temporal_node['state'] = item.getState()
-    #                 temporal_node[]
-    #                 items.append(temporal_node)
-    #             elif isinstance(item, Edge):
-    #                 temporal_edge = {}
-    #
-    #         pickle.dump(items, file, pickle.HIGHEST_PROTOCOL)
-    #         file.close()
-    #     except Exception as exception:
-    #         QMessageBox.warning(self, "Save graph", "%s." % (exception))
-    #         print(exception)
-    #
-    # def open_graph(self):
-    #     items = []
-    #     try:
-    #         file_name = QFileDialog.getOpenFileName(self, 'Open graph')
-    #         file_name = file_name[0]
-    #         file = open(str(file_name), 'rb')
-    #         items = pickle.load(file)
-    #         file.close()
-    #     except Exception as exception:
-    #         QMessageBox.warning(self, "Save graph", "%s." % (exception))
-    #         print(exception)
-
-        # for item in items:
-        #     self.graphicsView.scene().addItem(item)

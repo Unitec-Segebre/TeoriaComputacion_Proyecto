@@ -14,14 +14,14 @@ class Node(QGraphicsItem):
     _draw_size = 40
     _node_count = count(0)
 
-    def __init__(self, graphWidget, name=None, state=State.TRANSITION):
+    def __init__(self, graphWidget, name=None):
         super(Node, self).__init__()
 
         self.graph = graphWidget
         self.edgeList = []
         self.newPos = QPointF()
         self.name = name
-        self.state = state
+        self.state = State.TRANSITION
         self.nodesToUpdate = []
 
         font = QFont()
