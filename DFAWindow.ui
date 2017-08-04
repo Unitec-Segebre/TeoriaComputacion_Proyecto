@@ -34,6 +34,7 @@
      <string>File</string>
     </property>
     <addaction name="actionSave"/>
+    <addaction name="actionOpen"/>
    </widget>
    <widget class="QMenu" name="menuNode">
     <property name="title">
@@ -101,6 +102,11 @@
   <action name="actionChange_State">
    <property name="text">
     <string>Change State</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
    </property>
   </action>
  </widget>

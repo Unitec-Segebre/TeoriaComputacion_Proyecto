@@ -1,9 +1,10 @@
-from PyQt5.QtWidgets import QMainWindow, QGraphicsScene, QGraphicsView, QInputDialog, QLineEdit, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QGraphicsScene, QGraphicsView, QInputDialog, QLineEdit, QMessageBox, QFileDialog
 from PyQt5.QtGui import QPainter
 from ui_dfawindow import Ui_DFAWindow
 from Node import Node, State
 from Edge import Edge
 from AutomataSolver import Automata_DFA
+import pickle
 
 class DFA_graph(QMainWindow, Ui_DFAWindow):
     def __init__(self, parent=None):
@@ -34,6 +35,10 @@ class DFA_graph(QMainWindow, Ui_DFAWindow):
         self.actionDisconnect.triggered.connect(self.delete_connection)
 
         self.actionDelete.triggered.connect(self.delete_node)
+
+        self.actionSave.triggered.connect(self.save_graph)
+
+        self.actionOpen.triggered.connect(self.open_graph)
 
         self.show()
 
@@ -179,26 +184,145 @@ class DFA_graph(QMainWindow, Ui_DFAWindow):
                 for path in item.edges():
                     paths[path.condition] = path.destNode().name
                 transitions[item.name] = paths
-        initial_state = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL][0]
+        initial_state = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
+        if len(initial_state) == 0:
+            QMessageBox.critical(self, "Warning!", "An initial state is required to solve.")
+            return
+        elif len(initial_state) > 1:
+            QMessageBox.critical(self, "Warning!", "There must only be one initial state to solve.")
+            return
+        elif len(initial_state) == 1:
+            initial_state = initial_state[0]
+            print(initial_state)
         final_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.FINAL])
+        if len(final_states) == 0:
+            QMessageBox.critical(self, "Warning!", "At least one final state is required to solve.")
+            return
         print(states)
         print(input_symbols)
         print(transitions)
         print(initial_state)
         print(final_states)
         dfa = Automata_DFA(states, input_symbols, transitions, initial_state, final_states)
-        try:
-            print("01: %s"%(dfa.solve('01')))
-        except Exception as exception:
-            print(exception.args[0])
+        statement, ok = QInputDialog.getText(self, "Solve", "Statement: ", QLineEdit.Normal, "")
+        if ok:
+            try:
+                dfa.solve(statement)
+                QMessageBox.information(self, "Result!", "'%s' is a solution"%(statement))
+            except:
+                QMessageBox.critical(self, "Result!", "'%s' is NOT a solution" % (statement))
 
+    def save_graph(self):
         try:
-            print("011: %s" % (dfa.solve('011')))
+            file_name = QFileDialog.getSaveFileName(self, 'Save graph')
+            file_name = ("%s.af"%(file_name[0]))
+            file = open(str(file_name), 'wb')
+            pickle.dump(self.convert_graph_to_class(), file, pickle.HIGHEST_PROTOCOL)
+            file.close()
         except Exception as exception:
-            print(exception.args[0])
+            QMessageBox.warning(self, "Save graph", "%s." % (exception))
+            print(exception)
 
+    def convert_graph_to_class(self):
+        states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)])
+        input_symbols = set([item.condition for item in self.graphicsView.scene().items() if isinstance(item, Edge)])
+        transitions = {}
+        for item in self.graphicsView.scene().items():
+            if isinstance(item, Node):
+                paths = {}
+                for path in item.edges():
+                    paths[path.condition] = path.destNode().name
+                transitions[item.name] = paths
+        initial_state = [item.name for item in self.graphicsView.scene().items() if
+                         isinstance(item, Node) and item.state == State.INITIAL]
+        if len(initial_state) == 1:
+            initial_state = initial_state[0]
+        else:
+            initial_state = None
+        final_states = set([item.name for item in self.graphicsView.scene().items() if
+                            isinstance(item, Node) and item.state == State.FINAL])
+
+        return Automata_DFA(states, input_symbols, transitions, initial_state, final_states)
+
+    def open_graph(self):
         try:
-            print("10: "%(dfa.solve('10')))
-        except Exception as exception:
-            print(exception.args[0])
+            file_name = QFileDialog.getOpenFileName(self, 'Open graph')
+            file_name = file_name[0]
+            file = open(str(file_name), 'rb')
+            items = pickle.load(file)
 
+            for state in items.states:
+                self.graphicsView.scene().addItem(Node(self, state))
+
+            nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
+            for origin in items.transitions:
+                for condition in items.transitions[origin]:
+                    self.graphicsView.scene().addItem(Edge([node for node in nodes if node.name == origin][0], [node for node in nodes if node.name == items.transitions[origin][condition]][0], condition))
+                    print("%s--%c-->%s"%(origin, condition, items.transitions[origin][condition]))
+
+            node = [node for node in nodes if node.name == items.initial_state][0]
+            node.setState(State(State.INITIAL))
+            node.update()
+
+            for final_state in items.final_states:
+                node = [node for node in nodes if node.name == final_state][0]
+                node.setState(State(State.FINAL))
+                node.update()
+
+            file.close()
+        except Exception as exception:
+            QMessageBox.warning(self, "Open graph", "%s." % (exception))
+            print(exception)
+
+    # def save_graph(self):
+    #     try:
+    #         file_name = QFileDialog.getSaveFileName(self, 'Save graph')
+    #         file_name = ("%s.af"%(file_name[0]))
+    #         file = open(str(file_name), 'wb')
+    #         items = []
+    #         for item in self.graphicsView.scene().items():
+    #             if isinstance(item, Node) or isinstance(item, Edge):
+    #                 items.append(item)
+    #         pickle.dump(items, file, pickle.HIGHEST_PROTOCOL)
+    #         file.close()
+    #     except Exception as exception:
+    #         QMessageBox.warning(self, "Save graph", "%s." % (exception))
+    #         print(exception)
+    #
+    # def save_graph(self):
+    #     try:
+    #         file_name = QFileDialog.getSaveFileName(self, 'Save graph')
+    #         file_name = ("%s.af"%(file_name[0]))
+    #         file = open(str(file_name), 'wb')
+    #         items = []
+    #         for item in self.graphicsView.scene().items():
+    #             if isinstance(item, Node):
+    #                 temporal_node = {}
+    #                 temporal_node['type'] = "Node"
+    #                 temporal_node['name'] = item.getName()
+    #                 temporal_node['state'] = item.getState()
+    #                 temporal_node[]
+    #                 items.append(temporal_node)
+    #             elif isinstance(item, Edge):
+    #                 temporal_edge = {}
+    #
+    #         pickle.dump(items, file, pickle.HIGHEST_PROTOCOL)
+    #         file.close()
+    #     except Exception as exception:
+    #         QMessageBox.warning(self, "Save graph", "%s." % (exception))
+    #         print(exception)
+    #
+    # def open_graph(self):
+    #     items = []
+    #     try:
+    #         file_name = QFileDialog.getOpenFileName(self, 'Open graph')
+    #         file_name = file_name[0]
+    #         file = open(str(file_name), 'rb')
+    #         items = pickle.load(file)
+    #         file.close()
+    #     except Exception as exception:
+    #         QMessageBox.warning(self, "Save graph", "%s." % (exception))
+    #         print(exception)
+
+        # for item in items:
+        #     self.graphicsView.scene().addItem(item)

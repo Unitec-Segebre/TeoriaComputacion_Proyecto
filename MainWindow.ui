@@ -34,14 +34,14 @@
      <addaction name="actionAFD"/>
     </widget>
     <addaction name="menuNew"/>
-    <addaction name="actionSave"/>
+    <addaction name="actionOpen"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionSave">
+  <action name="actionOpen">
    <property name="text">
-    <string>Save</string>
+    <string>Open</string>
    </property>
   </action>
   <action name="actionAFD">

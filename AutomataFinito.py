@@ -1,7 +1,8 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QFileDialog
 from ui_mainwindow import Ui_MainWindow
 from DFA_graph import DFA_graph
+import pickle
 
 class Main(QMainWindow, Ui_MainWindow):
     def __init__(self, app):
