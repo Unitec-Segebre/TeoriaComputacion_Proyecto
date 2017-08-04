@@ -23,12 +23,13 @@ class Main(QMainWindow, Ui_MainWindow):
 
     def open_DFA_graph(self):
         try:
-            file_name = QFileDialog.getOpenFileName(self, 'Open graph')
-            file_name = file_name[0]
-            file = open(str(file_name), 'rb')
-            items = pickle.load(file)
-            file.close()
-            DFA_graph(self, items)
+            file_name = QFileDialog.getOpenFileName(self, 'Open graph')[0]
+            if file_name != '':
+                file = open(str(file_name), 'rb')
+                items = pickle.load(file)
+                file.close()
+                DFA_graph(self, items)
+            return
         except Exception as exception:
             QMessageBox.warning(self, "Open graph", "%s." % (exception))
             print(exception)
