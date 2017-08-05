@@ -252,8 +252,6 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         print(items.transitions)
         print(items.initial_states)
         print(items.final_states)
-        if items.type != "DFA":
-            raise Exception('File selected is not of type DFA')
         for state in items.states:
             node = Node(self, state)
             node.setPos(items.states[state])
