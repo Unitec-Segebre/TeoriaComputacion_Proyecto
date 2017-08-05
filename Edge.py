@@ -93,7 +93,7 @@ class Edge(QGraphicsItem):
         destArrowP1 = self.destPoint + QPointF(math.sin(angle - Edge.Pi / 3) * self.arrowSize, math.cos(angle - Edge.Pi / 3) * self.arrowSize)
         destArrowP2 = self.destPoint + QPointF(math.sin(angle - Edge.Pi + Edge.Pi / 3) * self.arrowSize, math.cos(angle - Edge.Pi + Edge.Pi / 3) * self.arrowSize)
 
-        conditionPoint = self.sourcePoint + QPointF(math.sin(angle + Edge.Pi / 3) * self.arrowSize, math.cos(angle + Edge.Pi / 3) * self.arrowSize)
+        conditionPoint = self.sourcePoint + QPointF(math.sin(angle + Edge.Pi / 3) * self.arrowSize * 2, math.cos(angle + Edge.Pi / 3) * self.arrowSize * 2)
         textToPrint = self.condition
         for path in self.source.edges():
             if path.destNode().name == self.dest.name and path.condition != self.condition:
