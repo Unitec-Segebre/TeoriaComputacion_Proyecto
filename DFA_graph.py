@@ -213,7 +213,9 @@ class DFA_graph(QMainWindow, Ui_DFAWindow):
                 for path in item.edges():
                     paths[path.condition] = path.destNode().name
                 transitions[item.name] = paths
-        initial_state = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL][0]
+        initial_state = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
+        if len(initial_state) > 0:
+            initial_state = initial_state[0]
         final_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.FINAL])
 
         return Automata_DFA(states, input_symbols, transitions, initial_state, final_states)
@@ -224,7 +226,7 @@ class DFA_graph(QMainWindow, Ui_DFAWindow):
         states = {}
         for node in nodes:
             states[node.name] = node.pos()
-        return Saver_DFA(states, dfa.input_symbols, dfa.transitions, [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL], dfa.final_states)
+        return Saver_DFA("DFA" ,states, dfa.input_symbols, dfa.transitions, [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL], dfa.final_states)
 
 
 
@@ -242,6 +244,14 @@ class DFA_graph(QMainWindow, Ui_DFAWindow):
             print(exception)
 
     def open_graph(self, items):
+        print(items.type)
+        print(items.states)
+        print(items.input_symbols)
+        print(items.transitions)
+        print(items.initial_states)
+        print(items.final_states)
+        if items.type != "DFA":
+            raise Exception('File selected is not of type DFA')
         for state in items.states:
             node = Node(self, state)
             node.setPos(items.states[state])

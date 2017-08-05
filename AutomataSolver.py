@@ -14,10 +14,10 @@ class Automata_DFA():
                 if symbol in self.transitions[current_state]:
                     current_state = self.transitions[current_state][symbol]
                 else:
-                    raise Exception('{} is not a solution'.format(sequence))
+                    raise Exception('{} is NOT a solution'.format(sequence))
             else:
-                raise Exception('{} is not a valid state'.format(current_state))
+                raise Exception('{} is NOT a valid state'.format(current_state))
         if current_state in self.final_states:
             return current_state
         else:
-            raise Exception('{} is not a solution'.format(sequence))
+            raise Exception('{} is NOT a solution'.format(sequence))
