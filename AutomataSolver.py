@@ -1,4 +1,3 @@
-
 class Automata_DFA():
     def __init__(self, states, input_symbols, transitions, initial_state, final_states):
         self.states = states
@@ -7,7 +6,10 @@ class Automata_DFA():
         self.initial_state = initial_state
         self.final_states = final_states
 
-    def solve(self, sequence):
+    def solve(self, sequence, epsilon):
+        if epsilon in self.input_symbols:
+            raise Exception(("Epsilon('%c') not allowed in DFA graphs"%(epsilon)))
+
         current_state = self.initial_state
         for symbol in sequence:
             if current_state in self.transitions:
