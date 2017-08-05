@@ -14,14 +14,14 @@ class Node(QGraphicsItem):
     _draw_size = 40
     _node_count = count(0)
 
-    def __init__(self, graphWidget, name=None, state=State.TRANSITION):
+    def __init__(self, graphWidget, name=None):
         super(Node, self).__init__()
 
         self.graph = graphWidget
         self.edgeList = []
         self.newPos = QPointF()
         self.name = name
-        self.state = state
+        self.state = State.TRANSITION
         self.nodesToUpdate = []
 
         font = QFont()
@@ -102,7 +102,7 @@ class Node(QGraphicsItem):
         edge.adjust()
 
     def deleteEdge(self, index):
-        if sum(edge.destNode() == self.edgeList[index].destNode() for edge in self.edgeList) <= 1: #node in self.edgeList[index].destNode().getNodesToUpdate():
+        if sum(edge.destNode() == self.edgeList[index].destNode() for edge in self.edgeList) == 1: #node in self.edgeList[index].destNode().getNodesToUpdate():
             self.edgeList[index].destNode().removeNodeToUpdate(self)
         print("%s: %d"%(self.name, self.edgeList[index].destNode().getNodesToUpdate().count(self)))
         del self.edgeList[index]
