@@ -1,10 +1,15 @@
-class Automata_DFA():
+
+class Automata_BARE():
     def __init__(self, states, input_symbols, transitions, initial_state, final_states):
         self.states = states
         self.input_symbols = input_symbols
         self.transitions = transitions
         self.initial_state = initial_state
         self.final_states = final_states
+
+class Automata_DFA(Automata_BARE):
+    def __init__(self, states, input_symbols, transitions, initial_state, final_states):
+        super(Automata_DFA, self).__init__(states, input_symbols, transitions, initial_state, final_states)
 
     def solve(self, sequence, epsilon):
         if epsilon in self.input_symbols:

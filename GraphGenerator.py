@@ -3,7 +3,7 @@ from PyQt5.QtGui import QPainter
 from ui_graphwindow import Ui_GraphWindow
 from Node import Node, State
 from Edge import Edge
-from AutomataSolver import Automata_DFA
+from AutomataSolver import Automata_BARE, Automata_DFA
 from AutomataSaver import Saver_DFA
 import pickle
 
@@ -185,13 +185,13 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
     def solve(self, Automata_Class):
         dfa = self.convert_graph_to_class(Automata_Class)
         initial_states = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
-        if len(initial_states) == None:
+        if len(initial_states) == 0:
             QMessageBox.critical(self, "Warning!", "An initial state is required to solve.")
             return
         elif len(initial_states) > 1:
             QMessageBox.critical(self, "Warning!", "There must only be one initial state to solve.")
             return
-        if len(dfa.final_states) == 0:
+        elif len(dfa.final_states) == 0:
             QMessageBox.critical(self, "Warning!", "At least one final state is required to solve.")
             return
         while True:
@@ -205,7 +205,7 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
             else:
                 return
 
-    def convert_graph_to_class(self, Automata_Class):
+    def convert_graph_to_class(self, Automata_Class=Automata_BARE):
         states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)])
         input_symbols = set([item.condition for item in self.graphicsView.scene().items() if isinstance(item, Edge)])
         transitions = {}
