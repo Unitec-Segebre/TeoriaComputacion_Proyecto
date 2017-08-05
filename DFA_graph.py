@@ -4,6 +4,7 @@ from ui_dfawindow import Ui_DFAWindow
 from Node import Node, State
 from Edge import Edge
 from AutomataSolver import Automata_DFA
+from AutomataSaver import Saver_DFA
 import pickle
 
 class DFA_graph(QMainWindow, Ui_DFAWindow):
@@ -202,17 +203,6 @@ class DFA_graph(QMainWindow, Ui_DFAWindow):
             else:
                 return
 
-    def save_graph(self):
-        try:
-            file_name = QFileDialog.getSaveFileName(self, 'Save graph')
-            file_name = ("%s.af"%(file_name[0]))
-            file = open(str(file_name), 'wb')
-            pickle.dump(self.convert_graph_to_class(), file, pickle.HIGHEST_PROTOCOL)
-            file.close()
-        except Exception as exception:
-            QMessageBox.warning(self, "Save graph", "%s." % (exception))
-            print(exception)
-
     def convert_graph_to_class(self):
         states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)])
         input_symbols = set([item.condition for item in self.graphicsView.scene().items() if isinstance(item, Edge)])
@@ -228,9 +218,38 @@ class DFA_graph(QMainWindow, Ui_DFAWindow):
 
         return Automata_DFA(states, input_symbols, transitions, initial_state, final_states)
 
+    def convert_graph_to_save(self):
+        dfa = self.convert_graph_to_class()
+        nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
+        states = {}
+        for node in nodes:
+            states[node.name] = node.pos()
+        return Saver_DFA(states, dfa.input_symbols, dfa.transitions, [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL], dfa.final_states)
+
+
+
+    def save_graph(self):
+        try:
+            file_name = QFileDialog.getSaveFileName(self, 'Save graph')
+            file_name = file_name[0]
+            if ".af" not in file_name:
+                file_name = ("%s.af"%(file_name))
+            file = open(str(file_name), 'wb')
+            pickle.dump(self.convert_graph_to_save(), file, pickle.HIGHEST_PROTOCOL)
+            file.close()
+        except Exception as exception:
+            QMessageBox.warning(self, "Save graph", "%s." % (exception))
+            print(exception)
+
     def open_graph(self, items):
         for state in items.states:
-            self.graphicsView.scene().addItem(Node(self, state))
+            node = Node(self, state)
+            node.setPos(items.states[state])
+            if node.name in items.initial_states:
+                node.setState(State(State.INITIAL))
+            elif node.name in items.final_states:
+                node.setState(State(State.FINAL))
+            self.graphicsView.scene().addItem(node)
 
         nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
         for origin in items.transitions:
@@ -238,11 +257,12 @@ class DFA_graph(QMainWindow, Ui_DFAWindow):
                 self.graphicsView.scene().addItem(Edge([node for node in nodes if node.name == origin][0], [node for node in nodes if node.name == items.transitions[origin][condition]][0], condition))
                 print("%s--%c-->%s"%(origin, condition, items.transitions[origin][condition]))
 
-        node = [node for node in nodes if node.name == items.initial_state][0]
-        node.setState(State(State.INITIAL))
-        node.update()
+        # for initial_state in items.initial_states:
+        #     node = [node for node in nodes if node.name == initial_state][0]
+        #     node.setState(State(State.INITIAL))
+        #     node.update()
 
-        for final_state in items.final_states:
-            node = [node for node in nodes if node.name == final_state][0]
-            node.setState(State(State.FINAL))
-            node.update()
+        # for final_state in items.final_states:
+        #     node = [node for node in nodes if node.name == final_state][0]
+        #     node.setState(State(State.FINAL))
+        #     node.update()
