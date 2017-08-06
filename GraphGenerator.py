@@ -183,7 +183,7 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
 
 
     def solve(self, Automata_Class):
-        dfa = self.convert_graph_to_class(Automata_Class)
+        fa = self.convert_graph_to_class(Automata_Class)
         initial_states = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
         if len(initial_states) == 0:
             QMessageBox.critical(self, "Warning!", "An initial state is required to solve.")
@@ -191,14 +191,14 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         elif len(initial_states) > 1:
             QMessageBox.critical(self, "Warning!", "There must only be one initial state to solve.")
             return
-        elif len(dfa.final_states) == 0:
+        elif len(fa.final_states) == 0:
             QMessageBox.critical(self, "Warning!", "At least one final state is required to solve.")
             return
         while True:
             statement, ok = QInputDialog.getText(self, "Solve", "Statement: ", QLineEdit.Normal, "")
             if ok:
                 try:
-                    dfa.solve(statement, self.Epsilon)
+                    fa.solve(statement, self.Epsilon)
                     QMessageBox.information(self, "Result!", "'%s' is a solution"%(statement))
                 except Exception as exception:
                     QMessageBox.critical(self, "Solve", str(exception))
@@ -213,7 +213,12 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
             if isinstance(item, Node):
                 paths = {}
                 for path in item.edges():
-                    paths[path.condition] = path.destNode().name
+                    if path.condition not in paths:
+                        paths[path.condition] = path.destNode().name
+                    else:
+                        temp = [paths[path.condition]]
+                        temp.append(path.destNode().name)
+                        paths[path.condition] = temp
                 transitions[item.name] = paths
         initial_state = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
         if len(initial_state) > 0:
@@ -246,12 +251,11 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
             print(exception)
 
     def open_graph(self, items):
-        # print(items.type)
-        # print(items.states)
-        # print(items.input_symbols)
-        # print(items.transitions)
-        # print(items.initial_states)
-        # print(items.final_states)
+        print(items.states)
+        print(items.input_symbols)
+        print(items.transitions)
+        print(items.initial_states)
+        print(items.final_states)
         for state in items.states:
             node = Node(self, state)
             node.setPos(items.states[state])
@@ -264,5 +268,9 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
         for origin in items.transitions:
             for condition in items.transitions[origin]:
-                self.graphicsView.scene().addItem(Edge([node for node in nodes if node.name == origin][0], [node for node in nodes if node.name == items.transitions[origin][condition]][0], condition))
-                print("%s--%c-->%s"%(origin, condition, items.transitions[origin][condition]))
+                for destination in items.transitions[origin][condition]:
+                    # print("%s--%c-->%s"%(origin, condition, items.transitions[origin][condition]))
+                    # print([node for node in nodes if node.name == origin][0].name)
+                    # print([node for node in nodes if node.name == destination][0].name)
+                    # print(condition)
+                    self.graphicsView.scene().addItem(Edge([node for node in nodes if node.name == origin][0], [node for node in nodes if node.name == destination][0], condition))
