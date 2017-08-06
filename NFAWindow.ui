@@ -54,7 +54,7 @@
    </widget>
    <widget class="QMenu" name="menuDFA">
     <property name="title">
-     <string>DFA</string>
+     <string>NFA</string>
     </property>
     <addaction name="actionSolve"/>
    </widget>
