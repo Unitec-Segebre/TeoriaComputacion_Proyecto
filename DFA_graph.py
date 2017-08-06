@@ -1,12 +1,50 @@
 from GraphGenerator import GraphGenerator
-from PyQt5.QtWidgets import QMessageBox, QInputDialog, QLineEdit
+from PyQt5.QtWidgets import QMessageBox, QInputDialog, QLineEdit, QGraphicsScene, QGraphicsView
+from PyQt5.QtGui import QPainter
 from Node import Node
 from Edge import Edge
 from AutomataSolver import Automata_DFA
+from ui_dfawindow import Ui_DFAWindow
 
-class DFA_graph(GraphGenerator):
+class DFA_graph(GraphGenerator, Ui_DFAWindow):
     def __init__(self, parent=None, load=None):
-        super(DFA_graph, self).__init__(parent, "DFA", load)
+        super(DFA_graph, self).__init__(parent, load)
+        self.setupUi(self)
+
+        scene = QGraphicsScene(self.graphicsView)
+        scene.setItemIndexMethod(QGraphicsScene.NoIndex)
+        self.graphicsView.setScene(scene)
+        self.graphicsView.setCacheMode(QGraphicsView.CacheBackground)
+        self.graphicsView.setViewportUpdateMode(QGraphicsView.BoundingRectViewportUpdate)
+        self.graphicsView.setRenderHint(QPainter.Antialiasing)
+        self.graphicsView.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
+        self.graphicsView.setResizeAnchor(QGraphicsView.AnchorViewCenter)
+
+        self.actionNew.triggered.connect(self.new_node)
+        self.actionNew.setShortcut("Ctrl+n")
+
+        self.actionConnect.triggered.connect(self.new_connection)
+        self.actionConnect.setShortcut("Ctrl+b")
+
+        self.actionChange_State.triggered.connect(self.change_state)
+
+        self.actionChange_Name.triggered.connect(self.change_name)
+
+        self.actionSolve.triggered.connect(self.solve)
+
+        self.actionDisconnect.triggered.connect(self.delete_connection)
+
+        self.actionDelete.triggered.connect(self.delete_node)
+
+        self.actionSave.triggered.connect(self.save_graph)
+
+        self.actionOpen.triggered.connect(self.open_graph)
+
+        if load != None:
+            self.open_graph(load)
+
+        self.show()
+
 
     def new_connection(self):
         nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
@@ -40,4 +78,32 @@ class DFA_graph(GraphGenerator):
             return
 
     def solve(self):
-        super(DFA_graph, self).solve(Automata_DFA)
+        fa = self.convert_graph_to_class(Automata_DFA)
+        # initial_states = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
+        if len(fa.initial_states) == 0:
+            QMessageBox.critical(self, "Warning!", "An initial state is required to solve.")
+            return
+        elif len(fa.initial_states) > 1:
+            QMessageBox.critical(self, "Warning!", "There must only be one initial state to solve.")
+            return
+        elif len(fa.final_states) == 0:
+            QMessageBox.critical(self, "Warning!", "At least one final state is required to solve.")
+            return
+
+        for state in fa.transitions:
+            for path in fa.transitions[state]:
+                if len(fa.transitions[state][path]) > 1:
+                    QMessageBox.critical(self, "Warning!", "DFA can not contain more than one path with the same condition from the same node.")
+                    return
+
+        fa.initial_states = fa.initial_states[0]
+        while True:
+            statement, ok = QInputDialog.getText(self, "Solve", "Statement: ", QLineEdit.Normal, "")
+            if ok:
+                try:
+                    fa.solve(statement, self.Epsilon)
+                    QMessageBox.information(self, "Result!", "'%s' is a solution" % (statement))
+                except Exception as exception:
+                    QMessageBox.critical(self, "Solve", str(exception))
+            else:
+                return

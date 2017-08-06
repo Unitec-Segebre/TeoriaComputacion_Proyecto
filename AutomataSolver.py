@@ -15,13 +15,6 @@ class Automata_DFA(Automata_BARE):
         if epsilon in self.input_symbols:
             raise Exception(("Epsilon('%c') not allowed in DFA graphs"%(epsilon)))
 
-        print("----------Start Here-------------")
-        print(self.states)
-        print(self.input_symbols)
-        print(self.transitions)
-        print(self.initial_states)
-        print(self.final_states)
-
         current_state = self.initial_states
         for symbol in sequence:
             if current_state in self.transitions:
