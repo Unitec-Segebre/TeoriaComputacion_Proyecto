@@ -184,11 +184,11 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
 
     def solve(self, Automata_Class):
         fa = self.convert_graph_to_class(Automata_Class)
-        initial_states = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
-        if len(initial_states) == 0:
+        # initial_states = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
+        if len(fa.initial_state) == 0:
             QMessageBox.critical(self, "Warning!", "An initial state is required to solve.")
             return
-        elif len(initial_states) > 1:
+        elif len(fa.initial_state) > 1:
             QMessageBox.critical(self, "Warning!", "There must only be one initial state to solve.")
             return
         elif len(fa.final_states) == 0:
@@ -218,11 +218,9 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
                     else:
                         temp = paths[path.condition]
                         temp.append(path.destNode().name)
-                        paths[path.condition] = temp
+                        paths[path.condition] = set(temp)
                 transitions[item.name] = paths
         initial_state = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
-        if len(initial_state) > 0:
-            initial_state = initial_state[0]
         final_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.FINAL])
 
         return Automata_Class(states, input_symbols, transitions, initial_state, final_states)
@@ -269,8 +267,8 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         for origin in items.transitions:
             for condition in items.transitions[origin]:
                 for destination in items.transitions[origin][condition]:
-                    print("%s--%c-->%s"%(origin, condition, destination))
-                    print([node for node in nodes if node.name == origin][0].name)
-                    print([node for node in nodes if node.name == destination][0].name)
-                    print(condition)
+                    # print("%s--%c-->%s"%(origin, condition, destination))
+                    # print([node for node in nodes if node.name == origin][0].name)
+                    # print([node for node in nodes if node.name == destination][0].name)
+                    # print(condition)
                     self.graphicsView.scene().addItem(Edge([node for node in nodes if node.name == origin][0], [node for node in nodes if node.name == destination][0], condition))

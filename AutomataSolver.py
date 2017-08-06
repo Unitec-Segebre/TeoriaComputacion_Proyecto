@@ -37,18 +37,30 @@ class Automata_NFA(Automata_BARE):
         if epsilon in self.input_symbols:
             raise Exception(("Epsilon('%c') not allowed in NFA graphs"%(epsilon)))
 
-        current_states = {self.initial_state}
+
+        print(self.states)
+        print(self.input_symbols)
+        print(self.transitions)
+        print(self.initial_state)
+        print(self.final_states)
+
+        current_states = [self.initial_state[0]]
+        for transition in self.transitions:
+            print("t: %s"%transition)
         for symbol in sequence:
             current_states_temp = []
+            print(current_states)
             for current_state in current_states:
+                print(current_state)
+                print(self.transitions)
                 if current_state in self.transitions:
-                    print("CERCA")
                     for arista in self.transitions[current_state]:
-                        if symbol in arista:
+                        if symbol == arista:
                             current_states_temp.append(self.transitions[current_state][arista])
                 else:
                     raise Exception('{} is NOT a valid state'.format(current_state))
-            current_states = set(current_states_temp)
+            print(current_states_temp[0])
+            current_states = list(set(current_states_temp[0]))
         for current_state in current_states:
             if current_state in self.final_states:
                 return current_state
