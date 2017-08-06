@@ -1,5 +1,7 @@
-from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene
+from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene, QMessageBox, QInputDialog, QLineEdit
 from PyQt5.QtGui import QPainter
+from Node import Node
+from Edge import Edge
 from GraphGenerator import GraphGenerator
 from AutomataSolver import Automata_NFA
 from ui_nfawindow import Ui_NFAWindow
@@ -42,6 +44,36 @@ class NFA_graph(GraphGenerator, Ui_NFAWindow):
             self.open_graph(load)
 
         self.show()
+
+
+    def new_connection(self):
+        nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
+        if not nodes:
+            QMessageBox.critical(self, "Warning!", "There are no nodes on the graph.")
+            return
+        node_source, ok = QInputDialog.getItem(self, "New Connection", "Source: ", [node.name for node in nodes], 0, False)
+        if ok:
+            node_dest, ok = QInputDialog.getItem(self, "New Connection", "Destiny: ", [node.name for node in nodes], 0, False)
+            if ok:
+                node = [node for node in nodes if node.name == node_source][0]
+                while True:
+                    path_condition, ok = QInputDialog.getText(self, "New Connection", "Condition: ", QLineEdit.Normal, "")
+                    if ok:
+                        if path_condition == "":
+                            QMessageBox.warning(self, "Warning!", "Connections must have a condition, condition can not be blank.")
+                            continue
+                        elif path_condition[0] == GraphGenerator.Epsilon:
+                            QMessageBox.warning(self, "Warning!", "Can not have Epsilon('%c') in DFA." % (GraphGenerator.Epsilon))
+                            continue
+                        else:
+                            self.graphicsView.scene().addItem(Edge(node, [node for node in nodes if node.name == node_dest][0], path_condition[0]))
+                            return
+                    elif not ok:
+                        return
+            elif not ok:
+                return
+        elif not ok:
+            return
 
 
     def solve(self):

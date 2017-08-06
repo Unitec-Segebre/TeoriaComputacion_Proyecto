@@ -177,7 +177,7 @@ class GraphGenerator(QMainWindow):
                 paths = {}
                 for path in item.edges():
                     if path.condition not in paths:
-                        paths[path.condition] = [path.destNode().name]
+                        paths[path.condition] = [path.destNode().name] ############################change to {}############################
                     else:
                         temp = paths[path.condition]
                         temp.append(path.destNode().name)

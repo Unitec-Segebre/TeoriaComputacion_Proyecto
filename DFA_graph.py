@@ -1,8 +1,8 @@
-from GraphGenerator import GraphGenerator
 from PyQt5.QtWidgets import QMessageBox, QInputDialog, QLineEdit, QGraphicsScene, QGraphicsView
 from PyQt5.QtGui import QPainter
 from Node import Node
 from Edge import Edge
+from GraphGenerator import GraphGenerator
 from AutomataSolver import Automata_DFA
 from ui_dfawindow import Ui_DFAWindow
 
