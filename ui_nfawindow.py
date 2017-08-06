@@ -75,7 +75,7 @@ class Ui_NFAWindow(object):
         self.menuFile.setTitle(_translate("NFAWindow", "File"))
         self.menuNode.setTitle(_translate("NFAWindow", "Node"))
         self.menuEdit.setTitle(_translate("NFAWindow", "Edit"))
-        self.menuDFA.setTitle(_translate("NFAWindow", "DFA"))
+        self.menuDFA.setTitle(_translate("NFAWindow", "NFA"))
         self.actionSave.setText(_translate("NFAWindow", "Save"))
         self.actionNew.setText(_translate("NFAWindow", "New"))
         self.actionConnect.setText(_translate("NFAWindow", "Connect"))
