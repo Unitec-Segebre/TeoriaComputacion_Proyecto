@@ -4,7 +4,7 @@ from ui_graphwindow import Ui_GraphWindow
 from Node import Node, State
 from Edge import Edge
 from AutomataSolver import Automata_BARE, Automata_DFA
-from AutomataSaver import Saver_DFA
+from AutomataSaver import Saver_FA
 import pickle
 
 class GraphGenerator(QMainWindow, Ui_GraphWindow):
@@ -223,12 +223,12 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         return Automata_Class(states, input_symbols, transitions, initial_state, final_states)
 
     def convert_graph_to_save(self):
-        dfa = self.convert_graph_to_class()
+        fa = self.convert_graph_to_class()
         nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
         states = {}
         for node in nodes:
             states[node.name] = node.pos()
-        return Saver_DFA("DFA" ,states, dfa.input_symbols, dfa.transitions, [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL], dfa.final_states)
+        return Saver_FA(states, fa.input_symbols, fa.transitions, [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL], fa.final_states)
 
 
 
@@ -246,12 +246,12 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
             print(exception)
 
     def open_graph(self, items):
-        print(items.type)
-        print(items.states)
-        print(items.input_symbols)
-        print(items.transitions)
-        print(items.initial_states)
-        print(items.final_states)
+        # print(items.type)
+        # print(items.states)
+        # print(items.input_symbols)
+        # print(items.transitions)
+        # print(items.initial_states)
+        # print(items.final_states)
         for state in items.states:
             node = Node(self, state)
             node.setPos(items.states[state])
@@ -266,13 +266,3 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
             for condition in items.transitions[origin]:
                 self.graphicsView.scene().addItem(Edge([node for node in nodes if node.name == origin][0], [node for node in nodes if node.name == items.transitions[origin][condition]][0], condition))
                 print("%s--%c-->%s"%(origin, condition, items.transitions[origin][condition]))
-
-        # for initial_state in items.initial_states:
-        #     node = [node for node in nodes if node.name == initial_state][0]
-        #     node.setState(State(State.INITIAL))
-        #     node.update()
-
-        # for final_state in items.final_states:
-        #     node = [node for node in nodes if node.name == final_state][0]
-        #     node.setState(State(State.FINAL))
-        #     node.update()

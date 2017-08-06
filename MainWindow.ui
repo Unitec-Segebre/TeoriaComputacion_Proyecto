@@ -31,7 +31,8 @@
      <property name="title">
       <string>New</string>
      </property>
-     <addaction name="actionAFD"/>
+     <addaction name="actionDFA"/>
+     <addaction name="actionNFA"/>
     </widget>
     <addaction name="menuNew"/>
     <addaction name="actionOpen"/>
@@ -44,9 +45,14 @@
     <string>Open</string>
    </property>
   </action>
-  <action name="actionAFD">
+  <action name="actionDFA">
    <property name="text">
     <string>DFA</string>
+   </property>
+  </action>
+  <action name="actionNFA">
+   <property name="text">
+    <string>NFA</string>
    </property>
   </action>
  </widget>
