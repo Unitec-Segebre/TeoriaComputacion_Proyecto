@@ -1,12 +1,50 @@
 from GraphGenerator import GraphGenerator
-from PyQt5.QtWidgets import QMessageBox, QInputDialog, QLineEdit
+from PyQt5.QtWidgets import QMessageBox, QInputDialog, QLineEdit, QGraphicsScene, QGraphicsView
+from PyQt5.QtGui import QPainter
 from Node import Node
 from Edge import Edge
 from AutomataSolver import Automata_DFA
+from ui_dfawindow import Ui_DFAWindow
 
-class DFA_graph(GraphGenerator):
+class DFA_graph(GraphGenerator, Ui_DFAWindow):
     def __init__(self, parent=None, load=None):
-        super(DFA_graph, self).__init__(parent, "DFA", load)
+        super(DFA_graph, self).__init__(parent, load)
+        self.setupUi(self)
+
+        scene = QGraphicsScene(self.graphicsView)
+        scene.setItemIndexMethod(QGraphicsScene.NoIndex)
+        self.graphicsView.setScene(scene)
+        self.graphicsView.setCacheMode(QGraphicsView.CacheBackground)
+        self.graphicsView.setViewportUpdateMode(QGraphicsView.BoundingRectViewportUpdate)
+        self.graphicsView.setRenderHint(QPainter.Antialiasing)
+        self.graphicsView.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
+        self.graphicsView.setResizeAnchor(QGraphicsView.AnchorViewCenter)
+
+        self.actionNew.triggered.connect(self.new_node)
+        self.actionNew.setShortcut("Ctrl+n")
+
+        self.actionConnect.triggered.connect(self.new_connection)
+        self.actionConnect.setShortcut("Ctrl+b")
+
+        self.actionChange_State.triggered.connect(self.change_state)
+
+        self.actionChange_Name.triggered.connect(self.change_name)
+
+        self.actionSolve.triggered.connect(self.solve)
+
+        self.actionDisconnect.triggered.connect(self.delete_connection)
+
+        self.actionDelete.triggered.connect(self.delete_node)
+
+        self.actionSave.triggered.connect(self.save_graph)
+
+        self.actionOpen.triggered.connect(self.open_graph)
+
+        if load != None:
+            self.open_graph(load)
+
+        self.show()
+
 
     def new_connection(self):
         nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
