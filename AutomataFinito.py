@@ -16,7 +16,9 @@ class Main(QMainWindow, Ui_MainWindow):
         self.actionNFA.triggered.connect(self.new_NFA_graph)
         self.actionNFA.setShortcut("Ctrl+2")
 
-        self.actionOpen.triggered.connect(self.open_DFA_graph)
+        self.actionDFA_2.triggered.connect(self.open_DFA_graph)
+
+        self.actionNFA_2.triggered.connect(self.open_NFA_graph)
 
 
         self.show()
@@ -27,6 +29,12 @@ class Main(QMainWindow, Ui_MainWindow):
 
     def open_DFA_graph(self):
         self.open_graph(DFA_graph)
+
+    def new_NFA_graph(self):
+        NFA_graph(self)
+
+    def open_NFA_graph(self):
+        self.open_graph(NFA_graph)
 
     def open_graph(self, function):
         try:
@@ -45,10 +53,6 @@ class Main(QMainWindow, Ui_MainWindow):
         except Exception as exception:
             QMessageBox.warning(self, "Open graph", "%s." % (exception))
             print(exception)
-
-
-    def new_NFA_graph(self):
-        NFA_graph(self)
 
 
 if __name__ == '__main__':

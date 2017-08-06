@@ -34,23 +34,35 @@
      <addaction name="actionDFA"/>
      <addaction name="actionNFA"/>
     </widget>
+    <widget class="QMenu" name="menuOpen">
+     <property name="title">
+      <string>Open</string>
+     </property>
+     <addaction name="actionDFA_2"/>
+     <addaction name="actionNFA_2"/>
+    </widget>
     <addaction name="menuNew"/>
-    <addaction name="actionOpen"/>
+    <addaction name="menuOpen"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionOpen">
-   <property name="text">
-    <string>Open</string>
-   </property>
-  </action>
   <action name="actionDFA">
    <property name="text">
     <string>DFA</string>
    </property>
   </action>
   <action name="actionNFA">
+   <property name="text">
+    <string>NFA</string>
+   </property>
+  </action>
+  <action name="actionDFA_2">
+   <property name="text">
+    <string>DFA</string>
+   </property>
+  </action>
+  <action name="actionNFA_2">
    <property name="text">
     <string>NFA</string>
    </property>

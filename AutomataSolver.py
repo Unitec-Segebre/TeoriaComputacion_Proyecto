@@ -39,9 +39,10 @@ class Automata_NFA(Automata_BARE):
 
         current_states = {self.initial_state}
         for symbol in sequence:
-            current_states_temp = None
+            current_states_temp = []
             for current_state in current_states:
                 if current_state in self.transitions:
+                    print("CERCA")
                     for arista in self.transitions[current_state]:
                         if symbol in arista:
                             current_states_temp.append(self.transitions[current_state][arista])

@@ -214,9 +214,9 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
                 paths = {}
                 for path in item.edges():
                     if path.condition not in paths:
-                        paths[path.condition] = path.destNode().name
+                        paths[path.condition] = [path.destNode().name]
                     else:
-                        temp = [paths[path.condition]]
+                        temp = paths[path.condition]
                         temp.append(path.destNode().name)
                         paths[path.condition] = temp
                 transitions[item.name] = paths
@@ -269,8 +269,8 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         for origin in items.transitions:
             for condition in items.transitions[origin]:
                 for destination in items.transitions[origin][condition]:
-                    # print("%s--%c-->%s"%(origin, condition, items.transitions[origin][condition]))
-                    # print([node for node in nodes if node.name == origin][0].name)
-                    # print([node for node in nodes if node.name == destination][0].name)
-                    # print(condition)
+                    print("%s--%c-->%s"%(origin, condition, destination))
+                    print([node for node in nodes if node.name == origin][0].name)
+                    print([node for node in nodes if node.name == destination][0].name)
+                    print(condition)
                     self.graphicsView.scene().addItem(Edge([node for node in nodes if node.name == origin][0], [node for node in nodes if node.name == destination][0], condition))
