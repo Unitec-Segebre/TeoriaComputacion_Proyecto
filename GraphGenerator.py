@@ -185,15 +185,16 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
     def solve(self, Automata_Class):
         fa = self.convert_graph_to_class(Automata_Class)
         # initial_states = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
-        if len(fa.initial_state) == 0:
+        if len(fa.initial_states) == 0:
             QMessageBox.critical(self, "Warning!", "An initial state is required to solve.")
             return
-        elif len(fa.initial_state) > 1:
+        elif len(fa.initial_states) > 1:
             QMessageBox.critical(self, "Warning!", "There must only be one initial state to solve.")
             return
         elif len(fa.final_states) == 0:
             QMessageBox.critical(self, "Warning!", "At least one final state is required to solve.")
             return
+        fa.initial_states = fa.initial_states[0]
         while True:
             statement, ok = QInputDialog.getText(self, "Solve", "Statement: ", QLineEdit.Normal, "")
             if ok:
@@ -220,10 +221,10 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
                         temp.append(path.destNode().name)
                         paths[path.condition] = set(temp)
                 transitions[item.name] = paths
-        initial_state = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
+        initial_states = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
         final_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.FINAL])
 
-        return Automata_Class(states, input_symbols, transitions, initial_state, final_states)
+        return Automata_Class(states, input_symbols, transitions, initial_states, final_states)
 
     def convert_graph_to_save(self):
         fa = self.convert_graph_to_class()
@@ -231,7 +232,7 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         states = {}
         for node in nodes:
             states[node.name] = node.pos()
-        return Saver_FA(states, fa.input_symbols, fa.transitions, [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL], fa.final_states)
+        return Saver_FA(states, fa.input_symbols, fa.transitions, fa.initial_states, fa.final_states)
 
 
 
