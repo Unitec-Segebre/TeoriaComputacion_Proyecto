@@ -78,4 +78,32 @@ class DFA_graph(GraphGenerator, Ui_DFAWindow):
             return
 
     def solve(self):
-        super(DFA_graph, self).solve(Automata_DFA)
+        fa = self.convert_graph_to_class(Automata_DFA)
+        # initial_states = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
+        if len(fa.initial_states) == 0:
+            QMessageBox.critical(self, "Warning!", "An initial state is required to solve.")
+            return
+        elif len(fa.initial_states) > 1:
+            QMessageBox.critical(self, "Warning!", "There must only be one initial state to solve.")
+            return
+        elif len(fa.final_states) == 0:
+            QMessageBox.critical(self, "Warning!", "At least one final state is required to solve.")
+            return
+
+        for state in fa.transitions:
+            for path in fa.transitions[state]:
+                if len(fa.transitions[state][path]) > 1:
+                    QMessageBox.critical(self, "Warning!", "DFA can not contain more than one path with the same condition from the same node.")
+                    return
+
+        fa.initial_states = fa.initial_states[0]
+        while True:
+            statement, ok = QInputDialog.getText(self, "Solve", "Statement: ", QLineEdit.Normal, "")
+            if ok:
+                try:
+                    fa.solve(statement, self.Epsilon)
+                    QMessageBox.information(self, "Result!", "'%s' is a solution" % (statement))
+                except Exception as exception:
+                    QMessageBox.critical(self, "Solve", str(exception))
+            else:
+                return
