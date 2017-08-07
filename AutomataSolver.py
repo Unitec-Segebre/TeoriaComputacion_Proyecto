@@ -65,22 +65,11 @@ class Automata_NFAEpsilon(Automata_BARE):
     def __init__(self, states, input_symbols, transitions, initial_state, final_states):
         super(Automata_NFAEpsilon, self).__init__(states, input_symbols, transitions, initial_state, final_states)
 
-
-
     def solve(self, sequence, epsilon):
-        print("---HERE---")
-        print(self.states)
-        print(self.input_symbols)
-        print(self.transitions)
-        print(self.initial_states)
-        print(self.final_states)
-        # for state in self.transitions:
-        #     free_states = set()
-        #     print("{}".format(self.closure(epsilon, state, free_states)))
-
         current_states = self.initial_states
         for symbol in sequence:
             free_states = self.closure_set(epsilon, current_states)
+            current_states = set()
             for state in free_states:
                 current_states = current_states | self.get_destinies(state, symbol)
         current_states = self.closure_set(epsilon, current_states)
@@ -89,14 +78,12 @@ class Automata_NFAEpsilon(Automata_BARE):
                 return current_state
         raise Exception('{} is NOT a solution'.format(sequence))
 
-
     def closure_set(self, epsilon, states):
         free_states = set()
         for current_state in states:
             temp = set()
             free_states = free_states | self.closure(epsilon, current_state, temp)
         return free_states
-
 
     def closure(self, epsilon, state, free_states):
         free_states.add(state)
