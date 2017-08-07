@@ -156,7 +156,7 @@ class GraphGenerator(QMainWindow):
         elif len(fa.final_states) == 0:
             QMessageBox.critical(self, "Warning!", "At least one final state is required to solve.")
             return
-        fa.initial_states = fa.initial_states[0]
+        # fa.initial_states = fa.initial_states[0]
         while True:
             statement, ok = QInputDialog.getText(self, "Solve", "Statement: ", QLineEdit.Normal, "")
             if ok:
@@ -183,7 +183,7 @@ class GraphGenerator(QMainWindow):
                         temp.append(path.destNode().name)
                         paths[path.condition] = set(temp)
                 transitions[item.name] = paths
-        initial_states = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
+        initial_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL])
         final_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.FINAL])
 
         return Automata_Class(states, input_symbols, transitions, initial_states, final_states)

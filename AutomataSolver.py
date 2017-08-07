@@ -19,11 +19,11 @@ class Automata_DFA(Automata_BARE):
         if epsilon in self.input_symbols:
             raise Exception(("Epsilon('%c') not allowed in DFA graphs"%(epsilon)))
 
-        current_state = self.initial_states
+        current_state = list(self.initial_states)[0]
         for symbol in sequence:
             if current_state in self.transitions:
                 if symbol in self.transitions[current_state]:
-                    current_state = self.transitions[current_state][symbol][0]
+                    current_state = list(self.transitions[current_state][symbol])[0]
                 else:
                     raise Exception('{} is NOT a solution'.format(sequence))
             else:
@@ -41,7 +41,7 @@ class Automata_NFA(Automata_BARE):
         if epsilon in self.input_symbols:
             raise Exception(("Epsilon('%c') not allowed in NFA graphs"%(epsilon)))
 
-        current_states = [self.initial_states]
+        current_states = self.initial_states
         for symbol in sequence:
             current_states_temp = []
             for current_state in current_states:
