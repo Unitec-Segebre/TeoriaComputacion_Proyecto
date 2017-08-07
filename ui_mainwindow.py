@@ -36,10 +36,16 @@ class Ui_MainWindow(object):
         self.actionDFA_2.setObjectName("actionDFA_2")
         self.actionNFA_2 = QtWidgets.QAction(MainWindow)
         self.actionNFA_2.setObjectName("actionNFA_2")
+        self.actionNFA_Epsilon = QtWidgets.QAction(MainWindow)
+        self.actionNFA_Epsilon.setObjectName("actionNFA_Epsilon")
+        self.actionNFA_Epsilon_2 = QtWidgets.QAction(MainWindow)
+        self.actionNFA_Epsilon_2.setObjectName("actionNFA_Epsilon_2")
         self.menuNew.addAction(self.actionDFA)
         self.menuNew.addAction(self.actionNFA)
+        self.menuNew.addAction(self.actionNFA_Epsilon)
         self.menuOpen.addAction(self.actionDFA_2)
         self.menuOpen.addAction(self.actionNFA_2)
+        self.menuOpen.addAction(self.actionNFA_Epsilon_2)
         self.menuFile.addAction(self.menuNew.menuAction())
         self.menuFile.addAction(self.menuOpen.menuAction())
         self.menubar.addAction(self.menuFile.menuAction())
@@ -49,7 +55,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Finite Automata"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuNew.setTitle(_translate("MainWindow", "New"))
         self.menuOpen.setTitle(_translate("MainWindow", "Open"))
@@ -57,4 +63,6 @@ class Ui_MainWindow(object):
         self.actionNFA.setText(_translate("MainWindow", "NFA"))
         self.actionDFA_2.setText(_translate("MainWindow", "DFA"))
         self.actionNFA_2.setText(_translate("MainWindow", "NFA"))
+        self.actionNFA_Epsilon.setText(_translate("MainWindow", "NFA Epsilon"))
+        self.actionNFA_Epsilon_2.setText(_translate("MainWindow", "NFA Epsilon"))
 

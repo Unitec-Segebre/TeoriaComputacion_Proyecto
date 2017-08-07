@@ -1,8 +1,8 @@
-from GraphGenerator import GraphGenerator
 from PyQt5.QtWidgets import QMessageBox, QInputDialog, QLineEdit, QGraphicsScene, QGraphicsView
 from PyQt5.QtGui import QPainter
 from Node import Node
 from Edge import Edge
+from GraphGenerator import GraphGenerator
 from AutomataSolver import Automata_DFA
 from ui_dfawindow import Ui_DFAWindow
 
@@ -96,7 +96,7 @@ class DFA_graph(GraphGenerator, Ui_DFAWindow):
                     QMessageBox.critical(self, "Warning!", "DFA can not contain more than one path with the same condition from the same node.")
                     return
 
-        fa.initial_states = fa.initial_states[0]
+        # fa.initial_states = fa.initial_states[0]
         while True:
             statement, ok = QInputDialog.getText(self, "Solve", "Statement: ", QLineEdit.Normal, "")
             if ok:
