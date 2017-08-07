@@ -168,6 +168,20 @@ class GraphGenerator(QMainWindow):
             else:
                 return
 
+    def transform(self, Automata_Class):
+        fa = self.convert_graph_to_class(Automata_Class)
+        # initial_states = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
+        if len(fa.initial_states) == 0:
+            QMessageBox.critical(self, "Warning!", "An initial state is required to solve.")
+            return
+        elif len(fa.initial_states) > 1:
+            QMessageBox.critical(self, "Warning!", "There must only be one initial state to solve.")
+            return
+        elif len(fa.final_states) == 0:
+            QMessageBox.critical(self, "Warning!", "At least one final state is required to solve.")
+            return
+        fa.transform(self.Epsilon)
+
     def convert_graph_to_class(self, Automata_Class=Automata_BARE):
         states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)])
         input_symbols = set([item.condition for item in self.graphicsView.scene().items() if isinstance(item, Edge)])
