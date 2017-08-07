@@ -80,21 +80,22 @@ class Automata_NFAEpsilon(Automata_BARE):
 
         current_states = self.initial_states
         for symbol in sequence:
-            free_states = set()
-            for current_state in current_states:
-                temp = set()
-                free_states = free_states | self.closure(epsilon, current_state, temp)
-            current_states = set()
+            free_states = self.closure_set(epsilon, current_states)
             for state in free_states:
                 current_states = current_states | self.get_destinies(state, symbol)
-        free_states = set()
+        current_states = self.closure_set(epsilon, current_states)
         for current_state in current_states:
-            temp = set()
-            free_states = free_states | self.closure(epsilon, current_state, temp)
-        for current_state in free_states:
             if current_state in self.final_states:
                 return current_state
         raise Exception('{} is NOT a solution'.format(sequence))
+
+
+    def closure_set(self, epsilon, states):
+        free_states = set()
+        for current_state in states:
+            temp = set()
+            free_states = free_states | self.closure(epsilon, current_state, temp)
+        return free_states
 
 
     def closure(self, epsilon, state, free_states):
