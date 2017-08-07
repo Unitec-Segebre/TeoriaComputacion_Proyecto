@@ -10,6 +10,7 @@ class Automata_BARE():
     def get_destinies(self, current_state, condition):
         if condition in self.transitions[current_state]:
             return set(self.transitions[current_state][condition])
+        return set()
 
 class Automata_DFA(Automata_BARE):
     def __init__(self, states, input_symbols, transitions, initial_state, final_states):
@@ -86,7 +87,11 @@ class Automata_NFAEpsilon(Automata_BARE):
             current_states = set()
             for state in free_states:
                 current_states = current_states | self.get_destinies(state, symbol)
+        free_states = set()
         for current_state in current_states:
+            temp = set()
+            free_states = free_states | self.closure(epsilon, current_state, temp)
+        for current_state in free_states:
             if current_state in self.final_states:
                 return current_state
         raise Exception('{} is NOT a solution'.format(sequence))
@@ -98,7 +103,7 @@ class Automata_NFAEpsilon(Automata_BARE):
             for destiny in self.transitions[state][epsilon]:
                 if destiny not in free_states:
                     self.closure(epsilon, destiny, free_states)
-        return free_states
+        return set(free_states)
 
 
 
