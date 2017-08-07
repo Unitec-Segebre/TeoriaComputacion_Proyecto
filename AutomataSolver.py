@@ -41,7 +41,7 @@ class Automata_NFA(Automata_BARE):
         if epsilon in self.input_symbols:
             raise Exception(("Epsilon('%c') not allowed in NFA graphs"%(epsilon)))
 
-        current_states = [self.initial_states]
+        current_states = self.initial_states
         for symbol in sequence:
             current_states_temp = []
             for current_state in current_states:

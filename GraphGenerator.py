@@ -156,7 +156,7 @@ class GraphGenerator(QMainWindow):
         elif len(fa.final_states) == 0:
             QMessageBox.critical(self, "Warning!", "At least one final state is required to solve.")
             return
-        fa.initial_states = fa.initial_states[0]
+        # fa.initial_states = fa.initial_states[0]
         while True:
             statement, ok = QInputDialog.getText(self, "Solve", "Statement: ", QLineEdit.Normal, "")
             if ok:
