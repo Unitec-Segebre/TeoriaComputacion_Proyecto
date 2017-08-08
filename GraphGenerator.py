@@ -226,11 +226,11 @@ class GraphGenerator(QMainWindow):
             print(exception)
 
     def open_graph(self, items):
-        print(items.states)
-        print(items.input_symbols)
-        print(items.transitions)
-        print(items.initial_states)
-        print(items.final_states)
+        print("States: {}".format(items.states))
+        print("Input Symbols: {}".format(items.input_symbols))
+        print("Transitions: {}".format(items.transitions))
+        print("Initial States: {}".format(items.initial_states))
+        print("Final States: {}".format(items.final_states))
         for state in items.states:
             node = Node(self, state)
             node.setPos(items.states[state])

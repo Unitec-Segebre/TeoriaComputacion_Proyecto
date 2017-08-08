@@ -1,3 +1,4 @@
+from DFA_graph import DFA_graph
 
 class Automata_BARE():
     def __init__(self, states, input_symbols, transitions, initial_states, final_states):
@@ -114,6 +115,38 @@ class Automata_NFAEpsilon(Automata_BARE):
             if len(states_set ) == 0:
                 break
         print(table)
+        _, temp = self.inKeys(table, table['q0']['states'])
+        print(temp)
+        states = set([state for state in table])
+        input_symbols = set()
+        for state in table:
+            for symbol in table[state]:
+                if symbol != 'states':
+                    input_symbols.add(symbol)
+        transitions = {}
+        final_states = set()
+        for state in table:
+            paths = {}
+            for symbol in table[state]:
+                if symbol == 'states':
+                    continue
+                _, destiny = self.inKeys(table, table[state][symbol])
+                paths[symbol] = [destiny]
+            transitions[state] = paths
+
+            for final_state in self.final_states:
+                if final_state in table[state]['states']:
+                    final_states.add(state)
+
+        print("---HERE---")
+        print("States: {}".format(states))
+        print("Input Symbols: {}".format(input_symbols))
+        print("Transitions: {}".format(transitions))
+        print("Initial States: {}".format(self.initial_states))
+        print("Final States: {}".format(final_states))
+
+        DFA_graph(Automata_BARE(states, input_symbols, transitions, self.initial_states, final_states))
+
 
 
     def getSetToCalculate(self, table):
@@ -126,7 +159,7 @@ class Automata_NFAEpsilon(Automata_BARE):
     def inKeys(self, table, setToFind):
         for state in table:
             if table[state]['states'] == setToFind:
-                return True
+                return True, state
         return False
 
 
