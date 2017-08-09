@@ -215,17 +215,21 @@ class GraphGenerator(QMainWindow):
             states[node.name] = node.pos()
         return Saver_FA(states, fa.input_symbols, fa.transitions, fa.initial_states, fa.final_states)
 
+    def saveAs_graph(self):
+        file_name = QFileDialog.getSaveFileName(self, 'Save graph as...')
+        file_name = file_name[0]
+        if ".af" not in file_name:
+            file_name = ("%s.af"%(file_name))
+        return file_name
 
-
-    def save_graph(self):
+    def save_graph(self, file_name=None):
         try:
-            file_name = QFileDialog.getSaveFileName(self, 'Save graph')
-            file_name = file_name[0]
-            if ".af" not in file_name:
-                file_name = ("%s.af"%(file_name))
+            if file_name == None:
+                file_name = self.saveAs_graph()
             file = open(str(file_name), 'wb')
             pickle.dump(self.convert_graph_to_save(), file, pickle.HIGHEST_PROTOCOL)
             file.close()
+            return file_name
         except Exception as exception:
             QMessageBox.warning(self, "Save graph", "%s." % (exception))
             print(exception)

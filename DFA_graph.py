@@ -7,7 +7,7 @@ from AutomataSolver import Automata_DFA
 from ui_dfawindow import Ui_DFAWindow
 
 class DFA_graph(GraphGenerator, Ui_DFAWindow):
-    def __init__(self, parent=None, load=None):
+    def __init__(self, parent=None, load=None, saveName=None):
         super(DFA_graph, self).__init__(parent, load)
         self.setupUi(self)
 
@@ -37,13 +37,24 @@ class DFA_graph(GraphGenerator, Ui_DFAWindow):
         self.actionDelete.triggered.connect(self.delete_node)
 
         self.actionSave.triggered.connect(self.save_graph)
+        self.actionSave.setShortcut("Ctrl+s")
+
+        self.actionSave_as.triggered.connect(self.saveAs_graph)
+        self.actionSave_as.setShortcut("Ctrl+Shift+s")
 
         self.actionOpen.triggered.connect(self.open_graph)
 
+        self.saveName = saveName
         if load != None:
             self.open_graph(load)
 
         self.show()
+
+    def save_graph(self, saveName):
+        self.saveName = super(DFA_graph, self).save_graph(self.saveName)
+
+    def saveAs_graph(self):
+        super(DFA_graph, self).save_graph(super(DFA_graph, self).saveAs_graph())
 
 
     def new_connection(self):
