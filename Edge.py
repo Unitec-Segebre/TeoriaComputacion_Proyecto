@@ -28,6 +28,9 @@ class Edge(QGraphicsItem):
     def type(self):
         return Edge.Type
 
+    def getCondition(self):
+        return self.condition
+
     def sourceNode(self):
         return self.source
 
