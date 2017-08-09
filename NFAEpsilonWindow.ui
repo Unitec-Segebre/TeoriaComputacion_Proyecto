@@ -57,6 +57,7 @@
      <string>NFA-Epsilon</string>
     </property>
     <addaction name="actionSolve"/>
+    <addaction name="actionTransform_to_DFA"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuNode"/>
@@ -106,6 +107,11 @@
   <action name="actionOpen">
    <property name="text">
     <string>Open</string>
+   </property>
+  </action>
+  <action name="actionTransform_to_DFA">
+   <property name="text">
+    <string>Transform to DFA</string>
    </property>
   </action>
  </widget>

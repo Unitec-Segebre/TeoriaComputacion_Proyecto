@@ -53,6 +53,8 @@ class Ui_NFAEpsilonWindow(object):
         self.actionChange_State.setObjectName("actionChange_State")
         self.actionOpen = QtWidgets.QAction(NFAEpsilonWindow)
         self.actionOpen.setObjectName("actionOpen")
+        self.actionTransform_to_DFA = QtWidgets.QAction(NFAEpsilonWindow)
+        self.actionTransform_to_DFA.setObjectName("actionTransform_to_DFA")
         self.menuFile.addAction(self.actionSave)
         self.menuEdit.addAction(self.actionChange_Name)
         self.menuEdit.addAction(self.actionChange_State)
@@ -62,6 +64,7 @@ class Ui_NFAEpsilonWindow(object):
         self.menuNode.addAction(self.actionDisconnect)
         self.menuNode.addAction(self.actionDelete)
         self.menuDFA.addAction(self.actionSolve)
+        self.menuDFA.addAction(self.actionTransform_to_DFA)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuNode.menuAction())
         self.menubar.addAction(self.menuDFA.menuAction())
@@ -85,4 +88,5 @@ class Ui_NFAEpsilonWindow(object):
         self.actionChange_Name.setText(_translate("NFAEpsilonWindow", "Change Name"))
         self.actionChange_State.setText(_translate("NFAEpsilonWindow", "Change State"))
         self.actionOpen.setText(_translate("NFAEpsilonWindow", "Open"))
+        self.actionTransform_to_DFA.setText(_translate("NFAEpsilonWindow", "Transform to DFA"))
 

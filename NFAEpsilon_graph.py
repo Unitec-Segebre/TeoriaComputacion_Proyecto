@@ -3,6 +3,7 @@ from PyQt5.QtGui import QPainter
 from GraphGenerator import GraphGenerator
 from AutomataSolver import Automata_NFAEpsilon
 from ui_nfaepsilonwindow import Ui_NFAEpsilonWindow
+from DFA_graph import DFA_graph
 
 class NFAEpsilon_graph(GraphGenerator, Ui_NFAEpsilonWindow):
     def __init__(self, parent=None, load=None):
@@ -38,6 +39,8 @@ class NFAEpsilon_graph(GraphGenerator, Ui_NFAEpsilonWindow):
 
         self.actionOpen.triggered.connect(self.open_graph)
 
+        self.actionTransform_to_DFA.triggered.connect(self.transform_graph)
+
         if load != None:
             self.open_graph(load)
 
@@ -46,3 +49,6 @@ class NFAEpsilon_graph(GraphGenerator, Ui_NFAEpsilonWindow):
 
     def solve(self):
         super(NFAEpsilon_graph, self).solve(Automata_NFAEpsilon)
+
+    def transform_graph(self):
+        super(NFAEpsilon_graph, self).transform(Automata_NFAEpsilon, DFA_graph)

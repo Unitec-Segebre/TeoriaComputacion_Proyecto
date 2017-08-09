@@ -28,10 +28,17 @@ class Node(QGraphicsItem):
         font.setBold(True)
         font.setPointSize(self._draw_size*0.2)
         self.name_tag = QLabel(self.name)
-        self.name_tag.setGeometry(-self._draw_size*0.7, -self._draw_size*0.8, self._draw_size, self._draw_size*0.5)
+        self.name_tag.setGeometry(-self._draw_size*(0.55+len(name)*0.07), -self._draw_size*0.9, self._draw_size, self._draw_size*0.5)
         self.name_tag.setAttribute(Qt.WA_TranslucentBackground)
         self.name_tag.setFont(font)
         QGraphicsProxyWidget(self).setWidget(self.name_tag)
+
+        font.setBold(False)
+        self.condition_tag = QLabel("")
+        self.condition_tag.setGeometry(-self._draw_size * 0.55, -self._draw_size*0.55, self._draw_size, self._draw_size * 0.5)
+        self.condition_tag.setAttribute(Qt.WA_TranslucentBackground)
+        self.condition_tag.setFont(font)
+        QGraphicsProxyWidget(self).setWidget(self.condition_tag)
 
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
@@ -101,6 +108,22 @@ class Node(QGraphicsItem):
         self.edgeList.append(edge)
         edge.adjust()
 
+        nodes = ""
+        for edge in self.edgeList:
+            if edge.sourceNode() == edge.destNode():
+                if len(nodes) == 0:
+                    nodes = edge.getCondition()
+                else:
+                    nodes = ("%s,%c"%(nodes, edge.getCondition()))
+
+        percentage_size_to_reduce = 0.30
+        half_size_of_char = 0.05
+        middle_of_screen = 0.55
+        self.condition_tag.setText(nodes)
+        self.condition_tag.setGeometry(-self._draw_size * (middle_of_screen + len(nodes)*half_size_of_char), -self._draw_size * middle_of_screen, self._draw_size, self._draw_size * 0.5)
+        self.condition_tag.font().setPointSize(self._draw_size*0.2*(len(nodes)-len(nodes)*percentage_size_to_reduce))
+
+
     def deleteEdge(self, index):
         if sum(edge.destNode() == self.edgeList[index].destNode() for edge in self.edgeList) == 1: #node in self.edgeList[index].destNode().getNodesToUpdate():
             self.edgeList[index].destNode().removeNodeToUpdate(self)
@@ -129,6 +152,7 @@ class Node(QGraphicsItem):
     def setName(self, name):
         self.name = name
         self.name_tag.setText(name)
+        self.name_tag.setGeometry(-self._draw_size * (0.55 + len(name) * 0.07), -self._draw_size * 0.9, self._draw_size, self._draw_size * 0.5)
 
     def getDrawSize(self):
         return self._draw_size

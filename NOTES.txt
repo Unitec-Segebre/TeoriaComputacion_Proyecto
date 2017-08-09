@@ -1,0 +1,16 @@
+Eliminar AutomataSaver.py porque tiene y solo tiene la misma estructura que AutomataSolver.py
+
+El DFA_graph.py tiene una redefinicion de la funcion solve solo por una linea, asi deberia de ser esto?
+
+En el GraphGenerator.py muchas condiciones y texto son lo mismo
+
+El main(AutomataFinito.py) manda a llamar las clases de grafos(DFA_graph.py, NFA_graph.py, NFAEpsilon_graph.py). Asumiendo que creamos un NFA Epsilon, mandamos a llamar el constructor(NFAEpsilon_graph()) y este nos genera una nueva ventana visual con las validaciones de lo que este acepta o no. Luego, este al ser resuelto manda a llamar solve con el nombre del constructor de la clase Solver(Automata_NFAEpsilon) para crear una funcion solve generica en GraphGenerator.py
+Si este manda a llamara la funcion transform, le manda de parametro el constructor del solver(Automata_NFAEpsilon) y el constructor de la clase que se va a generar(DFA_graph). Este traduce el arbol actual a una clase de tipo Automata_BARE. Esta estructura que retorno luego es pasada al constructor de la clase a generar(DFA_graph) que crea una nueva ventana con las reglas permitidas para este y carga el grapho generado.
+
+Revisar las funciones del graph generator para salvar, resolver y load.
+
+Importo el QpointF, en GraphGenerator.py, solo para hacer una validacion en el open_graph.
+
+En GraphGenerator.py donde tengo para crear una coneccion, mando solo el primer caracter del input del usuario. En el AutomataSolver.py tengo un loop que revisa caracter por caracter en la cadena que se va a evaluar. Tal vez necesite evaluar mas de un caracter a la vez. Que podria hacer en esta situacion, crear una nueva clase en el solver para este caso?
+
+
