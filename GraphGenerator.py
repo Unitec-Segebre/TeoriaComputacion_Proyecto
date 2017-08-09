@@ -20,10 +20,12 @@ class GraphGenerator(QMainWindow):
             if ok:
                 if name == "":
                     QMessageBox.critical(self, "Warning!", "Name field must not be empty.")
-                elif name in [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)]:
-                    QMessageBox.warning(self, "Warning!", "Node %s already exists."%(name))
+                elif len(name) > 5:
+                    QMessageBox.critical(self, "Warning!", "Name field must be 5 characters or less.")
+                elif name.lower() in [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)]:
+                    QMessageBox.warning(self, "Warning!", "Node %s already exists."%(name.lower()))
                 else:
-                    self.graphicsView.scene().addItem(Node(self, name))
+                    self.graphicsView.scene().addItem(Node(self, name.lower()))
                     return
             elif not ok:
                 return
@@ -71,12 +73,14 @@ class GraphGenerator(QMainWindow):
                     if ok:
                         if name == "":
                             QMessageBox.critical(self, "Warning!", "Name field must not be empty.")
-                        elif name == node.name:
+                        elif len(name) > 5:
+                            QMessageBox.critical(self, "Warning!", "Name field must be 5 characters or less.")
+                        elif name.lower() == node.name:
                             QMessageBox.critical(self, "Warning!", "Can not rename to same name.")
-                        elif name in [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)]:
-                            QMessageBox.warning(self, "Warning!", "Node %s already exists."%(name))
+                        elif name.lower() in [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)]:
+                            QMessageBox.warning(self, "Warning!", "Node %s already exists."%(name.lower()))
                         else:
-                            node.setName(name)
+                            node.setName(name.lower())
                             return
                     elif not ok:
                         return

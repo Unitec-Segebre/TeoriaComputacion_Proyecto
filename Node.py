@@ -28,10 +28,18 @@ class Node(QGraphicsItem):
         font.setBold(True)
         font.setPointSize(self._draw_size*0.2)
         self.name_tag = QLabel(self.name)
-        self.name_tag.setGeometry(-self._draw_size*0.7, -self._draw_size*0.8, self._draw_size, self._draw_size*0.5)
+        self.name_tag.setGeometry(-self._draw_size*(0.55+len(name)*0.07), -self._draw_size*0.9, self._draw_size, self._draw_size*0.5)
         self.name_tag.setAttribute(Qt.WA_TranslucentBackground)
         self.name_tag.setFont(font)
         QGraphicsProxyWidget(self).setWidget(self.name_tag)
+
+        font.setBold(False)
+        font.setPointSize(self._draw_size * 0.2)
+        self.condition_tag = QLabel("1")
+        self.condition_tag.setGeometry(-self._draw_size * 0.55, -self._draw_size*0.55, self._draw_size, self._draw_size * 0.5)
+        self.condition_tag.setAttribute(Qt.WA_TranslucentBackground)
+        self.condition_tag.setFont(font)
+        QGraphicsProxyWidget(self).setWidget(self.condition_tag)
 
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
@@ -129,6 +137,7 @@ class Node(QGraphicsItem):
     def setName(self, name):
         self.name = name
         self.name_tag.setText(name)
+        self.name_tag.setGeometry(-self._draw_size * (0.55 + len(name) * 0.07), -self._draw_size * 0.9, self._draw_size, self._draw_size * 0.5)
 
     def getDrawSize(self):
         return self._draw_size
