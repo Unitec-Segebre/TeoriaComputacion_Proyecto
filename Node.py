@@ -137,6 +137,23 @@ class Node(QGraphicsItem):
         print("%s: %d"%(self.name, self.edgeList[index].destNode().getNodesToUpdate().count(self)))
         del self.edgeList[index]
 
+        nodes = ""
+        for edge in self.edgeList:
+            if edge.sourceNode() == edge.destNode():
+                if len(nodes) == 0:
+                    nodes = edge.getCondition()
+                else:
+                    nodes = ("%s,%c" % (nodes, edge.getCondition()))
+
+        percentage_size_to_reduce = 0.30
+        half_size_of_char = 0.05
+        middle_of_screen = 0.55
+        self.condition_tag.setText(nodes)
+        self.condition_tag.setGeometry(-self._draw_size * (middle_of_screen + len(nodes) * half_size_of_char),
+                                       -self._draw_size * middle_of_screen, self._draw_size, self._draw_size * 0.5)
+        self.condition_tag.font().setPointSize(
+            self._draw_size * 0.2 * (len(nodes) - len(nodes) * percentage_size_to_reduce))
+
     def popEdge(self):
         return self.edgeList.pop()
 
