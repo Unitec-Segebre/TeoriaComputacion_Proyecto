@@ -94,7 +94,7 @@ class GraphGenerator(QMainWindow):
             return
         name, ok = QInputDialog.getItem(self, "Change State", "Name: ", [node.name for node in nodes], 0, False)
         if ok:
-            options = ["Initial", "Transitional", "Final"]
+            options = ["Initial", "Transitional", "Final", "Initial and Final"]
             state, ok = QInputDialog.getItem(self, "Change State", "State: ", options, 0, False)
             if ok:
                 node = [node for node in nodes if node.name == name][0]
@@ -202,8 +202,8 @@ class GraphGenerator(QMainWindow):
                         temp.append(path.destNode().name)
                         paths[path.condition] = set(temp)
                 transitions[item.name] = paths
-        initial_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL])
-        final_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.FINAL])
+        initial_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and (item.state == State.INITIAL or item.state == State.INITIAL_FINAL)])
+        final_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and (item.state == State.FINAL or item.state == State.INITIAL_FINAL)])
 
         return Automata_Class(states, input_symbols, transitions, initial_states, final_states)
 
@@ -244,6 +244,8 @@ class GraphGenerator(QMainWindow):
                 node.setState(State(State.INITIAL))
             elif node.name in items.final_states:
                 node.setState(State(State.FINAL))
+            if node.name in items.initial_states and node.name in items.final_states:
+                node.setState(State(State.INITIAL_FINAL))
             self.graphicsView.scene().addItem(node)
 
         nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]

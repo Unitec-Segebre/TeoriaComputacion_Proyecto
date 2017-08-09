@@ -8,6 +8,7 @@ class State(Enum):
     INITIAL = 0
     TRANSITION = 1
     FINAL = 2
+    INITIAL_FINAL = 3
 
 class Node(QGraphicsItem):
     Type = QGraphicsItem.UserType + 1
@@ -67,6 +68,9 @@ class Node(QGraphicsItem):
             elif self.state == State.FINAL:
                 gradient.setColorAt(1, QColor(Qt.darkGreen))  # .light(120))
                 gradient.setColorAt(0, QColor(Qt.green))  # .light(120))
+            elif self.state == State.INITIAL_FINAL:
+                gradient.setColorAt(1, QColor(Qt.darkRed))  # .light(120))
+                gradient.setColorAt(0, QColor(Qt.red))  # .light(120))
         else:
             if self.state == State.INITIAL:
                 gradient.setColorAt(1, QColor(Qt.darkMagenta)) #.light(120))
@@ -77,6 +81,9 @@ class Node(QGraphicsItem):
             elif self.state == State.FINAL:
                 gradient.setColorAt(1, QColor(Qt.darkGreen))  # .light(120))
                 gradient.setColorAt(0, QColor(Qt.green))  # .light(120))
+            elif self.state == State.INITIAL_FINAL:
+                gradient.setColorAt(1, QColor(Qt.darkRed))  # .light(120))
+                gradient.setColorAt(0, QColor(Qt.red))  # .light(120))
 
         painter.setBrush(QBrush(gradient))
         painter.setPen(QPen(Qt.black, 0))

@@ -122,6 +122,7 @@ class Automata_NFAEpsilon(Automata_BARE):
                 if symbol != 'states':
                     input_symbols.add(symbol)
         transitions = {}
+        initial_states = set()
         final_states = set()
         for state in table:
             paths = {}
@@ -131,6 +132,10 @@ class Automata_NFAEpsilon(Automata_BARE):
                 _, destiny = self.inKeys(table, table[state][symbol])
                 paths[symbol] = [destiny]
             transitions[state] = paths
+
+            for initial_state in self.initial_states:
+                if initial_state in table[state]['states']:
+                    initial_states.add(state)
 
             for final_state in self.final_states:
                 if final_state in table[state]['states']:
@@ -159,50 +164,3 @@ class Automata_NFAEpsilon(Automata_BARE):
             if table[state]['states'] == setToFind:
                 return True, state
         return False
-
-
-
-
-
-
-
-
-
-
-
-
-                # def solve(self, sequence, epsilon):
-            #     current_states = [self.initial_states]
-            #     for symbol in sequence:
-            #         for state in current_states:
-            #             states_to_add = []
-            #             self.clousure(epsilon, state, states_to_add)
-            #             for state_to_add in states_to_add:
-            #                 current_states.append(state_to_add)
-            #         current_states = list(set(current_states))
-            #         current_states_temp = []
-            #         for current_state in current_states:
-            #             if current_state in self.transitions:
-            #                 for arista in self.transitions[current_state]:
-            #                     if symbol == arista:
-            #                         for destiny in self.transitions[current_state][arista]:
-            #                             current_states_temp.append(destiny)
-            #             else:
-            #                 raise Exception('{} is NOT a valid state'.format(current_state))
-            #         current_states = list(set(current_states_temp))
-            #         if current_states == []:
-            #             break
-            #     for current_state in current_states:
-            #         if current_state in self.final_states:
-            #             return current_state
-            #     raise Exception('{} is NOT a solution'.format(sequence))
-            #
-            # def clousure(self, epsilon, state, list):
-            #     if epsilon in self.transitions[state]:
-            #         for closure_state in self.transitions[state][epsilon]:
-            #             list.append(state)
-            #             print(closure_state)
-            #             if closure_state in list:
-            #                 continue
-            #             self.clousure(epsilon, closure_state, list)
-            #     return
