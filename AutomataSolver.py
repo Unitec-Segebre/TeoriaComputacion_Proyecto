@@ -1,5 +1,3 @@
-from DFA_graph import DFA_graph
-
 class Automata_BARE():
     def __init__(self, states, input_symbols, transitions, initial_states, final_states):
         self.states = states
@@ -145,7 +143,7 @@ class Automata_NFAEpsilon(Automata_BARE):
         print("Initial States: {}".format(self.initial_states))
         print("Final States: {}".format(final_states))
 
-        DFA_graph(Automata_BARE(states, input_symbols, transitions, self.initial_states, final_states))
+        return Automata_BARE(states, input_symbols, transitions, self.initial_states, final_states)
 
 
 
