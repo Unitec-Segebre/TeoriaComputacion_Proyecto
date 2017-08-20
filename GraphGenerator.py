@@ -94,7 +94,7 @@ class GraphGenerator(QMainWindow):
             return
         name, ok = QInputDialog.getItem(self, "Change State", "Name: ", [node.name for node in nodes], 0, False)
         if ok:
-            options = ["Initial", "Transitional", "Final"]
+            options = ["Initial", "Transitional", "Final", "Initial and Final"]
             state, ok = QInputDialog.getItem(self, "Change State", "State: ", options, 0, False)
             if ok:
                 node = [node for node in nodes if node.name == name][0]
@@ -202,8 +202,8 @@ class GraphGenerator(QMainWindow):
                         temp.append(path.destNode().name)
                         paths[path.condition] = set(temp)
                 transitions[item.name] = paths
-        initial_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL])
-        final_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.FINAL])
+        initial_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and (item.state == State.INITIAL or item.state == State.INITIAL_FINAL)])
+        final_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and (item.state == State.FINAL or item.state == State.INITIAL_FINAL)])
 
         return Automata_Class(states, input_symbols, transitions, initial_states, final_states)
 
@@ -215,17 +215,21 @@ class GraphGenerator(QMainWindow):
             states[node.name] = node.pos()
         return Saver_FA(states, fa.input_symbols, fa.transitions, fa.initial_states, fa.final_states)
 
+    def saveAs_graph(self):
+        file_name = QFileDialog.getSaveFileName(self, 'Save graph as...')
+        file_name = file_name[0]
+        if ".af" not in file_name:
+            file_name = ("%s.af"%(file_name))
+        return file_name
 
-
-    def save_graph(self):
+    def save_graph(self, file_name=None):
         try:
-            file_name = QFileDialog.getSaveFileName(self, 'Save graph')
-            file_name = file_name[0]
-            if ".af" not in file_name:
-                file_name = ("%s.af"%(file_name))
+            if file_name == None:
+                file_name = self.saveAs_graph()
             file = open(str(file_name), 'wb')
             pickle.dump(self.convert_graph_to_save(), file, pickle.HIGHEST_PROTOCOL)
             file.close()
+            return file_name
         except Exception as exception:
             QMessageBox.warning(self, "Save graph", "%s." % (exception))
             print(exception)
@@ -244,6 +248,8 @@ class GraphGenerator(QMainWindow):
                 node.setState(State(State.INITIAL))
             elif node.name in items.final_states:
                 node.setState(State(State.FINAL))
+            if node.name in items.initial_states and node.name in items.final_states:
+                node.setState(State(State.INITIAL_FINAL))
             self.graphicsView.scene().addItem(node)
 
         nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
