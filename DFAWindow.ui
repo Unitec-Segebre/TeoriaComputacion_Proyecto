@@ -58,6 +58,7 @@
      <string>DFA</string>
     </property>
     <addaction name="actionSolve"/>
+    <addaction name="actionTransform"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuNode"/>
@@ -112,6 +113,11 @@
   <action name="actionSave_as">
    <property name="text">
     <string>Save as..</string>
+   </property>
+  </action>
+  <action name="actionTransform">
+   <property name="text">
+    <string>Transform</string>
    </property>
   </action>
  </widget>

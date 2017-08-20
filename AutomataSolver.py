@@ -33,6 +33,48 @@ class Automata_DFA(Automata_BARE):
         else:
             raise Exception('{} is NOT a solution'.format(sequence))
 
+    def transform(self, epsilon=None):
+        def get_expressions(state, transitions):
+            self_expression = ""
+            expressions = {}
+            for condition in transitions[state]:
+                if state in transitions[state][condition]:
+                    self_expression = ("(%s)*"%condition)
+                else:
+                    expressions[condition] = transitions[state][condition][0]
+            return self_expression, expressions
+
+        regex = ""
+        for final_state in self.final_states:
+            new_transitions = self.transitions
+            for state_to_eliminate in self.states:
+                if state_to_eliminate == list(self.initial_states)[0] or state_to_eliminate == final_state:
+                    continue
+                temporal_transitions = new_transitions
+                for state in new_transitions:
+                    if state == state_to_eliminate:
+                        continue
+                    for condition in new_transitions[state]:
+                        if state_to_eliminate in new_transitions[state][condition]:
+                            self_expression, expressions_to_add = get_expressions(state_to_eliminate, new_transitions)
+                            for expression_to_add in expressions_to_add:
+                                del temporal_transitions[state][condition]
+                                temporal_transitions[state][("%s.%s.%s"%(condition, self_expression, expression_to_add))] = expressions_to_add[expression_to_add]
+                del temporal_transitions[state_to_eliminate]
+                new_transitions = temporal_transitions
+            if final_state == list(self.initial_states)[0]:
+                if regex == "":
+                    regex = ("(%s)*"%(new_transitions[final_state]))
+                else:
+                    regex = ("%s + (%s)*"%(regex, new_transitions[final_state]))
+            else:
+                if regex == "":
+                    regex = ("%s.(%s.%s)*"%(new_transitions[list(self.initial_states)[0]], new_transitions[final_state], new_transitions[list(self.initial_states)[0]]))
+                else:
+                    regex = ("%s + %s.(%s.%s)*"%(regex, new_transitions[list(self.initial_states)[0]], new_transitions[final_state], new_transitions[list(self.initial_states)[0]]))
+
+        return regex
+
 class Automata_NFA(Automata_BARE):
     def __init__(self, states, input_symbols, transitions, initial_state, final_states):
         super(Automata_NFA, self).__init__(states, input_symbols, transitions, initial_state, final_states)

@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow, QGraphicsScene, QGraphicsView, QInputDialog, QLineEdit, QMessageBox, QFileDialog
 from PyQt5.QtGui import QPainter
-from PyQt5.QtCore import QPointF
 from Node import Node, State
 from Edge import Edge
 from AutomataSolver import Automata_BARE, Automata_DFA

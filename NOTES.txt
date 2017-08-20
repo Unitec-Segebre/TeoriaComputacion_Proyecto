@@ -1,4 +1,4 @@
-Eliminar AutomataSaver.py porque tiene y solo tiene la misma estructura que AutomataSolver.py
+Eliminar AutomataSaver.py porque tiene y solo tiene la misma estructura que AutomataSolver.py(BORRAR)
 
 El DFA_graph.py tiene una redefinicion de la funcion solve solo por una linea, asi deberia de ser esto?
 

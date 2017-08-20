@@ -5,6 +5,7 @@ from Edge import Edge
 from GraphGenerator import GraphGenerator
 from AutomataSolver import Automata_DFA
 from ui_dfawindow import Ui_DFAWindow
+from RegEx_graph import RegEx_graph
 
 class DFA_graph(GraphGenerator, Ui_DFAWindow):
     def __init__(self, parent=None, load=None, saveName=None):
@@ -31,6 +32,8 @@ class DFA_graph(GraphGenerator, Ui_DFAWindow):
         self.actionChange_Name.triggered.connect(self.change_name)
 
         self.actionSolve.triggered.connect(self.solve)
+
+        self.actionTransform.triggered.connect(self.transform_graph)
 
         self.actionDisconnect.triggered.connect(self.delete_connection)
 
@@ -117,3 +120,6 @@ class DFA_graph(GraphGenerator, Ui_DFAWindow):
                     QMessageBox.critical(self, "Solve", str(exception))
             else:
                 return
+
+    def transform_graph(self):
+        super(DFA_graph, self).transform(Automata_DFA, RegEx_graph)
