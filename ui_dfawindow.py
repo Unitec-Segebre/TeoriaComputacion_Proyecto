@@ -55,6 +55,8 @@ class Ui_DFAWindow(object):
         self.actionOpen.setObjectName("actionOpen")
         self.actionSave_as = QtWidgets.QAction(DFAWindow)
         self.actionSave_as.setObjectName("actionSave_as")
+        self.actionTransform = QtWidgets.QAction(DFAWindow)
+        self.actionTransform.setObjectName("actionTransform")
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionSave_as)
         self.menuEdit.addAction(self.actionChange_Name)
@@ -65,6 +67,7 @@ class Ui_DFAWindow(object):
         self.menuNode.addAction(self.actionDisconnect)
         self.menuNode.addAction(self.actionDelete)
         self.menuDFA.addAction(self.actionSolve)
+        self.menuDFA.addAction(self.actionTransform)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuNode.menuAction())
         self.menubar.addAction(self.menuDFA.menuAction())
@@ -89,4 +92,5 @@ class Ui_DFAWindow(object):
         self.actionChange_State.setText(_translate("DFAWindow", "Change State"))
         self.actionOpen.setText(_translate("DFAWindow", "Open"))
         self.actionSave_as.setText(_translate("DFAWindow", "Save as.."))
+        self.actionTransform.setText(_translate("DFAWindow", "Transform"))
 
