@@ -34,6 +34,7 @@ class Automata_DFA(Automata_BARE):
             raise Exception('{} is NOT a solution'.format(sequence))
 
     def transform(self, epsilon=None):
+        import copy
         def removeParenthesis(transitions):
             for state in transitions:
                 for condition in transitions[state]:
@@ -54,11 +55,11 @@ class Automata_DFA(Automata_BARE):
 
         regex = ""
         for final_state in self.final_states:
-            new_transitions = dict(self.transitions)
+            new_transitions = copy.deepcopy(self.transitions)
             for state_to_eliminate in self.states:
                 if state_to_eliminate == list(self.initial_states)[0] or state_to_eliminate == final_state:
                     continue
-                temporal_transitions = dict(new_transitions)
+                temporal_transitions = copy.deepcopy(new_transitions)
                 for state in new_transitions:
                     if state == state_to_eliminate:
                         continue
@@ -66,24 +67,26 @@ class Automata_DFA(Automata_BARE):
                         if state_to_eliminate in new_transitions[state][condition]:
                             self_expression, expressions_to_add = get_expressions(state_to_eliminate, new_transitions)
                             for expression_to_add in expressions_to_add:
-                                del temporal_transitions[state][condition]
+                                if condition in temporal_transitions[state]:
+                                    del temporal_transitions[state][condition]
                                 if self_expression == "()*":
                                     temporal_transitions[state][("%s.%s" % (condition, expression_to_add))] = expressions_to_add[expression_to_add]
                                 else:
                                     temporal_transitions[state][("%s.%s.%s"%(condition, self_expression, expression_to_add))] = expressions_to_add[expression_to_add]
                 del temporal_transitions[state_to_eliminate]
-                new_transitions = dict(temporal_transitions)
+                new_transitions = copy.deepcopy(temporal_transitions)
             if final_state == list(self.initial_states)[0]:
+                regexToAdd, _ = get_expressions(final_state, new_transitions)
                 if regex == "":
-                    regex = ("(%s)*"%(new_transitions[final_state]))
+                    regex = regexToAdd
                 else:
-                    regex = ("%s + (%s)*"%(regex, new_transitions[final_state]))
+                    regex = ("%s + %s"%(regex, regexToAdd))
             else:
                 to_self_initial = ""
                 to_final = ""
                 to_self_final = ""
                 to_initial = ""
-                for state in new_transitions:
+                for state in new_transitions: # remove this loop and replace fot final_state
                     if state == list(self.initial_states)[0]:
                         to_self_initial, to_final_list = get_expressions(state, new_transitions)
                         for to_final_iterator in to_final_list:
