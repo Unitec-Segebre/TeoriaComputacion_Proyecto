@@ -34,23 +34,31 @@ class Automata_DFA(Automata_BARE):
             raise Exception('{} is NOT a solution'.format(sequence))
 
     def transform(self, epsilon=None):
+        def removeParenthesis(transitions):
+            for state in transitions:
+                for condition in transitions[state]:
+                    transitions[state][condition] = transitions[state][condition][0]
+
         def get_expressions(state, transitions):
             self_expression = ""
             expressions = {}
             for condition in transitions[state]:
                 if state in transitions[state][condition]:
-                    self_expression = ("(%s)*"%condition)
+                    if self_expression == "":
+                        self_expression = condition
+                    else:
+                        self_expression = ("%s+%s"%(self_expression, condition))
                 else:
-                    expressions[condition] = transitions[state][condition][0]
-            return self_expression, expressions
+                    expressions[condition] = transitions[state][condition]
+            return ("(%s)*"%self_expression), expressions
 
         regex = ""
         for final_state in self.final_states:
-            new_transitions = self.transitions
+            new_transitions = dict(self.transitions)
             for state_to_eliminate in self.states:
                 if state_to_eliminate == list(self.initial_states)[0] or state_to_eliminate == final_state:
                     continue
-                temporal_transitions = new_transitions
+                temporal_transitions = dict(new_transitions)
                 for state in new_transitions:
                     if state == state_to_eliminate:
                         continue
@@ -59,19 +67,92 @@ class Automata_DFA(Automata_BARE):
                             self_expression, expressions_to_add = get_expressions(state_to_eliminate, new_transitions)
                             for expression_to_add in expressions_to_add:
                                 del temporal_transitions[state][condition]
-                                temporal_transitions[state][("%s.%s.%s"%(condition, self_expression, expression_to_add))] = expressions_to_add[expression_to_add]
+                                if self_expression == "()*":
+                                    temporal_transitions[state][("%s.%s" % (condition, expression_to_add))] = expressions_to_add[expression_to_add]
+                                else:
+                                    temporal_transitions[state][("%s.%s.%s"%(condition, self_expression, expression_to_add))] = expressions_to_add[expression_to_add]
                 del temporal_transitions[state_to_eliminate]
-                new_transitions = temporal_transitions
+                new_transitions = dict(temporal_transitions)
             if final_state == list(self.initial_states)[0]:
                 if regex == "":
                     regex = ("(%s)*"%(new_transitions[final_state]))
                 else:
                     regex = ("%s + (%s)*"%(regex, new_transitions[final_state]))
             else:
-                if regex == "":
-                    regex = ("%s.(%s.%s)*"%(new_transitions[list(self.initial_states)[0]], new_transitions[final_state], new_transitions[list(self.initial_states)[0]]))
-                else:
-                    regex = ("%s + %s.(%s.%s)*"%(regex, new_transitions[list(self.initial_states)[0]], new_transitions[final_state], new_transitions[list(self.initial_states)[0]]))
+                to_self_initial = ""
+                to_final = ""
+                to_self_final = ""
+                to_initial = ""
+                for state in new_transitions:
+                    if state == list(self.initial_states)[0]:
+                        to_self_initial, to_final_list = get_expressions(state, new_transitions)
+                        for to_final_iterator in to_final_list:
+                            if to_final == "":
+                                to_final = to_final_iterator
+                            else:
+                                to_final = ("%s+%s"%(to_final, to_final_iterator))
+                        to_final = ("(%s)"%to_final)
+                    else:
+                        to_self_final, to_initial_list = get_expressions(state, new_transitions)
+                        for to_initial_iterator in to_initial_list:
+                            if to_initial == "":
+                                to_initial = to_initial_iterator
+                            else:
+                                to_initial = ("%s+%s" % (to_initial, to_initial_iterator))
+                        to_initial = ("(%s)" % to_initial)
+
+                regexToAdd = ""
+                if to_self_initial != "()*":
+                    regexToAdd = to_self_initial
+                if to_final != "()":
+                    if regexToAdd == "":
+                        regexToAdd = to_final
+                    else:
+                        regexToAdd = ("%s.%s"%(regexToAdd, to_final))
+                subset_b = ""
+                if to_initial != "()":
+                    if to_self_initial != "()":
+                        subset_b = ("%s.%s.%s"%(to_initial, to_self_initial, to_final))
+                    else:
+                        subset_b = ("%s.%s"%(to_initial, to_final))
+                subset_a = ""
+                if to_self_final != "()*":
+                    subset_a = to_self_final
+                    if subset_b != "":
+                        subset_a = ("%s+%s"%(to_self_final, subset_b))
+                elif subset_b != "":
+                    subset_a = subset_b
+                if subset_a != "":
+                    if subset_b != "":
+                        regexToAdd = ("%s.(%s)*"%(regexToAdd, subset_a))
+                    else:
+                        regexToAdd = ("%s.%s" % (regexToAdd, subset_a))
+            if regex == "":
+                regex = regexToAdd
+            else:
+                regexToAdd = ("%s+%s"%(regex, regexToAdd))
+
+
+                # if regex == "":
+                #     temp_self = ""
+                #     temp_other = ""
+                #     for condition in new_transition[self.initial_states[0]]:
+                #         if new_transitions[self.initial_states[0]][condition] == self.initial_states[0]:
+                #             if temp_self == "":
+                #                 temp_self = condition
+                #             else:
+                #                 temp_self = ("%s+%s"%(temp_self, condition))
+                #         else:
+                #             if temp_other == "":
+                #                 temp_other = condition
+                #             else:
+                #                 temp_other = ("%s+%s"%(temp_other, condition))
+                #     if temp_self != "":
+                #
+                #
+                #     regex = ("%s.(%s.%s)*"%(new_transitions[list(self.initial_states)[0]], new_transitions[final_state], new_transitions[list(self.initial_states)[0]]))
+                # else:
+                #     regex = ("%s + %s.(%s.%s)*"%(regex, new_transitions[list(self.initial_states)[0]], new_transitions[final_state], new_transitions[list(self.initial_states)[0]]))
 
         return regex
 
