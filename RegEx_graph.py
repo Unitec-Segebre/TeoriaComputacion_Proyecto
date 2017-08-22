@@ -52,6 +52,35 @@ class RegEx_graph(QInputDialog):
                 self.lastNode += 1
                 transitions[("q%d" % self.lastNode)] = {}
                 return self.Epsilon_NFA.Epsilon
+            elif isinstance(object, ast.Or):
+                root = self.lastNode
+                transitions[("q%d" % self.lastNode)] = {}
+                transitions[("q%d" % self.lastNode)][self.Epsilon_NFA.Epsilon] = set(list(["q%d"%(self.lastNode+1)]))
+                self.lastNode += 1
+                left = desipherObject(object.left_expr)
+                transitions[("q%d" % self.lastNode)] = {}
+                transitions[("q%d" % self.lastNode)][left] = set(list(["q%d" % (self.lastNode + 1)]))
+                self.lastNode += 1
+                transitions[("q%d" % self.lastNode)] = {}
+                transitions[("q%d" % self.lastNode)][self.Epsilon_NFA.Epsilon] = set(list(["q%d"%(self.lastNode+1)]))
+                self.lastNode += 1
+                tail = self.lastNode
+                transitions[("q%d"%root)][self.Epsilon_NFA.Epsilon] = transitions[("q%d"%root)][self.Epsilon_NFA.Epsilon] | set(list(["q%d"%(self.lastNode+1)]))
+                self.lastNode += 1
+                right = desipherObject(object.right_expr)
+                transitions[("q%d" % self.lastNode)] = {}
+                transitions[("q%d" % self.lastNode)][right] = set(list(["q%d" % (self.lastNode + 1)]))
+                self.lastNode += 1
+                transitions[("q%d" % self.lastNode)] = {}
+                transitions[("q%d" % self.lastNode)][self.Epsilon_NFA.Epsilon] = set(list(["q%d"%(tail)]))
+                transitions[("q%d" % tail)] = {}
+                transitions[("q%d" % tail)][self.Epsilon_NFA.Epsilon] = set(list(["q%d" % (self.lastNode + 1)]))
+                self.lastNode += 1
+                transitions[("q%d" % self.lastNode)] = {}
+                return self.Epsilon_NFA.Epsilon
+
+
+
 
         expression_tree.printable("")
         desipherObject(expression_tree)
