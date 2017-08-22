@@ -4,6 +4,7 @@ from ui_mainwindow import Ui_MainWindow
 from DFA_graph import DFA_graph
 from NFA_graph import NFA_graph
 from NFAEpsilon_graph import NFAEpsilon_graph
+from RegEx_graph import RegEx_graph
 import pickle
 
 class Main(QMainWindow, Ui_MainWindow):
@@ -19,6 +20,8 @@ class Main(QMainWindow, Ui_MainWindow):
 
         self.actionNFA_Epsilon.triggered.connect(self.new_NFAEpsilon_graph)
         self.actionNFA_Epsilon.setShortcut("Ctrl+3")
+
+        self.actionRegular_Expression.triggered.connect(self.new_RegularExpression_graph)
 
         self.actionDFA_2.triggered.connect(self.open_DFA_graph)
         self.actionNFA_2.triggered.connect(self.open_NFA_graph)
@@ -44,6 +47,9 @@ class Main(QMainWindow, Ui_MainWindow):
 
     def open_NFAEpsilon_graph(self):
         self.open_graph(NFAEpsilon_graph)
+
+    def new_RegularExpression_graph(self):
+        RegEx_graph(self, "", NFAEpsilon_graph)
 
     def open_graph(self, function):
         try:

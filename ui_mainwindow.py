@@ -40,9 +40,12 @@ class Ui_MainWindow(object):
         self.actionNFA_Epsilon.setObjectName("actionNFA_Epsilon")
         self.actionNFA_Epsilon_2 = QtWidgets.QAction(MainWindow)
         self.actionNFA_Epsilon_2.setObjectName("actionNFA_Epsilon_2")
+        self.actionRegular_Expression = QtWidgets.QAction(MainWindow)
+        self.actionRegular_Expression.setObjectName("actionRegular_Expression")
         self.menuNew.addAction(self.actionDFA)
         self.menuNew.addAction(self.actionNFA)
         self.menuNew.addAction(self.actionNFA_Epsilon)
+        self.menuNew.addAction(self.actionRegular_Expression)
         self.menuOpen.addAction(self.actionDFA_2)
         self.menuOpen.addAction(self.actionNFA_2)
         self.menuOpen.addAction(self.actionNFA_Epsilon_2)
@@ -65,4 +68,5 @@ class Ui_MainWindow(object):
         self.actionNFA_2.setText(_translate("MainWindow", "NFA"))
         self.actionNFA_Epsilon.setText(_translate("MainWindow", "NFA Epsilon"))
         self.actionNFA_Epsilon_2.setText(_translate("MainWindow", "NFA Epsilon"))
+        self.actionRegular_Expression.setText(_translate("MainWindow", "Regular Expression"))
 
