@@ -96,8 +96,6 @@ class RegEx_graph(QInputDialog):
                 transitions[("q%d" % self.lastNode)] = {}
                 return self.Epsilon_NFA.Epsilon
 
-
-        expression_tree.printable("")
         desipherObject(expression_tree)
         states = list()
         for node in range(self.lastNode+1):
