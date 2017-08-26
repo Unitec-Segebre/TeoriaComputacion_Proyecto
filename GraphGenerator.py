@@ -45,6 +45,12 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         self.actionDFA.triggered.connect(self.solve_DFA)
         self.actionDFA.setShortcut("Ctrl+1")
 
+        self.actionSave.triggered.connect(self.save)
+        self.actionSave.setShortcut("Ctrl+s")
+
+        self.actionSave_as.triggered.connect(self.saveAs)
+        self.actionSave_as.setShortcut("Ctrl+Shift+s")
+
 
         # self.actionSolve.triggered.connect(self.solve)
         #
@@ -60,10 +66,9 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         #
         # self.actionOpen.triggered.connect(self.open_graph)
         #
-        # self.saveName = saveName
-        # if load != None:
-        #     self.open_graph(load)
-        #
+        self.saveName = saveName
+        if load != None:
+            self.open(load)
         self.show()
 
     def new_node(self):
@@ -218,6 +223,47 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
             else:
                 return
 
+    def save(self):
+        try:
+            if self.saveName == None:
+                self.saveAs()
+            file = open(str(self.saveName), 'wb')
+            pickle.dump(self.convert_graph_to_save(), file, pickle.HIGHEST_PROTOCOL)
+            file.close()
+        except Exception as exception:
+            QMessageBox.warning(self, "Save graph", "%s." % (exception))
+            print(exception)
+
+    def saveAs(self):
+        self.saveName = QFileDialog.getSaveFileName(self, 'Save graph as...')
+        self.saveName = self.saveName[0]
+        if ".af" not in self.saveName:
+            self.saveName = ("%s.af"%(self.saveName))
+
+    def open(self, items):
+        print("States: {}".format(items.states))
+        print("Input Symbols: {}".format(items.input_symbols))
+        print("Transitions: {}".format(items.transitions))
+        print("Initial States: {}".format(items.initial_states))
+        print("Final States: {}".format(items.final_states))
+        for state in items.states:
+            node = Node(self, state)
+            if not isinstance(items.states, set):
+                node.setPos(items.states[state])
+            if node.name in items.initial_states:
+                node.setState(State(State.INITIAL))
+            elif node.name in items.final_states:
+                node.setState(State(State.FINAL))
+            if node.name in items.initial_states and node.name in items.final_states:
+                node.setState(State(State.INITIAL_FINAL))
+            self.graphicsView.scene().addItem(node)
+
+        nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
+        for origin in items.transitions:
+            for condition in items.transitions[origin]:
+                for destination in items.transitions[origin][condition]:
+                    self.graphicsView.scene().addItem(Edge([node for node in nodes if node.name == origin][0], [node for node in nodes if node.name == destination][0], condition))
+
     def convert_graph_to_class(self, Automata_Class=Automata_BARE):
         states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)])
         input_symbols = set([item.condition for item in self.graphicsView.scene().items() if isinstance(item, Edge)])
@@ -238,6 +284,14 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
 
         return Automata_Class(states, input_symbols, transitions, initial_states, final_states)
 
+
+    def convert_graph_to_save(self):
+        fa = self.convert_graph_to_class()
+        nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
+        states = {}
+        for node in nodes:
+            states[node.name] = node.pos()
+        return Automata_BARE(states, fa.input_symbols, fa.transitions, fa.initial_states, fa.final_states)
 
     # def solve(self, Automata_Class):
     #     fa = self.convert_graph_to_class(Automata_Class)
