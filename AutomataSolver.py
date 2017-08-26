@@ -23,6 +23,13 @@ class Automata_DFA(Automata_BARE):
         super(Automata_DFA, self).__init__(states, input_symbols, transitions, initial_state, final_states)
 
     def solve(self, sequence, epsilon):
+        if len(self.initial_states) == 0:
+            raise Exception("An initial state is required to solve.")
+        elif len(self.initial_states) > 1:
+            raise Exception("There must only be one initial state to solve.")
+        elif len(self.final_states) == 0:
+            raise Exception("At least one final state is required to solve.")
+
         if epsilon in self.input_symbols:
             raise Exception(("Epsilon('%c') not allowed in DFA graphs"%(epsilon)))
 

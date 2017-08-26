@@ -42,6 +42,9 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         self.actionDelete.triggered.connect(self.delete_node)
         self.actionDelete.setShortcut("Ctrl+r")
 
+        self.actionDFA.triggered.connect(self.solve_DFA)
+        self.actionDFA.setShortcut("Ctrl+1")
+
 
         # self.actionSolve.triggered.connect(self.solve)
         #
@@ -197,20 +200,8 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
             elif not ok:
                 return
 
-
-    def solve(self, Automata_Class):
-        fa = self.convert_graph_to_class(Automata_Class)
-        # initial_states = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
-        if len(fa.initial_states) == 0:
-            QMessageBox.critical(self, "Warning!", "An initial state is required to solve.")
-            return
-        elif len(fa.initial_states) > 1:
-            QMessageBox.critical(self, "Warning!", "There must only be one initial state to solve.")
-            return
-        elif len(fa.final_states) == 0:
-            QMessageBox.critical(self, "Warning!", "At least one final state is required to solve.")
-            return
-        # fa.initial_states = fa.initial_states[0]
+    def solve_DFA(self):
+        fa = self.convert_graph_to_class(Automata_DFA)
         while True:
             statement, ok = QInputDialog.getText(self, "Solve", "Statement: ", QLineEdit.Normal, "")
             if ok:
@@ -222,20 +213,6 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
             else:
                 return
 
-    def transform(self, Automata_Class, Class_to_Generate):
-        fa = self.convert_graph_to_class(Automata_Class)
-        # initial_states = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
-        if len(fa.initial_states) == 0:
-            QMessageBox.critical(self, "Warning!", "An initial state is required to transform.")
-            return
-        elif len(fa.initial_states) > 1:
-            QMessageBox.critical(self, "Warning!", "There must only be one initial state to transform.")
-            return
-        elif len(fa.final_states) == 0:
-            QMessageBox.critical(self, "Warning!", "At least one final state is required to transform.")
-            return
-        Class_to_Generate(self.parent(), fa.transform(self.Epsilon))
-
     def convert_graph_to_class(self, Automata_Class=Automata_BARE):
         states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)])
         input_symbols = set([item.condition for item in self.graphicsView.scene().items() if isinstance(item, Edge)])
@@ -245,7 +222,7 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
                 paths = {}
                 for path in item.edges():
                     if path.condition not in paths:
-                        paths[path.condition] = [path.destNode().name] ############################change to {}############################
+                        paths[path.condition] = [path.destNode().name]
                     else:
                         temp = paths[path.condition]
                         temp.append(path.destNode().name)
@@ -256,57 +233,116 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
 
         return Automata_Class(states, input_symbols, transitions, initial_states, final_states)
 
-    def convert_graph_to_save(self):
-        fa = self.convert_graph_to_class()
-        nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
-        states = {}
-        for node in nodes:
-            states[node.name] = node.pos()
-        return Saver_FA(states, fa.input_symbols, fa.transitions, fa.initial_states, fa.final_states)
 
-    def saveAs_graph(self):
-        file_name = QFileDialog.getSaveFileName(self, 'Save graph as...')
-        file_name = file_name[0]
-        if ".af" not in file_name:
-            file_name = ("%s.af"%(file_name))
-        return file_name
-
-    def save_graph(self, file_name=None):
-        try:
-            if file_name == None:
-                file_name = self.saveAs_graph()
-            file = open(str(file_name), 'wb')
-            pickle.dump(self.convert_graph_to_save(), file, pickle.HIGHEST_PROTOCOL)
-            file.close()
-            return file_name
-        except Exception as exception:
-            QMessageBox.warning(self, "Save graph", "%s." % (exception))
-            print(exception)
-
-    def open_graph(self, items):
-        print("States: {}".format(items.states))
-        print("Input Symbols: {}".format(items.input_symbols))
-        print("Transitions: {}".format(items.transitions))
-        print("Initial States: {}".format(items.initial_states))
-        print("Final States: {}".format(items.final_states))
-        for state in items.states:
-            node = Node(self, state)
-            if not isinstance(items.states, set):
-                node.setPos(items.states[state])
-            if node.name in items.initial_states:
-                node.setState(State(State.INITIAL))
-            elif node.name in items.final_states:
-                node.setState(State(State.FINAL))
-            if node.name in items.initial_states and node.name in items.final_states:
-                node.setState(State(State.INITIAL_FINAL))
-            self.graphicsView.scene().addItem(node)
-
-        nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
-        for origin in items.transitions:
-            for condition in items.transitions[origin]:
-                for destination in items.transitions[origin][condition]:
-                    # print("%s--%c-->%s"%(origin, condition, destination))
-                    # print([node for node in nodes if node.name == origin][0].name)
-                    # print([node for node in nodes if node.name == destination][0].name)
-                    # print(condition)
-                    self.graphicsView.scene().addItem(Edge([node for node in nodes if node.name == origin][0], [node for node in nodes if node.name == destination][0], condition))
+    # def solve(self, Automata_Class):
+    #     fa = self.convert_graph_to_class(Automata_Class)
+    #     # initial_states = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
+    #     if len(fa.initial_states) == 0:
+    #         QMessageBox.critical(self, "Warning!", "An initial state is required to solve.")
+    #         return
+    #     elif len(fa.initial_states) > 1:
+    #         QMessageBox.critical(self, "Warning!", "There must only be one initial state to solve.")
+    #         return
+    #     elif len(fa.final_states) == 0:
+    #         QMessageBox.critical(self, "Warning!", "At least one final state is required to solve.")
+    #         return
+    #     # fa.initial_states = fa.initial_states[0]
+    #     while True:
+    #         statement, ok = QInputDialog.getText(self, "Solve", "Statement: ", QLineEdit.Normal, "")
+    #         if ok:
+    #             try:
+    #                 fa.solve(statement, self.Epsilon)
+    #                 QMessageBox.information(self, "Result!", "'%s' is a solution"%(statement))
+    #             except Exception as exception:
+    #                 QMessageBox.critical(self, "Solve", str(exception))
+    #         else:
+    #             return
+    #
+    # def transform(self, Automata_Class, Class_to_Generate):
+    #     fa = self.convert_graph_to_class(Automata_Class)
+    #     # initial_states = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
+    #     if len(fa.initial_states) == 0:
+    #         QMessageBox.critical(self, "Warning!", "An initial state is required to transform.")
+    #         return
+    #     elif len(fa.initial_states) > 1:
+    #         QMessageBox.critical(self, "Warning!", "There must only be one initial state to transform.")
+    #         return
+    #     elif len(fa.final_states) == 0:
+    #         QMessageBox.critical(self, "Warning!", "At least one final state is required to transform.")
+    #         return
+    #     Class_to_Generate(self.parent(), fa.transform(self.Epsilon))
+    #
+    # def convert_graph_to_class(self, Automata_Class=Automata_BARE):
+    #     states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)])
+    #     input_symbols = set([item.condition for item in self.graphicsView.scene().items() if isinstance(item, Edge)])
+    #     transitions = {}
+    #     for item in self.graphicsView.scene().items():
+    #         if isinstance(item, Node):
+    #             paths = {}
+    #             for path in item.edges():
+    #                 if path.condition not in paths:
+    #                     paths[path.condition] = [path.destNode().name] ############################change to {}############################
+    #                 else:
+    #                     temp = paths[path.condition]
+    #                     temp.append(path.destNode().name)
+    #                     paths[path.condition] = set(temp)
+    #             transitions[item.name] = paths
+    #     initial_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and (item.state == State.INITIAL or item.state == State.INITIAL_FINAL)])
+    #     final_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and (item.state == State.FINAL or item.state == State.INITIAL_FINAL)])
+    #
+    #     return Automata_Class(states, input_symbols, transitions, initial_states, final_states)
+    #
+    # def convert_graph_to_save(self):
+    #     fa = self.convert_graph_to_class()
+    #     nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
+    #     states = {}
+    #     for node in nodes:
+    #         states[node.name] = node.pos()
+    #     return Saver_FA(states, fa.input_symbols, fa.transitions, fa.initial_states, fa.final_states)
+    #
+    # def saveAs_graph(self):
+    #     file_name = QFileDialog.getSaveFileName(self, 'Save graph as...')
+    #     file_name = file_name[0]
+    #     if ".af" not in file_name:
+    #         file_name = ("%s.af"%(file_name))
+    #     return file_name
+    #
+    # def save_graph(self, file_name=None):
+    #     try:
+    #         if file_name == None:
+    #             file_name = self.saveAs_graph()
+    #         file = open(str(file_name), 'wb')
+    #         pickle.dump(self.convert_graph_to_save(), file, pickle.HIGHEST_PROTOCOL)
+    #         file.close()
+    #         return file_name
+    #     except Exception as exception:
+    #         QMessageBox.warning(self, "Save graph", "%s." % (exception))
+    #         print(exception)
+    #
+    # def open_graph(self, items):
+    #     print("States: {}".format(items.states))
+    #     print("Input Symbols: {}".format(items.input_symbols))
+    #     print("Transitions: {}".format(items.transitions))
+    #     print("Initial States: {}".format(items.initial_states))
+    #     print("Final States: {}".format(items.final_states))
+    #     for state in items.states:
+    #         node = Node(self, state)
+    #         if not isinstance(items.states, set):
+    #             node.setPos(items.states[state])
+    #         if node.name in items.initial_states:
+    #             node.setState(State(State.INITIAL))
+    #         elif node.name in items.final_states:
+    #             node.setState(State(State.FINAL))
+    #         if node.name in items.initial_states and node.name in items.final_states:
+    #             node.setState(State(State.INITIAL_FINAL))
+    #         self.graphicsView.scene().addItem(node)
+    #
+    #     nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
+    #     for origin in items.transitions:
+    #         for condition in items.transitions[origin]:
+    #             for destination in items.transitions[origin][condition]:
+    #                 # print("%s--%c-->%s"%(origin, condition, destination))
+    #                 # print([node for node in nodes if node.name == origin][0].name)
+    #                 # print([node for node in nodes if node.name == destination][0].name)
+    #                 # print(condition)
+    #                 self.graphicsView.scene().addItem(Edge([node for node in nodes if node.name == origin][0], [node for node in nodes if node.name == destination][0], condition))
