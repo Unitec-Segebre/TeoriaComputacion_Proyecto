@@ -4,7 +4,6 @@ from ui_graphwindow import Ui_GraphWindow
 from Node import Node, State
 from Edge import Edge
 from AutomataSolver import Automata_BARE, Automata_DFA, Automata_EpsilonNFA
-from AutomataSaver import Saver_FA
 import pickle
 
 class GraphGenerator(QMainWindow, Ui_GraphWindow):
