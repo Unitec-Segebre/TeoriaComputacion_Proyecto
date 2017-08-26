@@ -13,7 +13,7 @@ class Automata_BARE():
         print("Initial States: {}".format(self.initial_states))
         print("Final States: {}".format(final_states))
 
-    def check(self, epsilon):
+    def check(self, epsilon=None):
         pass
 
     def get_destinies(self, current_state, condition):
@@ -25,7 +25,7 @@ class Automata_DFA(Automata_BARE):
     def __init__(self, states, input_symbols, transitions, initial_state, final_states):
         super().__init__(states, input_symbols, transitions, initial_state, final_states)
 
-    def check(self, epsilon):
+    def check(self, epsilon=None):
         if len(self.initial_states) == 0:
             raise Exception("An initial state is required to solve.")
         elif len(self.initial_states) > 1:
@@ -191,6 +191,14 @@ class Automata_EpsilonNFA(Automata_BARE):
     def __init__(self, states, input_symbols, transitions, initial_state, final_states):
         super().__init__(states, input_symbols, transitions, initial_state, final_states)
 
+    def check(self, epsilon=None):
+        if len(self.initial_states) == 0:
+            raise Exception("An initial state is required to solve.")
+        elif len(self.initial_states) > 1:
+            raise Exception("There must only be one initial state to solve.")
+        elif len(self.final_states) == 0:
+            raise Exception("At least one final state is required to solve.")
+
     def solve(self, sequence, epsilon):
         current_states = self.initial_states
         for symbol in sequence:
@@ -239,9 +247,9 @@ class Automata_EpsilonNFA(Automata_BARE):
             states_set = self.getSetToCalculate(table)
             if len(states_set ) == 0:
                 break
-        print(table)
-        _, temp = self.inKeys(table, table['q0']['states'])
-        print(temp)
+        # print(table)
+        # _, temp = self.inKeys(table, table['q0']['states'])
+        # print(temp)
         states = set([state for state in table])
         input_symbols = set()
         for state in table:
@@ -268,12 +276,12 @@ class Automata_EpsilonNFA(Automata_BARE):
                 if final_state in table[state]['states']:
                     final_states.add(state)
 
-        print("---HERE---")
-        print("States: {}".format(states))
-        print("Input Symbols: {}".format(input_symbols))
-        print("Transitions: {}".format(transitions))
-        print("Initial States: {}".format(self.initial_states))
-        print("Final States: {}".format(final_states))
+        # print("---HERE---")
+        # print("States: {}".format(states))
+        # print("Input Symbols: {}".format(input_symbols))
+        # print("Transitions: {}".format(transitions))
+        # print("Initial States: {}".format(self.initial_states))
+        # print("Final States: {}".format(final_states))
 
         return Automata_BARE(states, input_symbols, transitions, self.initial_states, final_states)
 

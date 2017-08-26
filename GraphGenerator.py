@@ -48,6 +48,8 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         self.actionEpsilon_NFA.triggered.connect(self.solve_EpsilonNFA)
         self.actionEpsilon_NFA.setShortcut("Ctrl+3")
 
+        self.actionEpsilon_NFA_to_DFA.triggered.connect(self.transform_EpsilonNFA_DFA)
+
         self.actionSave.triggered.connect(self.save)
         self.actionSave.setShortcut("Ctrl+s")
 
@@ -202,6 +204,9 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
     def solve_EpsilonNFA(self):
         self.solve(Automata_EpsilonNFA)
 
+    def transform_EpsilonNFA_DFA(self):
+        self.transform(Automata_EpsilonNFA)
+
     def solve(self, class_type=None):
         fa = self.convert_graph_to_class(class_type)
         try:
@@ -219,6 +224,15 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
                     QMessageBox.critical(self, "Solve", str(exception))
             else:
                 return
+
+    def transform(self, Automata_Class):
+        fa = self.convert_graph_to_class(Automata_Class)
+        try:
+            fa.check(self.Epsilon)
+        except Exception as exception:
+            QMessageBox.warning(self, "Solve", str(exception))
+            return
+        GraphGenerator(self.parent(), fa.transform(self.Epsilon))
 
     def save(self):
         try:
@@ -289,19 +303,3 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         for node in nodes:
             states[node.name] = node.pos()
         return Automata_BARE(states, fa.input_symbols, fa.transitions, fa.initial_states, fa.final_states)
-
-    #
-    # def transform(self, Automata_Class, Class_to_Generate):
-    #     fa = self.convert_graph_to_class(Automata_Class)
-    #     # initial_states = [item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and item.state == State.INITIAL]
-    #     if len(fa.initial_states) == 0:
-    #         QMessageBox.critical(self, "Warning!", "An initial state is required to transform.")
-    #         return
-    #     elif len(fa.initial_states) > 1:
-    #         QMessageBox.critical(self, "Warning!", "There must only be one initial state to transform.")
-    #         return
-    #     elif len(fa.final_states) == 0:
-    #         QMessageBox.critical(self, "Warning!", "At least one final state is required to transform.")
-    #         return
-    #     Class_to_Generate(self.parent(), fa.transform(self.Epsilon))
-    #
