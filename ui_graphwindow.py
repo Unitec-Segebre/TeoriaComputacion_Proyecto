@@ -71,7 +71,6 @@ class Ui_GraphWindow(object):
         self.actionConnect.setObjectName("actionConnect")
         self.actionDisconnect = QtWidgets.QAction(GraphWindow)
         self.actionDisconnect.setObjectName("actionDisconnect")
-        self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionSave_as)
         self.menuFile.addAction(self.actionExit)

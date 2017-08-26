@@ -30,6 +30,11 @@ class Automata_DFA(Automata_BARE):
         elif len(self.final_states) == 0:
             raise Exception("At least one final state is required to solve.")
 
+        for state in self.transitions:
+            for condition in self.transitions[state]:
+                if len(self.transitions[state][condition]) != 1:
+                    raise Exception("Node '%s' has more than one connection through '%c'." % (state, condition))
+                
         if epsilon in self.input_symbols:
             raise Exception(("Epsilon('%c') not allowed in DFA graphs"%(epsilon)))
 

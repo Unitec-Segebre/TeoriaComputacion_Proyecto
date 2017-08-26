@@ -19,6 +19,9 @@ class Main(QMainWindow, Ui_MainWindow):
         self.actionOpen.triggered.connect(self.open)
         self.actionOpen.setShortcut("Ctrl+o")
 
+        self.actionExit.triggered.connect(quit)
+        self.actionExit.setShortcut("Ctrl+q")
+
         self.show()
         sys.exit(app.exec_())
 

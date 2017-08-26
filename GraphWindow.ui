@@ -33,7 +33,6 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionOpen"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_as"/>
     <addaction name="actionExit"/>
@@ -92,11 +91,6 @@
   <action name="actionDFA">
    <property name="text">
     <string>DFA</string>
-   </property>
-  </action>
-  <action name="actionOpen">
-   <property name="text">
-    <string>Open</string>
    </property>
   </action>
   <action name="actionSave_as">
