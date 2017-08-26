@@ -202,6 +202,11 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
 
     def solve_DFA(self):
         fa = self.convert_graph_to_class(Automata_DFA)
+        try:
+            fa.check(self.Epsilon)
+        except Exception as exception:
+            QMessageBox.warning(self, "Solve", str(exception))
+            return
         while True:
             statement, ok = QInputDialog.getText(self, "Solve", "Statement: ", QLineEdit.Normal, "")
             if ok:
