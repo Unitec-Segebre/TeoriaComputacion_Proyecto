@@ -212,22 +212,20 @@ class Automata_EpsilonNFA(Automata_BARE):
                 return current_state
         raise Exception('{} is NOT a solution'.format(sequence))
 
-    def closure_set(self, epsilon, states):
-        free_states = set()
-        for current_state in states:
-            temp = set()
-            free_states = free_states | self.closure(epsilon, current_state, temp)
-        return free_states
-
-    def closure(self, epsilon, state, free_states):
-        free_states.add(state)
-        if epsilon in self.transitions[state]:
-            for destiny in self.transitions[state][epsilon]:
-                if destiny not in free_states:
-                    self.closure(epsilon, destiny, free_states)
-        return set(free_states)
-
     def transform(self, epsilon):
+        def getSetToCalculate(table):
+            for state in table:
+                for condition in table[state]:
+                    if not inKeys(table, table[state][condition]):
+                        return table[state][condition]
+            return set()
+
+        def inKeys(table, setToFind):
+            for state in table:
+                if table[state]['states'] == setToFind:
+                    return True, state
+            return False
+
         iterator = 0
         table = {}
         estado_actual = ("q%d"%iterator)
@@ -244,11 +242,11 @@ class Automata_EpsilonNFA(Automata_BARE):
                     table[estado_actual][symbol] = table[estado_actual][symbol] | self.closure_set(epsilon, self.get_destinies(state, symbol))
             iterator = iterator + 1
             estado_actual = ("q%d" % iterator)
-            states_set = self.getSetToCalculate(table)
+            states_set = getSetToCalculate(table)
             if len(states_set ) == 0:
                 break
         # print(table)
-        # _, temp = self.inKeys(table, table['q0']['states'])
+        # _, temp = inKeys(table, table['q0']['states'])
         # print(temp)
         states = set([state for state in table])
         input_symbols = set()
@@ -264,7 +262,7 @@ class Automata_EpsilonNFA(Automata_BARE):
             for symbol in table[state]:
                 if symbol == 'states':
                     continue
-                _, destiny = self.inKeys(table, table[state][symbol])
+                _, destiny = inKeys(table, table[state][symbol])
                 paths[symbol] = [destiny]
             transitions[state] = paths
 
@@ -285,17 +283,17 @@ class Automata_EpsilonNFA(Automata_BARE):
 
         return Automata_BARE(states, input_symbols, transitions, self.initial_states, final_states)
 
+    def closure_set(self, epsilon, states):
+        free_states = set()
+        for current_state in states:
+            temp = set()
+            free_states = free_states | self.closure(epsilon, current_state, temp)
+        return free_states
 
-
-    def getSetToCalculate(self, table):
-        for state in table:
-            for condition in table[state]:
-                if not self.inKeys(table, table[state][condition]):
-                    return table[state][condition]
-        return set()
-
-    def inKeys(self, table, setToFind):
-        for state in table:
-            if table[state]['states'] == setToFind:
-                return True, state
-        return False
+    def closure(self, epsilon, state, free_states):
+        free_states.add(state)
+        if epsilon in self.transitions[state]:
+            for destiny in self.transitions[state][epsilon]:
+                if destiny not in free_states:
+                    self.closure(epsilon, destiny, free_states)
+        return set(free_states)
