@@ -6,6 +6,13 @@ class Automata_BARE():
         self.initial_states = initial_states
         self.final_states = final_states
 
+        print("---HERE---")
+        print("States: {}".format(states))
+        print("Input Symbols: {}".format(input_symbols))
+        print("Transitions: {}".format(transitions))
+        print("Initial States: {}".format(self.initial_states))
+        print("Final States: {}".format(final_states))
+
     def get_destinies(self, current_state, condition):
         if condition in self.transitions[current_state]:
             return set(self.transitions[current_state][condition])

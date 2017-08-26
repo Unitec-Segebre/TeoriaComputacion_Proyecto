@@ -34,6 +34,7 @@
      <addaction name="actionDFA"/>
      <addaction name="actionNFA"/>
      <addaction name="actionNFA_Epsilon"/>
+     <addaction name="actionRegular_Expression"/>
     </widget>
     <widget class="QMenu" name="menuOpen">
      <property name="title">
@@ -77,6 +78,11 @@
   <action name="actionNFA_Epsilon_2">
    <property name="text">
     <string>NFA Epsilon</string>
+   </property>
+  </action>
+  <action name="actionRegular_Expression">
+   <property name="text">
+    <string>Regular Expression</string>
    </property>
   </action>
  </widget>
