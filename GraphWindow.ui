@@ -94,16 +94,6 @@
     <string>DFA</string>
    </property>
   </action>
-  <action name="actionChange_Name">
-   <property name="text">
-    <string>Change Name</string>
-   </property>
-  </action>
-  <action name="actionChange_State">
-   <property name="text">
-    <string>Change State</string>
-   </property>
-  </action>
   <action name="actionOpen">
    <property name="text">
     <string>Open</string>

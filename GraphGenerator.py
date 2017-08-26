@@ -27,23 +27,27 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         self.actionNew.triggered.connect(self.new_node)
         self.actionNew.setShortcut("Ctrl+n")
 
-        # self.actionNew.triggered.connect(self.new_node)
-        # self.actionNew.setShortcut("Ctrl+n")
-        #
-        # self.actionConnect.triggered.connect(self.new_connection)
-        # self.actionConnect.setShortcut("Ctrl+b")
-        #
-        # self.actionChange_State.triggered.connect(self.change_state)
-        #
-        # self.actionChange_Name.triggered.connect(self.change_name)
-        #
+        self.actionConnect.triggered.connect(self.new_connection)
+        self.actionConnect.setShortcut("Ctrl+b")
+
+        self.actionChange_state.triggered.connect(self.change_state)
+        self.actionChange_state.setShortcut("Ctrl+p")
+
+        self.actionChange_name.triggered.connect(self.change_name)
+        self.actionChange_name.setShortcut("Ctrl+c")
+
+        self.actionDisconnect.triggered.connect(self.delete_connection)
+        self.actionDisconnect.setShortcut("Ctrl+d")
+
+        self.actionDelete.triggered.connect(self.delete_node)
+        self.actionDelete.setShortcut("Ctrl+r")
+
+
         # self.actionSolve.triggered.connect(self.solve)
         #
         # self.actionTransform.triggered.connect(self.transform_graph)
         #
-        # self.actionDisconnect.triggered.connect(self.delete_connection)
         #
-        # self.actionDelete.triggered.connect(self.delete_node)
         #
         # self.actionSave.triggered.connect(self.save_graph)
         # self.actionSave.setShortcut("Ctrl+s")

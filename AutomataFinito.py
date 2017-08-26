@@ -14,6 +14,7 @@ class Main(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         self.actionNew.triggered.connect(self.new_graph)
+        self.actionNew.setShortcut("Ctrl+n")
 
         self.show()
         sys.exit(app.exec_())
