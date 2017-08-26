@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene
 from PyQt5.QtGui import QPainter
 from GraphGenerator import GraphGenerator
-from AutomataSolver import Automata_NFAEpsilon
+from AutomataSolver import Automata_EpsilonNFA
 from ui_nfaepsilonwindow import Ui_NFAEpsilonWindow
 # from DFA_graph import DFA_graph
 

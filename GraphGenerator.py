@@ -3,7 +3,7 @@ from PyQt5.QtGui import QPainter
 from ui_graphwindow import Ui_GraphWindow
 from Node import Node, State
 from Edge import Edge
-from AutomataSolver import Automata_BARE, Automata_DFA
+from AutomataSolver import Automata_BARE, Automata_DFA, Automata_EpsilonNFA
 from AutomataSaver import Saver_FA
 import pickle
 
@@ -44,6 +44,9 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
 
         self.actionDFA.triggered.connect(self.solve_DFA)
         self.actionDFA.setShortcut("Ctrl+1")
+
+        self.actionEpsilon_NFA.triggered.connect(self.solve_EpsilonNFA)
+        self.actionEpsilon_NFA.setShortcut("Ctrl+3")
 
         self.actionSave.triggered.connect(self.save)
         self.actionSave.setShortcut("Ctrl+s")
@@ -194,7 +197,13 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
                 return
 
     def solve_DFA(self):
-        fa = self.convert_graph_to_class(Automata_DFA)
+        self.solve(Automata_DFA)
+
+    def solve_EpsilonNFA(self):
+        self.solve(Automata_EpsilonNFA)
+
+    def solve(self, class_type=None):
+        fa = self.convert_graph_to_class(class_type)
         try:
             fa.check(self.Epsilon)
         except Exception as exception:

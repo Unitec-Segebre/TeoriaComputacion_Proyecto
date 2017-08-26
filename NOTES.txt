@@ -14,3 +14,6 @@ Importo el QpointF, en GraphGenerator.py, solo para hacer una validacion en el o
 En GraphGenerator.py donde tengo para crear una coneccion, mando solo el primer caracter del input del usuario. En el AutomataSolver.py tengo un loop que revisa caracter por caracter en la cadena que se va a evaluar. Tal vez necesite evaluar mas de un caracter a la vez. Que podria hacer en esta situacion, crear una nueva clase en el solver para este caso?
 
 Ventana aparesca en medio de la pantalla o fullscreen
+
+Change function scope in Epsilon NFA
+

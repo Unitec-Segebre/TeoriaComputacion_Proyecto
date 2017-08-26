@@ -13,6 +13,9 @@ class Automata_BARE():
         print("Initial States: {}".format(self.initial_states))
         print("Final States: {}".format(final_states))
 
+    def check(self, epsilon):
+        pass
+
     def get_destinies(self, current_state, condition):
         if condition in self.transitions[current_state]:
             return set(self.transitions[current_state][condition])
@@ -20,7 +23,7 @@ class Automata_BARE():
 
 class Automata_DFA(Automata_BARE):
     def __init__(self, states, input_symbols, transitions, initial_state, final_states):
-        super(Automata_DFA, self).__init__(states, input_symbols, transitions, initial_state, final_states)
+        super().__init__(states, input_symbols, transitions, initial_state, final_states)
 
     def check(self, epsilon):
         if len(self.initial_states) == 0:
@@ -184,9 +187,9 @@ class Automata_NFA(Automata_BARE):
                 return current_state
         raise Exception('{} is NOT a solution'.format(sequence))
 
-class Automata_NFAEpsilon(Automata_BARE):
+class Automata_EpsilonNFA(Automata_BARE):
     def __init__(self, states, input_symbols, transitions, initial_state, final_states):
-        super(Automata_NFAEpsilon, self).__init__(states, input_symbols, transitions, initial_state, final_states)
+        super().__init__(states, input_symbols, transitions, initial_state, final_states)
 
     def solve(self, sequence, epsilon):
         current_states = self.initial_states
