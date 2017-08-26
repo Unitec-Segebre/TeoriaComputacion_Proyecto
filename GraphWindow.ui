@@ -33,35 +33,55 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionSave"/>
     <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionSave_as"/>
+    <addaction name="actionExit"/>
    </widget>
-   <widget class="QMenu" name="menuNode">
+   <widget class="QMenu" name="menuGraph">
     <property name="title">
-     <string>Node</string>
+     <string>Graph</string>
     </property>
-    <widget class="QMenu" name="menuEdit">
+    <widget class="QMenu" name="menuNode">
      <property name="title">
-      <string>Edit</string>
+      <string>Node</string>
      </property>
-     <addaction name="actionChange_Name"/>
-     <addaction name="actionChange_State"/>
+     <addaction name="actionNew"/>
+     <addaction name="actionChange_state"/>
+     <addaction name="actionChange_name"/>
+     <addaction name="actionDelete"/>
     </widget>
-    <addaction name="actionNew"/>
-    <addaction name="actionConnect"/>
-    <addaction name="menuEdit"/>
-    <addaction name="actionDisconnect"/>
-    <addaction name="actionDelete"/>
+    <widget class="QMenu" name="menuConnection">
+     <property name="title">
+      <string>Conection</string>
+     </property>
+     <addaction name="actionConnect"/>
+     <addaction name="actionDisconnect"/>
+    </widget>
+    <addaction name="menuNode"/>
+    <addaction name="menuConnection"/>
    </widget>
-   <widget class="QMenu" name="menuDFA">
+   <widget class="QMenu" name="menuSolve">
     <property name="title">
-     <string>DFA</string>
+     <string>Solve</string>
     </property>
-    <addaction name="actionSolve"/>
+    <widget class="QMenu" name="menuTransform">
+     <property name="title">
+      <string>Transform</string>
+     </property>
+     <addaction name="actionDFA_to_Regular_Expression"/>
+     <addaction name="actionNFA_to_DFA"/>
+     <addaction name="actionEpsilon_NFA_to_DFA"/>
+    </widget>
+    <addaction name="actionDFA"/>
+    <addaction name="actionNFA"/>
+    <addaction name="actionEpsilon_NFA"/>
+    <addaction name="separator"/>
+    <addaction name="menuTransform"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuNode"/>
-   <addaction name="menuDFA"/>
+   <addaction name="menuGraph"/>
+   <addaction name="menuSolve"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionSave">
@@ -69,29 +89,9 @@
     <string>Save</string>
    </property>
   </action>
-  <action name="actionNew">
+  <action name="actionDFA">
    <property name="text">
-    <string>New</string>
-   </property>
-  </action>
-  <action name="actionConnect">
-   <property name="text">
-    <string>Connect</string>
-   </property>
-  </action>
-  <action name="actionDisconnect">
-   <property name="text">
-    <string>Disconnect</string>
-   </property>
-  </action>
-  <action name="actionDelete">
-   <property name="text">
-    <string>Delete</string>
-   </property>
-  </action>
-  <action name="actionSolve">
-   <property name="text">
-    <string>Solve</string>
+    <string>DFA</string>
    </property>
   </action>
   <action name="actionChange_Name">
@@ -107,6 +107,71 @@
   <action name="actionOpen">
    <property name="text">
     <string>Open</string>
+   </property>
+  </action>
+  <action name="actionSave_as">
+   <property name="text">
+    <string>Save as</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionNFA">
+   <property name="text">
+    <string>NFA</string>
+   </property>
+  </action>
+  <action name="actionEpsilon_NFA">
+   <property name="text">
+    <string>Ɛ-NFA</string>
+   </property>
+  </action>
+  <action name="actionDFA_to_Regular_Expression">
+   <property name="text">
+    <string>DFA ⇨ Regular Expression</string>
+   </property>
+  </action>
+  <action name="actionNFA_to_DFA">
+   <property name="text">
+    <string>NFA ⇨ DFA</string>
+   </property>
+  </action>
+  <action name="actionEpsilon_NFA_to_DFA">
+   <property name="text">
+    <string>Ɛ-NFA ⇨ DFA</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionChange_state">
+   <property name="text">
+    <string>Change state</string>
+   </property>
+  </action>
+  <action name="actionChange_name">
+   <property name="text">
+    <string>Change name</string>
+   </property>
+  </action>
+  <action name="actionDelete">
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </action>
+  <action name="actionConnect">
+   <property name="text">
+    <string>Connect</string>
+   </property>
+  </action>
+  <action name="actionDisconnect">
+   <property name="text">
+    <string>Disconnect</string>
    </property>
   </action>
  </widget>

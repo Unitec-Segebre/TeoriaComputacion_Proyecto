@@ -142,28 +142,6 @@ class Automata_DFA(Automata_BARE):
             else:
                 regexToAdd = ("%s+%s"%(regex, regexToAdd))
 
-
-                # if regex == "":
-                #     temp_self = ""
-                #     temp_other = ""
-                #     for condition in new_transition[self.initial_states[0]]:
-                #         if new_transitions[self.initial_states[0]][condition] == self.initial_states[0]:
-                #             if temp_self == "":
-                #                 temp_self = condition
-                #             else:
-                #                 temp_self = ("%s+%s"%(temp_self, condition))
-                #         else:
-                #             if temp_other == "":
-                #                 temp_other = condition
-                #             else:
-                #                 temp_other = ("%s+%s"%(temp_other, condition))
-                #     if temp_self != "":
-                #
-                #
-                #     regex = ("%s.(%s.%s)*"%(new_transitions[list(self.initial_states)[0]], new_transitions[final_state], new_transitions[list(self.initial_states)[0]]))
-                # else:
-                #     regex = ("%s + %s.(%s.%s)*"%(regex, new_transitions[list(self.initial_states)[0]], new_transitions[final_state], new_transitions[list(self.initial_states)[0]]))
-
         return regex
 
 class Automata_NFA(Automata_BARE):

@@ -1,17 +1,63 @@
 from PyQt5.QtWidgets import QMainWindow, QGraphicsScene, QGraphicsView, QInputDialog, QLineEdit, QMessageBox, QFileDialog
 from PyQt5.QtGui import QPainter
+from ui_graphwindow import Ui_GraphWindow
 from Node import Node, State
 from Edge import Edge
 from AutomataSolver import Automata_BARE, Automata_DFA
 from AutomataSaver import Saver_FA
 import pickle
 
-class GraphGenerator(QMainWindow):
+class GraphGenerator(QMainWindow, Ui_GraphWindow):
 
     Epsilon = "?"
 
-    def __init__(self, parent=None, load=None):
-        super(GraphGenerator, self).__init__(parent)
+    def __init__(self, parent=None, load=None, saveName=None):
+        super().__init__(parent)
+        self.setupUi(self)
+
+        scene = QGraphicsScene(self.graphicsView)
+        scene.setItemIndexMethod(QGraphicsScene.NoIndex)
+        self.graphicsView.setScene(scene)
+        self.graphicsView.setCacheMode(QGraphicsView.CacheBackground)
+        self.graphicsView.setViewportUpdateMode(QGraphicsView.BoundingRectViewportUpdate)
+        self.graphicsView.setRenderHint(QPainter.Antialiasing)
+        self.graphicsView.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
+        self.graphicsView.setResizeAnchor(QGraphicsView.AnchorViewCenter)
+
+        self.actionNew.triggered.connect(self.new_node)
+        self.actionNew.setShortcut("Ctrl+n")
+
+        # self.actionNew.triggered.connect(self.new_node)
+        # self.actionNew.setShortcut("Ctrl+n")
+        #
+        # self.actionConnect.triggered.connect(self.new_connection)
+        # self.actionConnect.setShortcut("Ctrl+b")
+        #
+        # self.actionChange_State.triggered.connect(self.change_state)
+        #
+        # self.actionChange_Name.triggered.connect(self.change_name)
+        #
+        # self.actionSolve.triggered.connect(self.solve)
+        #
+        # self.actionTransform.triggered.connect(self.transform_graph)
+        #
+        # self.actionDisconnect.triggered.connect(self.delete_connection)
+        #
+        # self.actionDelete.triggered.connect(self.delete_node)
+        #
+        # self.actionSave.triggered.connect(self.save_graph)
+        # self.actionSave.setShortcut("Ctrl+s")
+        #
+        # self.actionSave_as.triggered.connect(self.saveAs_graph)
+        # self.actionSave_as.setShortcut("Ctrl+Shift+s")
+        #
+        # self.actionOpen.triggered.connect(self.open_graph)
+        #
+        # self.saveName = saveName
+        # if load != None:
+        #     self.open_graph(load)
+        #
+        self.show()
 
     def new_node(self):
         while True:
