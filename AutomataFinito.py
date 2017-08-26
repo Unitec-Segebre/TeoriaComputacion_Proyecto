@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QFileDialog
 from ui_mainwindow import Ui_MainWindow
 from GraphGenerator import GraphGenerator
 from NFA_graph import NFA_graph
-from EpsilonNFA_graph import NFAEpsilon_graph
 from RegEx_graph import RegEx_graph
 import pickle
 
