@@ -17,3 +17,4 @@ Ventana aparesca en medio de la pantalla o fullscreen
 
 Change function scope in Epsilon NFA
 
+Change set(list(['something])) to {'something'}

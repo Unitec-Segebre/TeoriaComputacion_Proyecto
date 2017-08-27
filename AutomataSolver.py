@@ -298,7 +298,7 @@ class Automata_EpsilonNFA(Automata_BARE):
                     self.closure(epsilon, destiny, free_states)
         return set(free_states)
 
-class Automamta_Propierties(Automata_BARE):
+class Automamta_Merge(Automata_BARE):
     def __init__(self, states, input_symbols, transitions, initial_state, final_states):
         super().__init__(states, input_symbols, transitions, initial_state, final_states)
 
@@ -307,6 +307,14 @@ class Automamta_Propierties(Automata_BARE):
             raise Exception("An initial state is required to solve.")
         elif len(self.final_states) == 0:
             raise Exception("At least one final state is required to solve.")
+
+        for state in self.transitions:
+            for condition in self.transitions[state]:
+                if len(self.transitions[state][condition]) != 1:
+                    raise Exception("Node '%s' has more than one connection through '%c'." % (state, condition))
+
+        if epsilon in self.input_symbols:
+            raise Exception(("Epsilon('%c') not allowed in DFA graphs"%(epsilon)))
 
     def merge(self):
         def getSetToCalculate(table):
@@ -379,7 +387,7 @@ class Automamta_Propierties(Automata_BARE):
         return False
 
 
-class Automata_Union(Automamta_Propierties):
+class Automata_Union(Automamta_Merge):
     def __init__(self, states, input_symbols, transitions, initial_state, final_states):
         super().__init__(states, input_symbols, transitions, initial_state, final_states)
 
@@ -420,7 +428,7 @@ class Automata_Union(Automamta_Propierties):
 
         return Automata_BARE(states, input_symbols, transitions, initial_states, final_states)
 
-class Automata_Intersection(Automamta_Propierties):
+class Automata_Intersection(Automamta_Merge):
     def __init__(self, states, input_symbols, transitions, initial_state, final_states):
         super().__init__(states, input_symbols, transitions, initial_state, final_states)
 
@@ -459,3 +467,58 @@ class Automata_Intersection(Automamta_Propierties):
         print("Final States: {}".format(final_states))
 
         return Automata_BARE(states, input_symbols, transitions, initial_states, final_states)
+
+class Automata_Difference(Automamta_Merge):
+    def __init__(self, states, input_symbols, transitions, initial_state, final_states):
+        super().__init__(states, input_symbols, transitions, initial_state, final_states)
+
+    def transform(self, epsilon=None):
+        table = self.merge()
+        states = set([state for state in table])
+        input_symbols = set()
+        for state in table:
+            for symbol in table[state]:
+                if symbol != 'states':
+                    input_symbols.add(symbol)
+        transitions = {}
+
+        if 'q0' in table:
+            initial_states = set(list(['q0']))
+        else:
+            initial_states = set()
+        final_states = set()
+        for state in table:
+            paths = {}
+            for symbol in table[state]:
+                if symbol == 'states':
+                    continue
+                _, destiny = self.inKeys(table, table[state][symbol])
+                paths[symbol] = [destiny]
+            transitions[state] = paths
+
+            for final_state in self.getFinalStates({'q0'}):
+                if (final_state in table[state]['states']) and (len(self.getFinalStates({'q1'}) & table[state]['states'])) == 0:
+                    final_states.add(state)
+
+        print("---HERE---")
+        print("States: {}".format(states))
+        print("Input Symbols: {}".format(input_symbols))
+        print("Transitions: {}".format(transitions))
+        print("Initial States: {}".format(self.initial_states))
+        print("Final States: {}".format(final_states))
+
+        return Automata_BARE(states, input_symbols, transitions, initial_states, final_states)
+
+    def getFinalStates(self, initialNode):
+        nodesToCheck = initialNode
+        checkedNodes = set()
+        while True:
+            for node in nodesToCheck:
+                if node in checkedNodes:
+                    continue
+                for condition in self.transitions[node]:
+                    nodesToCheck = nodesToCheck | set(self.transitions[node][condition])
+                checkedNodes = checkedNodes | {node}
+            if len(nodesToCheck) == len(checkedNodes):
+                break
+        return set([state for state in checkedNodes if state in self.final_states])

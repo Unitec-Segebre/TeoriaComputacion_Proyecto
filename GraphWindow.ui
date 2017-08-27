@@ -78,7 +78,7 @@
      </property>
      <addaction name="actionUnion"/>
      <addaction name="actionIntersection"/>
-     <addaction name="actionSubstraction"/>
+     <addaction name="actionDifference"/>
      <addaction name="actionComplement"/>
     </widget>
     <addaction name="actionDFA"/>
@@ -178,9 +178,9 @@
     <string>Intersection</string>
    </property>
   </action>
-  <action name="actionSubstraction">
+  <action name="actionDifference">
    <property name="text">
-    <string>Substraction</string>
+    <string>Difference</string>
    </property>
   </action>
   <action name="actionComplement">
