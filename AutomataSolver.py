@@ -419,3 +419,43 @@ class Automata_Union(Automamta_Propierties):
         print("Final States: {}".format(final_states))
 
         return Automata_BARE(states, input_symbols, transitions, initial_states, final_states)
+
+class Automata_Intersection(Automamta_Propierties):
+    def __init__(self, states, input_symbols, transitions, initial_state, final_states):
+        super().__init__(states, input_symbols, transitions, initial_state, final_states)
+
+    def transform(self, epsilon=None):
+        table = self.merge()
+        states = set([state for state in table])
+        input_symbols = set()
+        for state in table:
+            for symbol in table[state]:
+                if symbol != 'states':
+                    input_symbols.add(symbol)
+        transitions = {}
+
+        if 'q0' in table:
+            initial_states = set(list(['q0']))
+        else:
+            initial_states = set()
+        final_states = set()
+        for state in table:
+            paths = {}
+            for symbol in table[state]:
+                if symbol == 'states':
+                    continue
+                _, destiny = self.inKeys(table, table[state][symbol])
+                paths[symbol] = [destiny]
+            transitions[state] = paths
+
+            if table[state]['states'] == self.final_states:
+                final_states.add(state)
+
+        print("---HERE---")
+        print("States: {}".format(states))
+        print("Input Symbols: {}".format(input_symbols))
+        print("Transitions: {}".format(transitions))
+        print("Initial States: {}".format(self.initial_states))
+        print("Final States: {}".format(final_states))
+
+        return Automata_BARE(states, input_symbols, transitions, initial_states, final_states)
