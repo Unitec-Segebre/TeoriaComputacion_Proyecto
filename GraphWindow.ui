@@ -72,11 +72,21 @@
      <addaction name="actionNFA_to_DFA"/>
      <addaction name="actionEpsilon_NFA_to_DFA"/>
     </widget>
+    <widget class="QMenu" name="menuProperties">
+     <property name="title">
+      <string>Properties</string>
+     </property>
+     <addaction name="actionUnion"/>
+     <addaction name="actionIntersection"/>
+     <addaction name="actionSubstraction"/>
+     <addaction name="actionComplement"/>
+    </widget>
     <addaction name="actionDFA"/>
     <addaction name="actionNFA"/>
     <addaction name="actionEpsilon_NFA"/>
     <addaction name="separator"/>
     <addaction name="menuTransform"/>
+    <addaction name="menuProperties"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuGraph"/>
@@ -156,6 +166,26 @@
   <action name="actionDisconnect">
    <property name="text">
     <string>Disconnect</string>
+   </property>
+  </action>
+  <action name="actionUnion">
+   <property name="text">
+    <string>Union</string>
+   </property>
+  </action>
+  <action name="actionIntersection">
+   <property name="text">
+    <string>Intersection</string>
+   </property>
+  </action>
+  <action name="actionSubstraction">
+   <property name="text">
+    <string>Substraction</string>
+   </property>
+  </action>
+  <action name="actionComplement">
+   <property name="text">
+    <string>Complement</string>
    </property>
   </action>
  </widget>
