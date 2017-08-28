@@ -522,3 +522,24 @@ class Automata_Difference(Automamta_Merge):
             if len(nodesToCheck) == len(checkedNodes):
                 break
         return set([state for state in checkedNodes if state in self.final_states])
+
+class Automata_Complement(Automata_BARE):
+    def __init__(self, states, input_symbols, transitions, initial_state, final_states):
+        super().__init__(states, input_symbols, transitions, initial_state, final_states)
+
+    def transform(self, epsilon=None):
+        final_states = set()
+        for state in self.states:
+            if state not in self.final_states:
+                final_states = final_states | {state}
+
+        self.transitions['\u221E'] = {}
+        self.states = self.states | {'\u221E'}
+        final_states = final_states | {'\u221E'}
+
+        for state in self.transitions:
+            for condition in self.input_symbols:
+                if condition not in self.transitions[state]:
+                    self.transitions[state][condition] = ['\u221E']
+
+        return Automata_BARE(self.states, self.input_symbols, self.transitions, self.initial_states, final_states)
