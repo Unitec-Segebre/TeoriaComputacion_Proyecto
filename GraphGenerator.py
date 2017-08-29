@@ -3,7 +3,7 @@ from PyQt5.QtGui import QPainter
 from ui_graphwindow import Ui_GraphWindow
 from Node import Node, State
 from Edge import Edge
-from AutomataSolver import Automata_BARE, Automata_DFA, Automata_EpsilonNFA, Automata_Union, Automata_Intersection, Automata_Difference, Automata_Complement
+from AutomataSolver import Automata_BARE, Automata_DFA, Automata_EpsilonNFA, Automata_Union, Automata_Intersection, Automata_Difference, Automata_Complement, Automata_Minimize
 import pickle
 
 class GraphGenerator(QMainWindow, Ui_GraphWindow):
@@ -54,6 +54,8 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         self.actionDifference.triggered.connect(self.properties_Difference)
 
         self.actionComplement.triggered.connect(self.properties_Complement)
+
+        self.actionMinimize.triggered.connect(self.transform_Minimize)
 
         self.actionEpsilon_NFA_to_DFA.triggered.connect(self.transform_EpsilonNFA_DFA)
 
@@ -222,6 +224,9 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
 
     def properties_Complement(self):
         self.transform(Automata_Complement)
+
+    def transform_Minimize(self):
+        self.transform(Automata_Minimize)
 
     def transform_EpsilonNFA_DFA(self):
         self.transform(Automata_EpsilonNFA)

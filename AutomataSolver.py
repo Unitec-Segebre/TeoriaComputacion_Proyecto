@@ -527,6 +527,22 @@ class Automata_Complement(Automata_BARE):
     def __init__(self, states, input_symbols, transitions, initial_state, final_states):
         super().__init__(states, input_symbols, transitions, initial_state, final_states)
 
+    def check(self, epsilon=None):
+        if len(self.initial_states) == 0:
+            raise Exception("An initial state is required to solve.")
+        elif len(self.initial_states) > 1:
+            raise Exception("There must only be one initial state to solve.")
+        elif len(self.final_states) == 0:
+            raise Exception("At least one final state is required to solve.")
+
+        for state in self.transitions:
+            for condition in self.transitions[state]:
+                if len(self.transitions[state][condition]) != 1:
+                    raise Exception("Node '%s' has more than one connection through '%c'." % (state, condition))
+
+        if epsilon in self.input_symbols:
+            raise Exception(("Epsilon('%c') not allowed in DFA graphs"%(epsilon)))
+
     def transform(self, epsilon=None):
         final_states = set()
         for state in self.states:
@@ -543,3 +559,187 @@ class Automata_Complement(Automata_BARE):
                     self.transitions[state][condition] = ['\u221E']
 
         return Automata_BARE(self.states, self.input_symbols, self.transitions, self.initial_states, final_states)
+
+class Automata_Minimize(Automata_BARE):
+    def __init__(self, states, input_symbols, transitions, initial_state, final_states):
+        super().__init__(states, input_symbols, transitions, initial_state, final_states)
+
+    def check(self, epsilon=None):
+        if len(self.initial_states) == 0:
+            raise Exception("An initial state is required to solve.")
+        elif len(self.initial_states) > 1:
+            raise Exception("There must only be one initial state to solve.")
+        elif len(self.final_states) == 0:
+            raise Exception("At least one final state is required to solve.")
+
+        for state in self.transitions:
+            for condition in self.transitions[state]:
+                if len(self.transitions[state][condition]) != 1:
+                    raise Exception("Node '%s' has more than one connection through '%c'." % (state, condition))
+
+        if epsilon in self.input_symbols:
+            raise Exception(("Epsilon('%c') not allowed in DFA graphs"%(epsilon)))
+
+    def transform(self, epsilon):
+        def findGroup(table, stateToPlace):
+            found = False
+            for state in table:
+                for condition in table[state]:
+                    if condition == 'states':
+                        continue
+                    if condition not in self.transitions[stateToPlace]:
+                        found = False
+                        break
+                    if list(table[state][condition])[0] == findState(table, self.transitions[stateToPlace][condition][0]):
+                        found = True
+                    else:
+                        found = False
+                        break
+                if found:
+                    if (list(table[state]['states'])[0] in self.final_states and stateToPlace in self.final_states) or (list(table[state]['states'])[0] not in self.final_states and stateToPlace not in self.final_states):
+                        table[state]['states'] = table[state]['states'] | {stateToPlace}
+                        setStates(table)
+                        return True
+                    else:
+                        found = False
+            if not found:
+                return False
+        def setStates(table):
+            for state in table:
+                for condition in self.transitions[list(table[state]['states'])[0]]:
+                    table[state][condition] = {findState(table, self.transitions[list(table[state]['states'])[0]][condition][0])}
+        def findState(table, state):
+            for newState in table:
+                if state in table[newState]['states']:
+                    return newState
+
+        iterator = 0
+        table = {}
+        estado_actual = ("q%d"%iterator)
+        table[estado_actual] = {}
+        table[estado_actual]['states'] = self.final_states
+        # for condition in self.transitions[list(table[estado_actual]['states'])[0]]:
+        #     table[estado_actual][condition] = {findState(table, self.transitions[list(table[estado_actual]['states'])[0]][condition])}
+        if len(self.states) > len(self.final_states):
+            iterator+=1
+            estado_actual = ("q%d"%iterator)
+            table[estado_actual] = {}
+            table[estado_actual]['states'] = self.states - self.final_states
+            # for condition in self.transitions[list(table[estado_actual]['states'])[0]]:
+            #     table[estado_actual][condition] = findState(table, self.transitions[list(table[estado_actual]['states'])[0]][condition])
+        setStates(table)
+
+        previousLen = len(table)
+        while True:
+            for state in self.states:
+                for condition in table[findState(table, state)]:
+                    if condition == 'states':
+                        continue
+                    if list(table[findState(table, state)][condition])[0] != findState(table, self.transitions[state][condition][0]):
+                        table[findState(table, state)]['states'].remove(state)
+                        if not findGroup(table, state):
+                            iterator += 1
+                            estado_actual = ("q%d" % iterator)
+                            table[estado_actual] = {}
+                            table[estado_actual]['states'] = {state}
+                            setStates(table)
+                            break
+            if len(table) == previousLen:
+                break
+            previousLen = len(table)
+
+        states = set([state for state in table])
+        transitions = {}
+        initial_states = set()
+        final_states = set()
+        for state in table:
+            paths = {}
+            for symbol in table[state]:
+                if symbol == 'states':
+                    continue
+                paths[symbol] = table[state][symbol]
+            transitions[state] = paths
+
+            for initial_state in self.initial_states:
+                if initial_state in table[state]['states']:
+                    initial_states.add(state)
+
+            for final_state in self.final_states:
+                if final_state in table[state]['states']:
+                    final_states.add(state)
+
+        print("AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+        print(table)
+        return Automata_BARE(states, self.input_symbols, transitions, initial_states, final_states)
+
+
+        # def transform(self, epsilon):
+        #     def getSetToCalculate(table):
+        #         for state in table:
+        #             for condition in table[state]:
+        #                 if not inKeys(table, table[state][condition]):
+        #                     return table[state][condition]
+        #         return set()
+        #
+        #     def inKeys(table, setToFind):
+        #         for state in table:
+        #             if table[state]['states'] == setToFind:
+        #                 return True, state
+        #         return False
+        #
+        #     iterator = 0
+        #     table = {}
+        #     estado_actual = ("q%d"%iterator)
+        #     states_set = self.initial_states
+        #     while True:
+        #         table[estado_actual] = {}
+        #         table[estado_actual]['states'] = self.closure_set(epsilon, states_set)
+        #         for state in table[estado_actual]['states']:
+        #             for symbol in self.transitions[state]:
+        #                 if symbol == epsilon:
+        #                     continue
+        #                 if symbol not in table[estado_actual]:
+        #                     table[estado_actual][symbol] = set()
+        #                 table[estado_actual][symbol] = table[estado_actual][symbol] | self.closure_set(epsilon, self.get_destinies(state, symbol))
+        #         iterator = iterator + 1
+        #         estado_actual = ("q%d" % iterator)
+        #         states_set = getSetToCalculate(table)
+        #         if len(states_set ) == 0:
+        #             break
+        #     # print(table)
+        #     # _, temp = inKeys(table, table['q0']['states'])
+        #     # print(temp)
+        #     states = set([state for state in table])
+        #     input_symbols = set()
+        #     for state in table:
+        #         for symbol in table[state]:
+        #             if symbol != 'states':
+        #                 input_symbols.add(symbol)
+        #     transitions = {}
+        #     initial_states = set()
+        #     final_states = set()
+        #     for state in table:
+        #         paths = {}
+        #         for symbol in table[state]:
+        #             if symbol == 'states':
+        #                 continue
+        #             _, destiny = inKeys(table, table[state][symbol])
+        #             paths[symbol] = [destiny]
+        #         transitions[state] = paths
+        #
+        #         for initial_state in self.initial_states:
+        #             if initial_state in table[state]['states']:
+        #                 initial_states.add(state)
+        #
+        #         for final_state in self.final_states:
+        #             if final_state in table[state]['states']:
+        #                 final_states.add(state)
+        #
+        #     # print("---HERE---")
+        #     # print("States: {}".format(states))
+        #     # print("Input Symbols: {}".format(input_symbols))
+        #     # print("Transitions: {}".format(transitions))
+        #     # print("Initial States: {}".format(self.initial_states))
+        #     # print("Final States: {}".format(final_states))
+        #
+        #     return Automata_BARE(states, input_symbols, transitions, self.initial_states, final_states)
