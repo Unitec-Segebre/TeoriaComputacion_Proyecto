@@ -299,6 +299,7 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         try:
             if self.saveName == None:
                 self.saveAs()
+                return
             file = open(str(self.saveName), 'wb')
             pickle.dump(self.convert_graph_to_save(), file, pickle.HIGHEST_PROTOCOL)
             file.close()
@@ -309,8 +310,12 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
     def saveAs(self):
         self.saveName = QFileDialog.getSaveFileName(self, 'Save graph as...')
         self.saveName = self.saveName[0]
+        if self.saveName == "":
+            self.saveName = None
+            return
         if ".af" not in self.saveName:
             self.saveName = ("%s.af"%(self.saveName))
+        self.save()
 
     def open(self, items):
         print("States: {}".format(items.states))

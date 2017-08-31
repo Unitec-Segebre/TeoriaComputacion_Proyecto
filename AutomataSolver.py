@@ -342,43 +342,6 @@ class Automamta_Merge(Automata_BARE):
             if len(states_set ) == 0:
                 break
         return table
-        # print(table)
-        # _, temp = inKeys(table, table['q0']['states'])
-        # print(temp)
-        # states = set([state for state in table])
-        # input_symbols = set()
-        # for state in table:
-        #     for symbol in table[state]:
-        #         if symbol != 'states':
-        #             input_symbols.add(symbol)
-        # transitions = {}
-        # initial_states = set()
-        # final_states = set()
-        # for state in table:
-        #     paths = {}
-        #     for symbol in table[state]:
-        #         if symbol == 'states':
-        #             continue
-        #         _, destiny = inKeys(table, table[state][symbol])
-        #         paths[symbol] = [destiny]
-        #     transitions[state] = paths
-        #
-        #     for initial_state in self.initial_states:
-        #         if initial_state in table[state]['states']:
-        #             initial_states.add(state)
-        #
-        #     for final_state in self.final_states:
-        #         if final_state in table[state]['states']:
-        #             final_states.add(state)
-
-        # print("---HERE---")
-        # print("States: {}".format(states))
-        # print("Input Symbols: {}".format(input_symbols))
-        # print("Transitions: {}".format(transitions))
-        # print("Initial States: {}".format(self.initial_states))
-        # print("Final States: {}".format(final_states))
-
-        # return Automata_BARE(states, input_symbols, transitions, self.initial_states, final_states)
 
     def inKeys(self, table, setToFind):
         for state in table:
