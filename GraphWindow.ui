@@ -80,6 +80,7 @@
      <addaction name="actionIntersection"/>
      <addaction name="actionDifference"/>
      <addaction name="actionComplement"/>
+     <addaction name="actionReflection"/>
     </widget>
     <addaction name="actionDFA"/>
     <addaction name="actionNFA"/>
@@ -87,6 +88,7 @@
     <addaction name="separator"/>
     <addaction name="menuTransform"/>
     <addaction name="menuProperties"/>
+    <addaction name="actionMinimize"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuGraph"/>
@@ -186,6 +188,16 @@
   <action name="actionComplement">
    <property name="text">
     <string>Complement</string>
+   </property>
+  </action>
+  <action name="actionMinimize">
+   <property name="text">
+    <string>Minimize</string>
+   </property>
+  </action>
+  <action name="actionReflection">
+   <property name="text">
+    <string>Reflection</string>
    </property>
   </action>
  </widget>
