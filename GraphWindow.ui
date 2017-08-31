@@ -80,6 +80,7 @@
      <addaction name="actionIntersection"/>
      <addaction name="actionDifference"/>
      <addaction name="actionComplement"/>
+     <addaction name="actionReflection"/>
     </widget>
     <addaction name="actionDFA"/>
     <addaction name="actionNFA"/>
@@ -192,6 +193,11 @@
   <action name="actionMinimize">
    <property name="text">
     <string>Minimize</string>
+   </property>
+  </action>
+  <action name="actionReflection">
+   <property name="text">
+    <string>Reflection</string>
    </property>
   </action>
  </widget>

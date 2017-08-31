@@ -81,6 +81,8 @@ class Ui_GraphWindow(object):
         self.actionComplement.setObjectName("actionComplement")
         self.actionMinimize = QtWidgets.QAction(GraphWindow)
         self.actionMinimize.setObjectName("actionMinimize")
+        self.actionReflection = QtWidgets.QAction(GraphWindow)
+        self.actionReflection.setObjectName("actionReflection")
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionSave_as)
         self.menuFile.addAction(self.actionExit)
@@ -99,6 +101,7 @@ class Ui_GraphWindow(object):
         self.menuProperties.addAction(self.actionIntersection)
         self.menuProperties.addAction(self.actionDifference)
         self.menuProperties.addAction(self.actionComplement)
+        self.menuProperties.addAction(self.actionReflection)
         self.menuSolve.addAction(self.actionDFA)
         self.menuSolve.addAction(self.actionNFA)
         self.menuSolve.addAction(self.actionEpsilon_NFA)
@@ -143,4 +146,5 @@ class Ui_GraphWindow(object):
         self.actionDifference.setText(_translate("GraphWindow", "Difference"))
         self.actionComplement.setText(_translate("GraphWindow", "Complement"))
         self.actionMinimize.setText(_translate("GraphWindow", "Minimize"))
+        self.actionReflection.setText(_translate("GraphWindow", "Reflection"))
 
