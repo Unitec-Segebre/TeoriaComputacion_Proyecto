@@ -3,7 +3,7 @@ from PyQt5.QtGui import QPainter
 from ui_graphwindow import Ui_GraphWindow
 from Node import Node, State
 from Edge import Edge
-from AutomataSolver import Automata_BARE, Automata_DFA, Automata_EpsilonNFA, Automata_Union, Automata_Intersection, Automata_Difference, Automata_Complement, Automata_Minimize, Automata_RegularExpression_EpsilonNFA
+from AutomataSolver import Automata_BARE, Automata_DFA, Automata_EpsilonNFA, Automata_Union, Automata_Intersection, Automata_Difference, Automata_Complement, Automata_Minimize, Automata_RegularExpression_EpsilonNFA, Automata_Reflection
 import pickle
 
 class GraphGenerator(QMainWindow, Ui_GraphWindow):
@@ -230,35 +230,17 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         self.transform(Automata_Complement)
 
     def properties_reflection(self):
-        from parser import parse
-        import ast
-        def desipherObject(object):
-            if isinstance(object, ast.Digit):
-                return ("%d"%object.number)
-            elif isinstance(object, ast.Letter):
-                return object.letter
-            elif isinstance(object, ast.Concat):
-                left = desipherObject(object.left_expr)
-                right = desipherObject(object.right_expr)
-                return ("(%s.%s)")%(right, left)
-            elif isinstance(object, ast.Or):
-                left = desipherObject(object.left_expr)
-                right = desipherObject(object.right_expr)
-                return ("(%s + %s)") % (left, right)
-            elif isinstance(object, ast.Kleene):
-                expression = desipherObject(object.expression)
-                return ("(%s)*") % (expression)
+        RegEx = Automata_Reflection()
 
         while True:
-            expression, ok = QInputDialog.getText(self, "Reflection", "Expression: ", QLineEdit.Normal, "")
+            expression, ok = QInputDialog.getText(self, RegEx.WindowTitle, "Expression: ", QLineEdit.Normal, "")
             if not ok:
                 break
             if expression == "":
                 QMessageBox.warning(self, "Warning!", "Expression can not be blank.")
                 continue
             try:
-                expression_tree = parse(expression)
-                QMessageBox.information(self, "Result!", desipherObject(expression_tree))
+                QMessageBox.information(self, "Result!", RegEx.transform(expression, self.Epsilon))
                 break
             except Exception:
                 QMessageBox.warning(self, "Warning!", "Invalid expression '%s'."%(expression))
@@ -307,8 +289,8 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
                 QMessageBox.warning(self, "Warning!", "Expression can not be blank.")
                 continue
             try:
-                QMessageBox.information(self, "Result!", expression)
-                GraphGenerator(self.parent(), RegEx.transform(expression, self.Epsilon))
+                temp = GraphGenerator(self.parent(), RegEx.transform(expression, self.Epsilon))
+                temp.setWindowTitle("Finite Automata - %s"%expression)
                 break
             except Exception:
                 QMessageBox.warning(self, "Warning!", "Invalid expression '%s'."%(expression))

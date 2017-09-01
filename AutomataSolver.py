@@ -635,7 +635,7 @@ class Automata_Minimize(Automata_BARE):
         print(table)
         return Automata_BARE(states, self.input_symbols, transitions, initial_states, final_states)
 
-class Automata_RegularExpression_EpsilonNFA():
+class Automata_RegularExpression_EpsilonNFA:
     def __init__(self):
         self.transitions = {}
         self.lastNode = 0
@@ -681,7 +681,7 @@ class Automata_RegularExpression_EpsilonNFA():
                                                                 epsilon] | set(
                     list(["q%d" % (self.lastNode + 1)]))
                 self.lastNode += 1
-                right = desipherObject(object.right_expr)
+                right = desipherObject(object.right_expr, epsilon)
                 self.transitions[("q%d" % self.lastNode)] = {}
                 self.transitions[("q%d" % self.lastNode)][right] = set(list(["q%d" % (self.lastNode + 1)]))
                 self.lastNode += 1
@@ -726,3 +726,28 @@ class Automata_RegularExpression_EpsilonNFA():
         final_states = set(list(["q%d" % self.lastNode]))
 
         return Automata_BARE(states, input_symbols, self.transitions, initial_states, final_states)
+
+class Automata_Reflection:
+    def __init__(self):
+        self.WindowTitle = "Reflection"
+
+    def transform(self, expression, epsilon):
+        from parser import parse
+        def desipherObject(object):
+            import ast
+            if isinstance(object, ast.Digit):
+                return ("%d"%object.number)
+            elif isinstance(object, ast.Letter):
+                return object.letter
+            elif isinstance(object, ast.Concat):
+                left = desipherObject(object.left_expr)
+                right = desipherObject(object.right_expr)
+                return ("%s.%s")%(right, left)
+            elif isinstance(object, ast.Or):
+                left = desipherObject(object.left_expr)
+                right = desipherObject(object.right_expr)
+                return ("(%s + %s)") % (left, right)
+            elif isinstance(object, ast.Kleene):
+                expression = desipherObject(object.expression)
+                return ("%s*") % (expression)
+        return desipherObject(parse(expression))
