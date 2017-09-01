@@ -3,7 +3,7 @@ from PyQt5.QtGui import QPainter
 from ui_graphwindow import Ui_GraphWindow
 from Node import Node, State
 from Edge import Edge
-from AutomataSolver import Automata_BARE, Automata_DFA, Automata_EpsilonNFA, Automata_Union, Automata_Intersection, Automata_Difference, Automata_Complement, Automata_Minimize
+from AutomataSolver import Automata_BARE, Automata_DFA, Automata_EpsilonNFA, Automata_Union, Automata_Intersection, Automata_Difference, Automata_Complement, Automata_Minimize, Automata_RegularExpression_EpsilonNFA
 import pickle
 
 class GraphGenerator(QMainWindow, Ui_GraphWindow):
@@ -46,6 +46,8 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
 
         self.actionEpsilon_NFA.triggered.connect(self.solve_EpsilonNFA)
         self.actionEpsilon_NFA.setShortcut("Ctrl+3")
+
+        self.actionRegular_Expression_to_Epsilon_NFA.triggered.connect(self.transform_RegularExpression_EpsilonNFA)
 
         self.actionUnion.triggered.connect(self.properties_Union)
 
@@ -294,6 +296,23 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
             QMessageBox.warning(self, "Solve", str(exception))
             return
         GraphGenerator(self.parent(), fa.transform(self.Epsilon))
+
+    def transform_RegularExpression_EpsilonNFA(self):
+        RegEx = Automata_RegularExpression_EpsilonNFA()
+        while True:
+            expression, ok = QInputDialog.getText(self, RegEx.WindowTitle, "Expression: ", QLineEdit.Normal, "")
+            if not ok:
+                break
+            if expression == "":
+                QMessageBox.warning(self, "Warning!", "Expression can not be blank.")
+                continue
+            try:
+                QMessageBox.information(self, "Result!", expression)
+                GraphGenerator(self.parent(), RegEx.transform(expression, self.Epsilon))
+                break
+            except Exception:
+                QMessageBox.warning(self, "Warning!", "Invalid expression '%s'."%(expression))
+                continue
 
     def save(self):
         try:

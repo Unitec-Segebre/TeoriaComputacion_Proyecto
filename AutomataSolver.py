@@ -635,74 +635,94 @@ class Automata_Minimize(Automata_BARE):
         print(table)
         return Automata_BARE(states, self.input_symbols, transitions, initial_states, final_states)
 
+class Automata_RegularExpression_EpsilonNFA():
+    def __init__(self):
+        self.transitions = {}
+        self.lastNode = 0
+        self.WindowTitle = "Regular Expression ⇨ Ɛ-NFA"
 
-        # def transform(self, epsilon):
-        #     def getSetToCalculate(table):
-        #         for state in table:
-        #             for condition in table[state]:
-        #                 if not inKeys(table, table[state][condition]):
-        #                     return table[state][condition]
-        #         return set()
-        #
-        #     def inKeys(table, setToFind):
-        #         for state in table:
-        #             if table[state]['states'] == setToFind:
-        #                 return True, state
-        #         return False
-        #
-        #     iterator = 0
-        #     table = {}
-        #     estado_actual = ("q%d"%iterator)
-        #     states_set = self.initial_states
-        #     while True:
-        #         table[estado_actual] = {}
-        #         table[estado_actual]['states'] = self.closure_set(epsilon, states_set)
-        #         for state in table[estado_actual]['states']:
-        #             for symbol in self.transitions[state]:
-        #                 if symbol == epsilon:
-        #                     continue
-        #                 if symbol not in table[estado_actual]:
-        #                     table[estado_actual][symbol] = set()
-        #                 table[estado_actual][symbol] = table[estado_actual][symbol] | self.closure_set(epsilon, self.get_destinies(state, symbol))
-        #         iterator = iterator + 1
-        #         estado_actual = ("q%d" % iterator)
-        #         states_set = getSetToCalculate(table)
-        #         if len(states_set ) == 0:
-        #             break
-        #     # print(table)
-        #     # _, temp = inKeys(table, table['q0']['states'])
-        #     # print(temp)
-        #     states = set([state for state in table])
-        #     input_symbols = set()
-        #     for state in table:
-        #         for symbol in table[state]:
-        #             if symbol != 'states':
-        #                 input_symbols.add(symbol)
-        #     transitions = {}
-        #     initial_states = set()
-        #     final_states = set()
-        #     for state in table:
-        #         paths = {}
-        #         for symbol in table[state]:
-        #             if symbol == 'states':
-        #                 continue
-        #             _, destiny = inKeys(table, table[state][symbol])
-        #             paths[symbol] = [destiny]
-        #         transitions[state] = paths
-        #
-        #         for initial_state in self.initial_states:
-        #             if initial_state in table[state]['states']:
-        #                 initial_states.add(state)
-        #
-        #         for final_state in self.final_states:
-        #             if final_state in table[state]['states']:
-        #                 final_states.add(state)
-        #
-        #     # print("---HERE---")
-        #     # print("States: {}".format(states))
-        #     # print("Input Symbols: {}".format(input_symbols))
-        #     # print("Transitions: {}".format(transitions))
-        #     # print("Initial States: {}".format(self.initial_states))
-        #     # print("Final States: {}".format(final_states))
-        #
-        #     return Automata_BARE(states, input_symbols, transitions, self.initial_states, final_states)
+    def transform(self, expression, epsilon):
+        from parser import parse
+        def desipherObject(object, epsilon):
+            import ast
+
+            if isinstance(object, ast.Digit):
+                return ("%d" % object.number)
+            elif isinstance(object, ast.Letter):
+                return object.letter
+            elif isinstance(object, ast.Concat):
+                left = desipherObject(object.left_expr, epsilon)
+                self.transitions[("q%d" % self.lastNode)] = {}
+                self.transitions[("q%d" % self.lastNode)][left] = set(list(["q%d" % (self.lastNode + 1)]))
+                self.lastNode += 1
+                self.transitions[("q%d" % self.lastNode)] = {}
+                self.transitions[("q%d" % self.lastNode)][epsilon] = set(list(["q%d" % (self.lastNode + 1)]))
+                self.lastNode += 1
+                right = desipherObject(object.right_expr, epsilon)
+                self.transitions[("q%d" % self.lastNode)] = {}
+                self.transitions[("q%d" % self.lastNode)][right] = set(list(["q%d" % (self.lastNode + 1)]))
+                self.lastNode += 1
+                self.transitions[("q%d" % self.lastNode)] = {}
+                return epsilon
+            elif isinstance(object, ast.Or):
+                root = self.lastNode
+                self.transitions[("q%d" % self.lastNode)] = {}
+                self.transitions[("q%d" % self.lastNode)][epsilon] = set(list(["q%d" % (self.lastNode + 1)]))
+                self.lastNode += 1
+                left = desipherObject(object.left_expr, epsilon)
+                self.transitions[("q%d" % self.lastNode)] = {}
+                self.transitions[("q%d" % self.lastNode)][left] = set(list(["q%d" % (self.lastNode + 1)]))
+                self.lastNode += 1
+                self.transitions[("q%d" % self.lastNode)] = {}
+                self.transitions[("q%d" % self.lastNode)][epsilon] = set(list(["q%d" % (self.lastNode + 1)]))
+                self.lastNode += 1
+                tail = self.lastNode
+                self.transitions[("q%d" % root)][epsilon] = self.transitions[("q%d" % root)][
+                                                                epsilon] | set(
+                    list(["q%d" % (self.lastNode + 1)]))
+                self.lastNode += 1
+                right = desipherObject(object.right_expr)
+                self.transitions[("q%d" % self.lastNode)] = {}
+                self.transitions[("q%d" % self.lastNode)][right] = set(list(["q%d" % (self.lastNode + 1)]))
+                self.lastNode += 1
+                self.transitions[("q%d" % self.lastNode)] = {}
+                self.transitions[("q%d" % self.lastNode)][epsilon] = set(list(["q%d" % (tail)]))
+                self.transitions[("q%d" % tail)] = {}
+                self.transitions[("q%d" % tail)][epsilon] = set(list(["q%d" % (self.lastNode + 1)]))
+                self.lastNode += 1
+                self.transitions[("q%d" % self.lastNode)] = {}
+                return epsilon
+            elif isinstance(object, ast.Kleene):
+                root = self.lastNode
+                self.transitions[("q%d" % self.lastNode)] = {}
+                self.transitions[("q%d" % self.lastNode)][epsilon] = set(list(["q%d" % (self.lastNode + 1)]))
+                self.lastNode += 1
+                loop = self.lastNode
+                value = desipherObject(object.expression, epsilon)
+                self.transitions[("q%d" % self.lastNode)] = {}
+                self.transitions[("q%d" % self.lastNode)][value] = set(list(["q%d" % (self.lastNode + 1)]))
+                self.lastNode += 1
+                self.transitions[("q%d" % self.lastNode)] = {}
+                self.transitions[("q%d" % self.lastNode)][epsilon] = set(list(["q%d" % (self.lastNode + 1)]))
+                self.transitions[("q%d" % self.lastNode)][epsilon] = self.transitions[("q%d" % self.lastNode)][
+                                                                         epsilon] | set(
+                    list(["q%d" % (loop)]))
+                self.lastNode += 1
+                self.transitions[("q%d" % root)][epsilon] = self.transitions[("q%d" % root)][
+                                                                epsilon] | set(
+                    list(["q%d" % (self.lastNode)]))
+                self.transitions[("q%d" % self.lastNode)] = {}
+                return epsilon
+        expression_tree = parse(expression)
+        desipherObject(expression_tree, epsilon)
+        states = list()
+        for node in range(self.lastNode + 1):
+            states.append("q%d" % (node))  ##Change to |=
+        states = set(states)
+        input_symbols = set()
+        for node in self.transitions:
+            input_symbols = input_symbols | set(self.transitions[node])
+        initial_states = set(list(["q0"]))
+        final_states = set(list(["q%d" % self.lastNode]))
+
+        return Automata_BARE(states, input_symbols, self.transitions, initial_states, final_states)

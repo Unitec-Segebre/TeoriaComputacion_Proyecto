@@ -83,6 +83,8 @@ class Ui_GraphWindow(object):
         self.actionMinimize.setObjectName("actionMinimize")
         self.actionReflection = QtWidgets.QAction(GraphWindow)
         self.actionReflection.setObjectName("actionReflection")
+        self.actionRegular_Expression_to_Epsilon_NFA = QtWidgets.QAction(GraphWindow)
+        self.actionRegular_Expression_to_Epsilon_NFA.setObjectName("actionRegular_Expression_to_Epsilon_NFA")
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionSave_as)
         self.menuFile.addAction(self.actionExit)
@@ -95,6 +97,7 @@ class Ui_GraphWindow(object):
         self.menuGraph.addAction(self.menuNode.menuAction())
         self.menuGraph.addAction(self.menuConnection.menuAction())
         self.menuTransform.addAction(self.actionDFA_to_Regular_Expression)
+        self.menuTransform.addAction(self.actionRegular_Expression_to_Epsilon_NFA)
         self.menuTransform.addAction(self.actionNFA_to_DFA)
         self.menuTransform.addAction(self.actionEpsilon_NFA_to_DFA)
         self.menuProperties.addAction(self.actionUnion)
@@ -147,4 +150,5 @@ class Ui_GraphWindow(object):
         self.actionComplement.setText(_translate("GraphWindow", "Complement"))
         self.actionMinimize.setText(_translate("GraphWindow", "Minimize"))
         self.actionReflection.setText(_translate("GraphWindow", "Reflection"))
+        self.actionRegular_Expression_to_Epsilon_NFA.setText(_translate("GraphWindow", "Regular Expression ⇨ Ɛ-NFA"))
 

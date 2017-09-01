@@ -69,6 +69,7 @@
       <string>Transform</string>
      </property>
      <addaction name="actionDFA_to_Regular_Expression"/>
+     <addaction name="actionRegular_Expression_to_Epsilon_NFA"/>
      <addaction name="actionNFA_to_DFA"/>
      <addaction name="actionEpsilon_NFA_to_DFA"/>
     </widget>
@@ -198,6 +199,11 @@
   <action name="actionReflection">
    <property name="text">
     <string>Reflection</string>
+   </property>
+  </action>
+  <action name="actionRegular_Expression_to_Epsilon_NFA">
+   <property name="text">
+    <string>Regular Expression ⇨ Ɛ-NFA</string>
    </property>
   </action>
  </widget>
