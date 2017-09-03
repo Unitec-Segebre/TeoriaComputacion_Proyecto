@@ -41,9 +41,9 @@ class PDAEdge(Edge.Edge):
         conditionPoint = self.sourcePoint + Edge.QPointF(Edge.math.sin(angle + Edge.Edge.Pi / 3) * self.arrowSize * 2, Edge.math.cos(angle + Edge.Edge.Pi / 3) * self.arrowSize * 2)
         textToPrint = "%c,%c/%s"%(self.condition, self.popValue, self.pushValues)
         for path in self.source.edges():
-            if path.destNode().name == self.dest.name and path.condition != self.condition:
-                textToPrint += " | %c,%c/%s"%(self.condition, self.popValue, self.pushValues)
-                if path.condition > self.condition:
+            if path.destNode().name == self.dest.name and path.condition != self.condition or path.pushValues != path.pushValues or path.popValue != path.popValue:
+                textToPrint += " | %c,%c/%s"%(path.condition, path.popValue, path.pushValues)
+                if path.condition > self.condition or path.popValue > self.popValue:
                     return
 
         painter.setBrush(Edge.Qt.black)
