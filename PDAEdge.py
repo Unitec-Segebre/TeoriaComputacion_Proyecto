@@ -10,7 +10,7 @@ class PDAEdge(Edge.Edge):
         self.popValue = popValue
         self.pushValues = pushValues
 
-        print("Source: %s\nDest: %s\nCondition: %c\npopValue: %c\npushValues: %s\n")
+        print("Source: %s\nDest: %s\nCondition: %c\npopValue: %c\npushValues: %s\n"%(sourceNode.name, destNode.name, condition, popValue, pushValues))
 
     def getCondition(self):
         return self.condition
@@ -42,7 +42,7 @@ class PDAEdge(Edge.Edge):
         textToPrint = "%c,%c/%s"%(self.condition, self.popValue, self.pushValues)
         for path in self.source.edges():
             if path.destNode().name == self.dest.name and path.condition != self.condition:
-                textToPrint += "\n%c,%c/%s"%(self.condition, self.popValue, self.pushValues)
+                textToPrint += " | %c,%c/%s"%(self.condition, self.popValue, self.pushValues)
                 if path.condition > self.condition:
                     return
 
