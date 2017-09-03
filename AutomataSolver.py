@@ -751,3 +751,6 @@ class Automata_Reflection:
                 expression = desipherObject(object.expression)
                 return ("%s*") % (expression)
         return desipherObject(parse(expression))
+
+# class Automata_PDA(Automata_BARE):
+#

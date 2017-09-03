@@ -3,6 +3,7 @@ from PyQt5.QtGui import QPainter
 from ui_graphwindow import Ui_GraphWindow
 from Node import Node, State
 from Edge import Edge
+from PDAEdge import PDAEdge
 from AutomataSolver import Automata_BARE, Automata_DFA, Automata_EpsilonNFA, Automata_Union, Automata_Intersection, Automata_Difference, Automata_Complement, Automata_Minimize, Automata_RegularExpression_EpsilonNFA, Automata_Reflection
 import pickle
 
@@ -28,6 +29,9 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
 
         self.actionConnect.triggered.connect(self.new_connection)
         self.actionConnect.setShortcut("Ctrl+b")
+
+        self.actionPDA_Connect.triggered.connect(self.new_pda_connection)
+        self.actionPDA_Connect.setShortcut("Ctrl+Shift+b")
 
         self.actionChange_state.triggered.connect(self.change_state)
         self.actionChange_state.setShortcut("Ctrl+p")
@@ -163,6 +167,51 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
                 node = [node for node in nodes if node.name == name][0]
                 node.setState(State(options.index(state)))
                 node.update()
+
+    def new_pda_connection(self):
+        nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
+        if not nodes:
+            QMessageBox.critical(self, "Warning!", "There are no nodes on the graph.")
+            return
+        node_source, ok = QInputDialog.getItem(self, "New Connection", "Source: ", [node.name for node in nodes], 0, False)
+        if ok:
+            node_dest, ok = QInputDialog.getItem(self, "New Connection", "Destiny: ", [node.name for node in nodes], 0, False)
+            if ok:
+                node = [node for node in nodes if node.name == node_source][0]
+                while True:
+                    path_condition, ok = QInputDialog.getText(self, "New Connection", "Condition: ", QLineEdit.Normal, "")
+                    if ok:
+                        if path_condition == "":
+                            QMessageBox.warning(self, "Warning!", "Connections must have a condition, condition can not be blank.")
+                            continue
+                        else:
+                            while True:
+                                pop_value, ok = QInputDialog.getText(self, "New Connection", "Pop Value: ", QLineEdit.Normal, "")
+                                if ok:
+                                    if pop_value == "":
+                                        QMessageBox.warning(self, "Warning!",
+                                                            "Connections must have a pop value, pop value can not be blank.")
+                                        continue
+                                    else:
+                                        while True:
+                                            push_values, ok = QInputDialog.getText(self, "New Connection", "Push Values: ",
+                                                                                 QLineEdit.Normal, "")
+                                            if ok:
+                                                if push_values == "":
+                                                    QMessageBox.warning(self, "Warning!",
+                                                                        "Connections must have a push value, push value can not be blank.")
+                                                    continue
+                                                else:
+                                                    self.graphicsView.scene().addItem(PDAEdge(node, [node for node in nodes if node.name == node_dest][0], path_condition[0], pop_value[0], push_values))
+                                                    return
+                                elif not ok:
+                                    return
+                    elif not ok:
+                        return
+            elif not ok:
+                return
+        elif not ok:
+            return
 
     def new_connection(self):
         nodes = [item for item in self.graphicsView.scene().items() if isinstance(item, Node)]
@@ -340,7 +389,13 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         for origin in items.transitions:
             for condition in items.transitions[origin]:
                 for destination in items.transitions[origin][condition]:
-                    self.graphicsView.scene().addItem(Edge([node for node in nodes if node.name == origin][0], [node for node in nodes if node.name == destination][0], condition))
+                    try:
+                        for popValue in items.transitions[origin][condition][destination]:
+                            for pushValues in items.transitions[origin][condition][destination][popValue]:
+                                self.graphicsView.scene().addItem(PDAEdge([node for node in nodes if node.name == origin][0], [node for node in nodes if node.name == destination][0], condition, popValue, pushValues))
+                    except:
+                        self.graphicsView.scene().addItem(Edge([node for node in nodes if node.name == origin][0], [node for node in nodes if node.name == destination][0], condition))
+                        continue
 
     def convert_graph_to_class(self, Automata_Class=Automata_BARE):
         states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node)])
@@ -350,12 +405,22 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
             if isinstance(item, Node):
                 paths = {}
                 for path in item.edges():
-                    if path.condition not in paths:
-                        paths[path.condition] = [path.destNode().name]
+                    if not isinstance(path, PDAEdge):
+                        if path.condition not in paths:
+                            paths[path.condition] = [path.destNode().name]
+                        else:
+                            temp = list(paths[path.condition])
+                            temp.append(path.destNode().name)
+                            paths[path.condition] = set(temp)
                     else:
-                        temp = paths[path.condition]
-                        temp.append(path.destNode().name)
-                        paths[path.condition] = set(temp)
+                        if path.condition not in paths:
+                            paths[path.condition] = {}
+                        if path.destNode().name not in paths[path.condition]:
+                            paths[path.condition][path.destNode().name] = {}
+                        if path.popValue not in paths[path.condition][path.destNode().name]:
+                            paths[path.condition][path.destNode().name][path.popValue] = [path.pushValues]
+                        else:
+                            paths[path.condition][path.destNode().name][path.popValue].append([path.pushValues])
                 transitions[item.name] = paths
         initial_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and (item.state == State.INITIAL or item.state == State.INITIAL_FINAL)])
         final_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and (item.state == State.FINAL or item.state == State.INITIAL_FINAL)])

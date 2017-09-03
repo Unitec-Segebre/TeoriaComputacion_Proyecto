@@ -55,6 +55,7 @@
       <string>Conection</string>
      </property>
      <addaction name="actionConnect"/>
+     <addaction name="actionPDA_Connect"/>
      <addaction name="actionDisconnect"/>
     </widget>
     <addaction name="menuNode"/>
@@ -204,6 +205,11 @@
   <action name="actionRegular_Expression_to_Epsilon_NFA">
    <property name="text">
     <string>Regular Expression ⇨ Ɛ-NFA</string>
+   </property>
+  </action>
+  <action name="actionPDA_Connect">
+   <property name="text">
+    <string>PDA Connect</string>
    </property>
   </action>
  </widget>
