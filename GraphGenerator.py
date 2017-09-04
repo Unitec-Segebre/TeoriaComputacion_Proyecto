@@ -4,7 +4,7 @@ from ui_graphwindow import Ui_GraphWindow
 from Node import Node, State
 from Edge import Edge
 from PDAEdge import PDAEdge
-from AutomataSolver import Automata_BARE, Automata_DFA, Automata_EpsilonNFA, Automata_Union, Automata_Intersection, Automata_Difference, Automata_Complement, Automata_Minimize, Automata_RegularExpression_EpsilonNFA, Automata_Reflection
+from AutomataSolver import Automata_BARE, Automata_DFA, Automata_EpsilonNFA, Automata_Union, Automata_Intersection, Automata_Difference, Automata_Complement, Automata_Minimize, Automata_RegularExpression_EpsilonNFA, Automata_Reflection, Automata_PDA
 import pickle
 
 class GraphGenerator(QMainWindow, Ui_GraphWindow):
@@ -50,6 +50,9 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
 
         self.actionEpsilon_NFA.triggered.connect(self.solve_EpsilonNFA)
         self.actionEpsilon_NFA.setShortcut("Ctrl+3")
+
+        self.actionPDA.triggered.connect(self.solve_PDA)
+        self.actionPDA.setShortcut("Ctrl+4")
 
         self.actionRegular_Expression_to_Epsilon_NFA.triggered.connect(self.transform_RegularExpression_EpsilonNFA)
 
@@ -265,6 +268,9 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
 
     def solve_EpsilonNFA(self):
         self.solve(Automata_EpsilonNFA)
+
+    def solve_PDA(self):
+        self.solve(Automata_PDA)
 
     def properties_Union(self):
         self.transform(Automata_Union)

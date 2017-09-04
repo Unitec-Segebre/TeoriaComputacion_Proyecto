@@ -87,6 +87,7 @@
     <addaction name="actionDFA"/>
     <addaction name="actionNFA"/>
     <addaction name="actionEpsilon_NFA"/>
+    <addaction name="actionPDA"/>
     <addaction name="separator"/>
     <addaction name="menuTransform"/>
     <addaction name="menuProperties"/>
@@ -210,6 +211,11 @@
   <action name="actionPDA_Connect">
    <property name="text">
     <string>PDA Connect</string>
+   </property>
+  </action>
+  <action name="actionPDA">
+   <property name="text">
+    <string>PDA</string>
    </property>
   </action>
  </widget>

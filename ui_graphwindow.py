@@ -87,6 +87,8 @@ class Ui_GraphWindow(object):
         self.actionRegular_Expression_to_Epsilon_NFA.setObjectName("actionRegular_Expression_to_Epsilon_NFA")
         self.actionPDA_Connect = QtWidgets.QAction(GraphWindow)
         self.actionPDA_Connect.setObjectName("actionPDA_Connect")
+        self.actionPDA = QtWidgets.QAction(GraphWindow)
+        self.actionPDA.setObjectName("actionPDA")
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionSave_as)
         self.menuFile.addAction(self.actionExit)
@@ -111,6 +113,7 @@ class Ui_GraphWindow(object):
         self.menuSolve.addAction(self.actionDFA)
         self.menuSolve.addAction(self.actionNFA)
         self.menuSolve.addAction(self.actionEpsilon_NFA)
+        self.menuSolve.addAction(self.actionPDA)
         self.menuSolve.addSeparator()
         self.menuSolve.addAction(self.menuTransform.menuAction())
         self.menuSolve.addAction(self.menuProperties.menuAction())
@@ -155,4 +158,5 @@ class Ui_GraphWindow(object):
         self.actionReflection.setText(_translate("GraphWindow", "Reflection"))
         self.actionRegular_Expression_to_Epsilon_NFA.setText(_translate("GraphWindow", "Regular Expression ⇨ Ɛ-NFA"))
         self.actionPDA_Connect.setText(_translate("GraphWindow", "PDA Connect"))
+        self.actionPDA.setText(_translate("GraphWindow", "PDA"))
 
