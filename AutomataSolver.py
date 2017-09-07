@@ -755,9 +755,10 @@ class Automata_Reflection:
 class Automata_PDA(Automata_BARE):
     def __init__(self, states, input_symbols, transitions, initial_state, final_states):
         super().__init__(states, input_symbols, transitions, initial_state, final_states)
-        import queue
-        self.pile = queue.LifoQueue()
-        self.pile.put('E')
+        self.current_states = []
+        # import queue
+        # self.pile = queue.LifoQueue()
+        # self.pile.put('E')
 
     def check(self, epsilon=None):
         if len(self.initial_states) == 0:
@@ -768,60 +769,120 @@ class Automata_PDA(Automata_BARE):
             raise Exception("At least one final state is required to solve.")
 
     def solve(self, sequence, epsilon):
-        current_state = list(self.initial_states)[0]
-        for symbol in sequence:
+        import queue, copy
+        def solveSnapshot(snapshot):
             try:
-                pileTop = self.pile.get()
-                found = False
+                pileTop = snapshot['pile'].get()
             except:
+                self.current_states.remove(snapshot)
+                return
+            states_to_add = []
+            if len(snapshot['sequence']) > 0:
+                if snapshot['sequence'][0] in self.transitions[snapshot['state']]:
+                    for destiny in self.transitions[snapshot['state']][snapshot['sequence'][0]]:
+                        for popValue in self.transitions[snapshot['state']][snapshot['sequence'][0]][destiny]:
+                            if popValue == pileTop:
+                                snapshot_to_add = {}
+                                snapshot_to_add['pile'] = queue.LifoQueue()
+                                for pushValue in self.transitions[snapshot['state']][snapshot['sequence'][0]][destiny][popValue][0][::-1]:
+                                    if pushValue != epsilon:
+                                        snapshot_to_add['pile'].put(pushValue)
+                                snapshot_to_add['state'] = destiny
+                                snapshot_to_add['sequence'] = snapshot['sequence']
+                                snapshot_to_add['sequence'] = snapshot_to_add['sequence'][1:]
+                                states_to_add.append(snapshot_to_add)
+                if epsilon in self.transitions[snapshot['state']]:
+                    for destiny in self.transitions[snapshot['state']][epsilon]:
+                        for popValue in self.transitions[snapshot['state']][epsilon][destiny]:
+                            if popValue == pileTop:
+                                snapshot_to_add = {}
+                                snapshot_to_add['pile'] = queue.LifoQueue()
+                                for pushValue in self.transitions[snapshot['state']][epsilon][destiny][popValue][0][::-1]:
+                                    if pushValue != epsilon:
+                                        snapshot_to_add['pile'].put(pushValue)
+                                snapshot_to_add['state'] = destiny
+                                snapshot_to_add['sequence'] = snapshot['sequence']
+                                snapshot_to_add['sequence'] = snapshot_to_add['sequence']
+                                states_to_add.append(snapshot_to_add)
+            elif snapshot['state'] in self.final_states:
+                return True
+            self.current_states.remove(list(snap for snap in self.current_states if (snap['state'] == snapshot['state'] and snap['sequence'] == snapshot['sequence'] and snap['pile'].queue == snapshot['pile'].queue))[0])
+            for state_to_add in states_to_add:
+                self.current_states.append(state_to_add)
+            return False
+
+        self.current_states.append({'state': list(self.initial_states)[0], 'sequence': sequence, 'pile': queue.LifoQueue()})
+        self.current_states[0]['pile'].put('E')##########################################CHANGE##########################################
+        while True:
+            current_states_iterator = []
+            for state in self.current_states:
+                temp = {}
+                temp['state'] = state['state']
+                temp['sequence'] = state['sequence']
+                temp['pile'] = queue.LifoQueue()
+                for item in state['pile'].queue:
+                    temp['pile'].put(item)
+                current_states_iterator.append(temp)
+            if len(self.current_states) == 0:
                 raise Exception('{} is NOT a solution'.format(sequence))
-            if symbol in self.transitions[current_state]:
-                for destiny in self.transitions[current_state][symbol]:
-                    if found:
-                        break
-                    for popValue in self.transitions[current_state][symbol][destiny]:
-                        if popValue == pileTop:
-                            for pushValue in self.transitions[current_state][symbol][destiny][popValue][0][::-1]:
-                                if pushValue != epsilon:
-                                    self.pile.put(pushValue)
-                            current_state = destiny
-                            found = True
-                            break
-            # if epsilon in self.transitions[current_state]:
-            #     for destiny in self.transitions[current_state][epsilon]:
-            #         if found:
-            #             break
-            #         for popValue in self.transitions[current_state][epsilon][destiny]:
-            #             if popValue == pileTop:
-            #                 for pushValue in self.transitions[current_state][epsilon][destiny][popValue][0][::-1]:
-            #                     if pushValue != epsilon:
-            #                         self.pile.put(pushValue)
-            #                 current_state = destiny
-            #                 found = True
-            #                 break
-            if not found:
-                self.pile.put(pileTop)
-                raise Exception('{} is NOT a solution'.format(sequence))
-        # if current_state not in self.final_states:
-        while current_state not in self.final_states:
-            try:
-                pileTop = self.pile.get()
-                found = False
-            except:
-                raise Exception('{} is NOT a solution'.format(sequence))
-            if epsilon in self.transitions[current_state]:
-                for destiny in self.transitions[current_state][epsilon]:
-                    if found:
-                        break
-                    for popValue in self.transitions[current_state][epsilon][destiny]:
-                        if popValue == pileTop:
-                            for pushValue in self.transitions[current_state][epsilon][destiny][popValue][0][::-1]:
-                                if pushValue != epsilon:
-                                    self.pile.put(pushValue)
-                            current_state = destiny
-                            found = True
-                            break
-            if not found:
-                self.pile.put(pileTop)
-                raise Exception('{} is NOT a solution'.format(sequence))
-            # raise Exception('{} is NOT a solution'.format(sequence))
+            for current_state in current_states_iterator:
+                if solveSnapshot(current_state):
+                    return
+
+        # current_state = list(self.initial_states)[0]
+        # for symbol in sequence:
+        #     try:
+        #         pileTop = self.pile.get()
+        #         found = False
+        #     except:
+        #         raise Exception('{} is NOT a solution'.format(sequence))
+        #     if symbol in self.transitions[current_state]:
+        #         for destiny in self.transitions[current_state][symbol]:
+        #             if found:
+        #                 break
+        #             for popValue in self.transitions[current_state][symbol][destiny]:
+        #                 if popValue == pileTop:
+        #                     for pushValue in self.transitions[current_state][symbol][destiny][popValue][0][::-1]:
+        #                         if pushValue != epsilon:
+        #                             self.pile.put(pushValue)
+        #                     current_state = destiny
+        #                     found = True
+        #                     break
+        #     # if epsilon in self.transitions[current_state]:
+        #     #     for destiny in self.transitions[current_state][epsilon]:
+        #     #         if found:
+        #     #             break
+        #     #         for popValue in self.transitions[current_state][epsilon][destiny]:
+        #     #             if popValue == pileTop:
+        #     #                 for pushValue in self.transitions[current_state][epsilon][destiny][popValue][0][::-1]:
+        #     #                     if pushValue != epsilon:
+        #     #                         self.pile.put(pushValue)
+        #     #                 current_state = destiny
+        #     #                 found = True
+        #     #                 break
+        #     if not found:
+        #         self.pile.put(pileTop)
+        #         raise Exception('{} is NOT a solution'.format(sequence))
+        # # if current_state not in self.final_states:
+        # while current_state not in self.final_states:
+        #     try:
+        #         pileTop = self.pile.get()
+        #         found = False
+        #     except:
+        #         raise Exception('{} is NOT a solution'.format(sequence))
+        #     if epsilon in self.transitions[current_state]:
+        #         for destiny in self.transitions[current_state][epsilon]:
+        #             if found:
+        #                 break
+        #             for popValue in self.transitions[current_state][epsilon][destiny]:
+        #                 if popValue == pileTop:
+        #                     for pushValue in self.transitions[current_state][epsilon][destiny][popValue][0][::-1]:
+        #                         if pushValue != epsilon:
+        #                             self.pile.put(pushValue)
+        #                     current_state = destiny
+        #                     found = True
+        #                     break
+        #     if not found:
+        #         self.pile.put(pileTop)
+        #         raise Exception('{} is NOT a solution'.format(sequence))
+        #     # raise Exception('{} is NOT a solution'.format(sequence))
