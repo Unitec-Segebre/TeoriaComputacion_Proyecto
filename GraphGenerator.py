@@ -197,8 +197,7 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
                                         continue
                                     else:
                                         while True:
-                                            push_values, ok = QInputDialog.getText(self, "New Connection", "Push Values: ",
-                                                                                 QLineEdit.Normal, "")
+                                            push_values, ok = QInputDialog.getText(self, "New Connection", "Push Values: ", QLineEdit.Normal, "")
                                             if ok:
                                                 if push_values == "":
                                                     QMessageBox.warning(self, "Warning!",
@@ -207,6 +206,8 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
                                                 else:
                                                     self.graphicsView.scene().addItem(PDAEdge(node, [node for node in nodes if node.name == node_dest][0], path_condition[0], pop_value[0], push_values))
                                                     return
+                                            elif not ok:
+                                                return
                                 elif not ok:
                                     return
                     elif not ok:
@@ -254,7 +255,10 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
                 if not node.edges():
                     QMessageBox.warning(self, "Warning!", "Node %s has no edges." % (node.name))
                 else:
-                    options = [("%c -> %s" % (connection.condition, connection.destNode().name)) for connection in node.edges()]
+                    try:
+                        options = [("%s -> %c, %c -> %s" % (connection.sourceNode().name, connection.condition, connection.popValue, connection.destNode().name)) for connection in node.edges()]
+                    except:
+                        options = [("%s -> %c -> %s" % (connection.sourceNode().name, connection.condition, connection.destNode().name)) for connection in node.edges()]
                     selected, ok = QInputDialog.getItem(self, "Delete Connection", "Connection: ", options, 0, False)
                     if ok:
                         self.graphicsView.scene().removeItem(node.edgeList[options.index(selected)])

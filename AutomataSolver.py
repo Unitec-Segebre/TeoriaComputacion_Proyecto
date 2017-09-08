@@ -812,7 +812,7 @@ class Automata_PDA(Automata_BARE):
             return False
 
         self.current_states.append({'state': list(self.initial_states)[0], 'sequence': sequence, 'pile': queue.LifoQueue()})
-        self.current_states[0]['pile'].put('E')##########################################CHANGE##########################################
+        self.current_states[0]['pile'].put('~')##########################################CHANGE##########################################
         while True:
             if len(self.current_states) == 0:
                 raise Exception('{} is NOT a solution'.format(sequence))
