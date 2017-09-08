@@ -770,13 +770,12 @@ class Automata_PDA(Automata_BARE):
 
     def solve(self, sequence, epsilon):
         import queue, copy
-        def solveSnapshot(snapshot):
+        def solveSnapshot(snapshot, new_current_states):
             try:
                 pileTop = snapshot['pile'].get()
             except:
                 self.current_states.remove(snapshot)
                 return
-            states_to_add = []
             if len(snapshot['sequence']) > 0:
                 if snapshot['sequence'][0] in self.transitions[snapshot['state']]:
                     for destiny in self.transitions[snapshot['state']][snapshot['sequence'][0]]:
@@ -784,50 +783,53 @@ class Automata_PDA(Automata_BARE):
                             if popValue == pileTop:
                                 snapshot_to_add = {}
                                 snapshot_to_add['pile'] = queue.LifoQueue()
+                                for item in snapshot['pile'].queue:
+                                    snapshot_to_add['pile'].put(item)
                                 for pushValue in self.transitions[snapshot['state']][snapshot['sequence'][0]][destiny][popValue][0][::-1]:
                                     if pushValue != epsilon:
                                         snapshot_to_add['pile'].put(pushValue)
                                 snapshot_to_add['state'] = destiny
                                 snapshot_to_add['sequence'] = snapshot['sequence']
                                 snapshot_to_add['sequence'] = snapshot_to_add['sequence'][1:]
-                                states_to_add.append(snapshot_to_add)
-                if epsilon in self.transitions[snapshot['state']]:
-                    for destiny in self.transitions[snapshot['state']][epsilon]:
-                        for popValue in self.transitions[snapshot['state']][epsilon][destiny]:
-                            if popValue == pileTop:
-                                snapshot_to_add = {}
-                                snapshot_to_add['pile'] = queue.LifoQueue()
-                                for pushValue in self.transitions[snapshot['state']][epsilon][destiny][popValue][0][::-1]:
-                                    if pushValue != epsilon:
-                                        snapshot_to_add['pile'].put(pushValue)
-                                snapshot_to_add['state'] = destiny
-                                snapshot_to_add['sequence'] = snapshot['sequence']
-                                snapshot_to_add['sequence'] = snapshot_to_add['sequence']
-                                states_to_add.append(snapshot_to_add)
+                                new_current_states.append(snapshot_to_add)
             elif snapshot['state'] in self.final_states:
                 return True
-            self.current_states.remove(list(snap for snap in self.current_states if (snap['state'] == snapshot['state'] and snap['sequence'] == snapshot['sequence'] and snap['pile'].queue == snapshot['pile'].queue))[0])
-            for state_to_add in states_to_add:
-                self.current_states.append(state_to_add)
+            if epsilon in self.transitions[snapshot['state']]:
+                for destiny in self.transitions[snapshot['state']][epsilon]:
+                    for popValue in self.transitions[snapshot['state']][epsilon][destiny]:
+                        if popValue == pileTop:
+                            snapshot_to_add = {}
+                            snapshot_to_add['pile'] = queue.LifoQueue()
+                            for item in snapshot['pile'].queue:
+                                snapshot_to_add['pile'].put(item)
+                            for pushValue in self.transitions[snapshot['state']][epsilon][destiny][popValue][0][::-1]:
+                                if pushValue != epsilon:
+                                    snapshot_to_add['pile'].put(pushValue)
+                            snapshot_to_add['state'] = destiny
+                            snapshot_to_add['sequence'] = snapshot['sequence']
+                            snapshot_to_add['sequence'] = snapshot_to_add['sequence']
+                            new_current_states.append(snapshot_to_add)
             return False
 
         self.current_states.append({'state': list(self.initial_states)[0], 'sequence': sequence, 'pile': queue.LifoQueue()})
         self.current_states[0]['pile'].put('E')##########################################CHANGE##########################################
         while True:
-            current_states_iterator = []
-            for state in self.current_states:
-                temp = {}
-                temp['state'] = state['state']
-                temp['sequence'] = state['sequence']
-                temp['pile'] = queue.LifoQueue()
-                for item in state['pile'].queue:
-                    temp['pile'].put(item)
-                current_states_iterator.append(temp)
             if len(self.current_states) == 0:
                 raise Exception('{} is NOT a solution'.format(sequence))
-            for current_state in current_states_iterator:
-                if solveSnapshot(current_state):
+            #     current_states_iterator.append(temp)
+            # for state in self.current_states:
+            #     temp = {}
+            #     temp['state'] = state['state']
+            #     temp['sequence'] = state['sequence']
+            #     temp['pile'] = queue.LifoQueue()
+            #     for item in state['pile'].queue:
+            #         temp['pile'].put(item)
+            new_current_states = []
+            for current_state in self.current_states:
+                if solveSnapshot(current_state, new_current_states):
+                    self.current_states = []
                     return
+            self.current_states = new_current_states
 
         # current_state = list(self.initial_states)[0]
         # for symbol in sequence:
