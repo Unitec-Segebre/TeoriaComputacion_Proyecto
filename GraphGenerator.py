@@ -4,7 +4,7 @@ from ui_graphwindow import Ui_GraphWindow
 from Node import Node, State
 from Edge import Edge
 from PDAEdge import PDAEdge
-from AutomataSolver import Automata_BARE, Automata_DFA, Automata_EpsilonNFA, Automata_Union, Automata_Intersection, Automata_Difference, Automata_Complement, Automata_Minimize, Automata_RegularExpression_EpsilonNFA, Automata_Reflection, Automata_PDA
+from AutomataSolver import Automata_BARE, Automata_DFA, Automata_EpsilonNFA, Automata_Union, Automata_Intersection, Automata_Difference, Automata_Complement, Automata_Minimize, Automata_RegularExpression_EpsilonNFA, Automata_Reflection, Automata_PDA, languageDefenition
 import pickle
 
 class GraphGenerator(QMainWindow, Ui_GraphWindow):
@@ -69,6 +69,8 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         self.actionMinimize.triggered.connect(self.transform_Minimize)
 
         self.actionEpsilon_NFA_to_DFA.triggered.connect(self.transform_EpsilonNFA_DFA)
+
+        self.actionLanguage_Descrition_to_PDA.triggered.connect(self.transform_LanguageDescription_PDA)
 
         self.actionSave.triggered.connect(self.save)
         self.actionSave.setShortcut("Ctrl+s")
@@ -355,6 +357,16 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
                 QMessageBox.warning(self, "Warning!", "Invalid expression '%s'."%(expression))
                 continue
 
+    def transform_LanguageDescription_PDA(self):
+        language = {}
+        language["E"] = ["E+T", "E-T", "T"]
+        language["T"] = ["T*F", "T/F", "F"]
+        language["F"] = ["D"]
+        language["D"] = ["0", "1"]
+        pdagen = languageDefenition(language)
+        GraphGenerator(self.parent(), pdagen.solve(self.Epsilon))
+
+
     def save(self):
         try:
             if self.saveName == None:
@@ -430,7 +442,7 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
                         if path.popValue not in paths[path.condition][path.destNode().name]:
                             paths[path.condition][path.destNode().name][path.popValue] = [path.pushValues]
                         else:
-                            paths[path.condition][path.destNode().name][path.popValue].append([path.pushValues])
+                            paths[path.condition][path.destNode().name][path.popValue].append(path.pushValues)
                 transitions[item.name] = paths
         initial_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and (item.state == State.INITIAL or item.state == State.INITIAL_FINAL)])
         final_states = set([item.name for item in self.graphicsView.scene().items() if isinstance(item, Node) and (item.state == State.FINAL or item.state == State.INITIAL_FINAL)])

@@ -26,7 +26,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>27</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -73,6 +73,8 @@
      <addaction name="actionRegular_Expression_to_Epsilon_NFA"/>
      <addaction name="actionNFA_to_DFA"/>
      <addaction name="actionEpsilon_NFA_to_DFA"/>
+     <addaction name="separator"/>
+     <addaction name="actionLanguage_Descrition_to_PDA"/>
     </widget>
     <widget class="QMenu" name="menuProperties">
      <property name="title">
@@ -216,6 +218,11 @@
   <action name="actionPDA">
    <property name="text">
     <string>PDA</string>
+   </property>
+  </action>
+  <action name="actionLanguage_Descrition_to_PDA">
+   <property name="text">
+    <string>Language Descrition ⇨ PDA</string>
    </property>
   </action>
  </widget>
