@@ -785,9 +785,11 @@ class Automata_PDA(Automata_BARE):
                                     for pushValue in pushValueGroup[::-1]:
                                         if pushValue != epsilon:
                                             snapshot_to_add['pile'].put(pushValue)
+                                    # if len(snapshot_to_add['pile'].queue) * 2 > len(snapshot['sequence']): ############possible hot fix
+                                    #     continue
                                     snapshot_to_add['state'] = destiny
                                     snapshot_to_add['sequence'] = snapshot['sequence']
-                                    snapshot_to_add['sequence'] = snapshot_to_add['sequence'][1:]
+                                    snapshot_to_add['sequence'] = snapshot_to_add['sequence'][1:]################pass up################
                                     new_current_states.append(snapshot_to_add)
             elif snapshot['state'] in self.final_states:
                 return True
@@ -803,9 +805,11 @@ class Automata_PDA(Automata_BARE):
                                 for pushValue in pushValueGroup[::-1]:
                                     if pushValue != epsilon:
                                         snapshot_to_add['pile'].put(pushValue)
+                                # if len(snapshot_to_add['pile'].queue) * 2 > len(snapshot['sequence']): ############possible hot fix
+                                #     continue
                                 snapshot_to_add['state'] = destiny
                                 snapshot_to_add['sequence'] = snapshot['sequence']
-                                snapshot_to_add['sequence'] = snapshot_to_add['sequence']
+                                snapshot_to_add['sequence'] = snapshot_to_add['sequence']################remove################
                                 new_current_states.append(snapshot_to_add)
             return False
 
@@ -849,3 +853,23 @@ class languageDefenition:
 
         return Automata_BARE(set(states), set(input_symbols), transitions, set(initial_states), set(final_states))
 
+
+class languageGenerator(Automata_BARE):
+    def __init__(self, states, input_symbols, transitions, initial_state, final_states):
+        super().__init__(states, input_symbols, transitions, initial_state, final_states)
+
+    def solve(self, epsilon):
+        language = {}
+        language['S'] = []
+        for final_state in self.final_states:
+            language['S'].append("%s%c%s"%(list(self.initial_states)[0],"~", final_state))
+
+        for state in self.states:
+            for condition in self.transitions[state]:
+                for destiny in self.transitions[state][condition]:
+                    for popValue in self.transitions[state][condition][destiny]:
+                        for pushValueGroup in self.transitions[state][condition][destiny][popValue]:
+                            if pushValueGroup == '?':
+                                language["%s%c%s"%(state, popValue, destiny)] = condition
+
+        print(language)

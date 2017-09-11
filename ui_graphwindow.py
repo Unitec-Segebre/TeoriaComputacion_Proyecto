@@ -91,6 +91,8 @@ class Ui_GraphWindow(object):
         self.actionPDA.setObjectName("actionPDA")
         self.actionLanguage_Descrition_to_PDA = QtWidgets.QAction(GraphWindow)
         self.actionLanguage_Descrition_to_PDA.setObjectName("actionLanguage_Descrition_to_PDA")
+        self.actionPDA_to_Language_Description = QtWidgets.QAction(GraphWindow)
+        self.actionPDA_to_Language_Description.setObjectName("actionPDA_to_Language_Description")
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionSave_as)
         self.menuFile.addAction(self.actionExit)
@@ -109,6 +111,7 @@ class Ui_GraphWindow(object):
         self.menuTransform.addAction(self.actionEpsilon_NFA_to_DFA)
         self.menuTransform.addSeparator()
         self.menuTransform.addAction(self.actionLanguage_Descrition_to_PDA)
+        self.menuTransform.addAction(self.actionPDA_to_Language_Description)
         self.menuProperties.addAction(self.actionUnion)
         self.menuProperties.addAction(self.actionIntersection)
         self.menuProperties.addAction(self.actionDifference)
@@ -164,4 +167,5 @@ class Ui_GraphWindow(object):
         self.actionPDA_Connect.setText(_translate("GraphWindow", "PDA Connect"))
         self.actionPDA.setText(_translate("GraphWindow", "PDA"))
         self.actionLanguage_Descrition_to_PDA.setText(_translate("GraphWindow", "Language Descrition ⇨ PDA"))
+        self.actionPDA_to_Language_Description.setText(_translate("GraphWindow", "PDA ⇨ Language  Description"))
 

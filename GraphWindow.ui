@@ -75,6 +75,7 @@
      <addaction name="actionEpsilon_NFA_to_DFA"/>
      <addaction name="separator"/>
      <addaction name="actionLanguage_Descrition_to_PDA"/>
+     <addaction name="actionPDA_to_Language_Description"/>
     </widget>
     <widget class="QMenu" name="menuProperties">
      <property name="title">
@@ -223,6 +224,11 @@
   <action name="actionLanguage_Descrition_to_PDA">
    <property name="text">
     <string>Language Descrition ⇨ PDA</string>
+   </property>
+  </action>
+  <action name="actionPDA_to_Language_Description">
+   <property name="text">
+    <string>PDA ⇨ Language  Description</string>
    </property>
   </action>
  </widget>

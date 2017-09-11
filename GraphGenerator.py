@@ -4,7 +4,7 @@ from ui_graphwindow import Ui_GraphWindow
 from Node import Node, State
 from Edge import Edge
 from PDAEdge import PDAEdge
-from AutomataSolver import Automata_BARE, Automata_DFA, Automata_EpsilonNFA, Automata_Union, Automata_Intersection, Automata_Difference, Automata_Complement, Automata_Minimize, Automata_RegularExpression_EpsilonNFA, Automata_Reflection, Automata_PDA, languageDefenition
+from AutomataSolver import Automata_BARE, Automata_DFA, Automata_EpsilonNFA, Automata_Union, Automata_Intersection, Automata_Difference, Automata_Complement, Automata_Minimize, Automata_RegularExpression_EpsilonNFA, Automata_Reflection, Automata_PDA, languageDefenition, languageGenerator
 import pickle
 
 class GraphGenerator(QMainWindow, Ui_GraphWindow):
@@ -71,6 +71,8 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         self.actionEpsilon_NFA_to_DFA.triggered.connect(self.transform_EpsilonNFA_DFA)
 
         self.actionLanguage_Descrition_to_PDA.triggered.connect(self.transform_LanguageDescription_PDA)
+
+        self.actionPDA_to_Language_Description.triggered.connect(self.transform_PDA_LanguageDescription)
 
         self.actionSave.triggered.connect(self.save)
         self.actionSave.setShortcut("Ctrl+s")
@@ -365,6 +367,16 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         language["D"] = ["0", "1"]
         pdagen = languageDefenition(language)
         GraphGenerator(self.parent(), pdagen.solve(self.Epsilon))
+
+
+    def transform_PDA_LanguageDescription(self):
+        language = {}
+        # language["E"] = ["E+T", "E-T", "T"]
+        # language["T"] = ["T*F", "T/F", "F"]
+        # language["F"] = ["D"]
+        # language["D"] = ["0", "1"]
+        langen = self.convert_graph_to_class(languageGenerator)
+        print(langen.solve(self.Epsilon))
 
 
     def save(self):
