@@ -897,37 +897,38 @@ class languageGenerator(Automata_BARE):
 
 
         print(language)
+        return language
 
-        referenceDict = {'a': 'a'}
-        refactored_language = {}
-        current_letter = 65
+        # referenceDict = {'a': 'a'}
+        # refactored_language = {}
+        # current_letter = 65
+        #
+        # for key in language:
+        #     temp = []
+        #     for item in language[key]:
+        #         tempItem = ""
+        #         tempSubItem = ""
+        #         add = False
+        #         for char in item:
+        #             if "[" == char:
+        #                 add = True
+        #             elif "]" == char:
+        #                 if tempSubItem not in referenceDict:
+        #                     referenceDict[tempSubItem] = chr(current_letter)
+        #                     current_letter += (1 if current_letter+1 != 97 else 2)
+        #                 tempItem = ("%s%c")%(tempItem, referenceDict[tempSubItem])
+        #                 add = False
+        #             elif add:
+        #                 tempSubItem = ("%s%c")%(tempSubItem, char)
+        #             else:
+        #                 tempItem = ("%s%c")%(tempItem, char)
+        #         temp.append(tempItem)
+        #     if key not in referenceDict:
+        #         referenceDict[key] = chr(current_letter)
+        #         current_letter += (1 if current_letter + 1 != 97 else 2)
+        #     refactored_language[key] = temp
 
-        for key in language:
-            temp = []
-            for item in language[key]:
-                tempItem = ""
-                tempSubItem = ""
-                add = False
-                for char in item:
-                    if "[" == char:
-                        add = True
-                    elif "]" == char:
-                        if tempSubItem not in referenceDict:
-                            referenceDict[tempSubItem] = chr(current_letter)
-                            current_letter += (1 if current_letter+1 != 97 else 2)
-                        tempItem = ("%s%c")%(tempItem, referenceDict[tempSubItem])
-                        add = False
-                    elif add:
-                        tempSubItem = ("%s%c")%(tempSubItem, char)
-                    else:
-                        tempItem = ("%s%c")%(tempItem, char)
-                temp.append(tempItem)
-            if key not in referenceDict:
-                referenceDict[key] = chr(current_letter)
-                current_letter += (1 if current_letter + 1 != 97 else 2)
-            refactored_language[key] = temp
-
-
+#DELETE
         # referenceDict = {'a': 'a'}
         # current_letter = 65
         # for key in language:

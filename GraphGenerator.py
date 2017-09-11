@@ -394,22 +394,22 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         # language["F"] = ["D"]
         # language["D"] = ["0", "1"]
         langen = self.convert_graph_to_class(languageGenerator)
-        try:
-            saveName = QFileDialog.getSaveFileName(self, 'Save description as...')
-            saveName = saveName[0]
-            if saveName == "":
-                QMessageBox.warning(self, "Save Description", "%s." % ("Save Failed!"))
-                return
-            if ".json" not in saveName:
-                saveName = ("%s.json" % (saveName))
-            file = open(str(saveName), 'w')
-            json.dump(langen.solve(self.Epsilon), file)
-            file.close()
-            QMessageBox.warning(self, "Save Description", "%s." % ("Save Successfull!"))
-        except Exception as exception:
-            QMessageBox.warning(self, "Save Description", "%s." % (exception))
-            print(exception)
-        # print(langen.solve(self.Epsilon))
+        # try:
+        #     saveName = QFileDialog.getSaveFileName(self, 'Save description as...')
+        #     saveName = saveName[0]
+        #     if saveName == "":
+        #         QMessageBox.warning(self, "Save Description", "%s." % ("Save Failed!"))
+        #         return
+        #     if ".json" not in saveName:
+        #         saveName = ("%s.json" % (saveName))
+        #     file = open(str(saveName), 'w')
+        #     json.dump(langen.solve(self.Epsilon), file)
+        #     file.close()
+        #     QMessageBox.warning(self, "Save Description", "%s." % ("Save Successfull!"))
+        # except Exception as exception:
+        #     QMessageBox.warning(self, "Save Description", "%s." % (exception))
+        #     print(exception)
+        print(langen.solve(self.Epsilon))
 
 
     def save(self):
