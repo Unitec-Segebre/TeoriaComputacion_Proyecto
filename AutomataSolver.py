@@ -774,7 +774,10 @@ class Automata_PDA(Automata_BARE):
                     for destiny in self.transitions[snapshot['state']][snapshot['sequence'][0]]:
                         for popValue in self.transitions[snapshot['state']][snapshot['sequence'][0]][destiny]:
                             if popValue == pileTop:
-                                for pushValueGroup in self.transitions[snapshot['state']][epsilon][destiny][popValue]:
+                                for pushValueGroup in self.transitions[snapshot['state']][snapshot['sequence'][0]][destiny][popValue]:
+                                    print(self.transitions[snapshot['state']][snapshot['sequence'][0]][destiny][popValue])
+                                    print("Separator")
+                                    print(pushValueGroup)
                                     snapshot_to_add = {}
                                     snapshot_to_add['pile'] = queue.LifoQueue()
                                     for item in snapshot['pile'].queue:
