@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8b21ec79-7e58-43ce-8c03-c5d875f8c208" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AutomataSolver.py" afterPath="$PROJECT_DIR$/AutomataSolver.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GraphGenerator.py" afterPath="$PROJECT_DIR$/GraphGenerator.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GraphWindow.ui" afterPath="$PROJECT_DIR$/GraphWindow.ui" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ui_graphwindow.py" afterPath="$PROJECT_DIR$/ui_graphwindow.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -19,15 +15,15 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/AutomataFinito$AutomataFinito.coverage" NAME="AutomataFinito Coverage Results" MODIFIED="1505107001517" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/AutomataFinito$AutomataFinito.coverage" NAME="AutomataFinito Coverage Results" MODIFIED="1505139662213" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="AutomataSolver.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/AutomataSolver.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="464">
-              <caret line="871" column="53" lean-forward="true" selection-start-line="871" selection-start-column="53" selection-end-line="871" selection-end-column="53" />
+            <state relative-caret-position="419">
+              <caret line="882" column="125" lean-forward="false" selection-start-line="882" selection-start-column="125" selection-end-line="882" selection-end-column="125" />
               <folding />
             </state>
           </provider>
@@ -36,8 +32,8 @@
       <file leaf-file-name="GraphGenerator.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GraphGenerator.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-4065">
-              <caret line="74" column="103" lean-forward="false" selection-start-line="74" selection-start-column="103" selection-end-line="74" selection-end-column="103" />
+            <state relative-caret-position="194">
+              <caret line="378" column="0" lean-forward="false" selection-start-line="378" selection-start-column="0" selection-end-line="378" selection-end-column="0" />
               <folding>
                 <element signature="e#0#121#0" expanded="true" />
               </folding>
@@ -615,8 +611,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/GraphGenerator.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-4065">
-          <caret line="74" column="103" lean-forward="false" selection-start-line="74" selection-start-column="103" selection-end-line="74" selection-end-column="103" />
+        <state relative-caret-position="194">
+          <caret line="378" column="0" lean-forward="false" selection-start-line="378" selection-start-column="0" selection-end-line="378" selection-end-column="0" />
           <folding>
             <element signature="e#0#121#0" expanded="true" />
           </folding>
@@ -625,8 +621,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/AutomataSolver.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="464">
-          <caret line="871" column="53" lean-forward="true" selection-start-line="871" selection-start-column="53" selection-end-line="871" selection-end-column="53" />
+        <state relative-caret-position="419">
+          <caret line="882" column="125" lean-forward="false" selection-start-line="882" selection-start-column="125" selection-end-line="882" selection-end-column="125" />
           <folding />
         </state>
       </provider>

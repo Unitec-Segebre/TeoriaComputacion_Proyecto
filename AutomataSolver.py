@@ -859,6 +859,7 @@ class languageGenerator(Automata_BARE):
         super().__init__(states, input_symbols, transitions, initial_state, final_states)
 
     def solve(self, epsilon):
+        from itertools import product
         language = {}
         language['S'] = []
         for final_state in self.final_states:
@@ -870,6 +871,18 @@ class languageGenerator(Automata_BARE):
                     for popValue in self.transitions[state][condition][destiny]:
                         for pushValueGroup in self.transitions[state][condition][destiny][popValue]:
                             if pushValueGroup == '?':
-                                language["%s%c%s"%(state, popValue, destiny)] = condition
+                                language["%s%c%s"%(state, popValue, destiny)] = [condition]
+                            else:
+                                superTable = list(product(self.states, repeat=len(pushValueGroup)))
+                                for i in range(len(superTable)):
+                                    tmp = {}
+                                    tmp = "%c[%s%c%s]"%(condition, state, pushValueGroup[0], superTable[i][0])
+                                    for j in range(len(superTable[i])-1):
+                                        tmp += "[%s%c%s]" % (superTable[i][j], pushValueGroup[j+1], superTable[i][j+1])
+                                    if "%s%c%s" % (state, popValue, superTable[i][len(superTable[i])-1]) not in language:
+                                        language["%s%c%s" % (state, popValue, superTable[i][len(superTable[i]) - 1])] = [tmp]
+                                    else:
+                                        language["%s%c%s" % (state, popValue, superTable[i][len(superTable[i]) - 1])].append(tmp)
+
 
         print(language)
