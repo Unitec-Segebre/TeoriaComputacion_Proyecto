@@ -362,25 +362,26 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
     def transform_LanguageDescription_PDA(self):
         import json
         language = {}
-        # try:
-        #     file_name = QFileDialog.getOpenFileName(self, 'Select Description')[0]
-        #     if file_name != '':
-        #         file = open(str(file_name))
-        #         try:
-        #             language = json.load(file)
-        #         except:
-        #             QMessageBox.critical(self, "Select Description",
-        #                                  "The file '%s'does not have the correct format." % (file_name))
-        #             return
-        #         file.close()
-        #     return
-        # except Exception as exception:
-        #     QMessageBox.warning(self, "Select Description", "%s." % (exception))
-        #     print(exception)
-        language["E"] = ["E+T", "E-T", "T"]
-        language["T"] = ["T*F", "T/F", "F"]
-        language["F"] = ["D"]
-        language["D"] = ["0", "1"]
+        try:
+            file_name = QFileDialog.getOpenFileName(self, 'Select Description')[0]
+            if file_name != '':
+                file = open(str(file_name))
+                try:
+                    language = json.load(file)
+                    print(language)
+                except:
+                    QMessageBox.critical(self, "Select Description",
+                                         "The file '%s'does not have the correct format." % (file_name))
+                    return
+                file.close()
+        except Exception as exception:
+            QMessageBox.warning(self, "Select Description", "%s." % (exception))
+            print(exception)
+            return
+        # language["E"] = ["E+T", "E-T", "T"]
+        # language["T"] = ["T*F", "T/F", "F"]
+        # language["F"] = ["D"]
+        # language["D"] = ["0", "1"]
         pdagen = languageDefenition(language)
         GraphGenerator(self.parent(), pdagen.solve(self.Epsilon))
 
