@@ -830,11 +830,11 @@ class languageDefenition:
         self.language = language
 
     def solve(self, epsilon):
-        transitions = {'q0': {epsilon: {'q1': {'~': ['E~']}}}, 'q1': {epsilon: {'q2': {'~': [epsilon]}, 'q1': {}}}}
+        transitions = {'q0': {epsilon: {'q1': {'~': ['E~']}}}, 'q1': {epsilon: {'q2': {'~': ['~']}, 'q1': {}}}}
         for entry in self.language:
             transitions['q1'][epsilon]['q1'][entry] = []
             for pushValues in self.language[entry]:
-                transitions['q1'][epsilon]['q1'][entry].append(pushValues)
+                transitions['q1'][epsilon]['q1'][entry].append(pushValues[::-1])
 
         for entry in self.language:
             for pushValues in self.language[entry]:
@@ -859,11 +859,19 @@ class languageGenerator(Automata_BARE):
         super().__init__(states, input_symbols, transitions, initial_state, final_states)
 
     def solve(self, epsilon):
+        def find_between(s, first, last):
+            try:
+                start = s.index(first) + len(first)
+                end = s.index(last, start)
+                return s[start:end]
+            except ValueError:
+                return ""
+
         from itertools import product
         language = {}
-        language['S'] = []
+        language['a'] = []
         for final_state in self.final_states:
-            language['S'].append("%s%c%s"%(list(self.initial_states)[0],"~", final_state))
+            language['a'].append("%s%c%s"%(list(self.initial_states)[0],"~", final_state))
 
         for state in self.states:
             for condition in self.transitions[state]:
@@ -889,3 +897,61 @@ class languageGenerator(Automata_BARE):
 
 
         print(language)
+
+        referenceDict = {'a': 'a'}
+        refactored_language = {}
+        current_letter = 65
+
+        for key in language:
+            temp = []
+            for item in language[key]:
+                tempItem = ""
+                tempSubItem = ""
+                add = False
+                for char in item:
+                    if "[" == char:
+                        add = True
+                    elif "]" == char:
+                        if tempSubItem not in referenceDict:
+                            referenceDict[tempSubItem] = chr(current_letter)
+                            current_letter += (1 if current_letter+1 != 97 else 2)
+                        tempItem = ("%s%c")%(tempItem, referenceDict[tempSubItem])
+                        add = False
+                    elif add:
+                        tempSubItem = ("%s%c")%(tempSubItem, char)
+                    else:
+                        tempItem = ("%s%c")%(tempItem, char)
+                temp.append(tempItem)
+            if key not in referenceDict:
+                referenceDict[key] = chr(current_letter)
+                current_letter += (1 if current_letter + 1 != 97 else 2)
+            refactored_language[key] = temp
+
+
+        # referenceDict = {'a': 'a'}
+        # current_letter = 65
+        # for key in language:
+        #     if key != 'a':
+        #         referenceDict[key] = chr(current_letter)
+        #         current_letter += 1
+        #
+        # refactored_language = {}
+        # for key in language:
+        #     refactored_language[referenceDict[key]] = []
+        #     for item in language[key]:
+        #         refactored_language[referenceDict[key]].append(item)
+        #
+        # for key in refactored_language:
+        #     print("HEREEEEEEEEE")
+        #
+        # for keyToReplace in language:
+        #     for key in refactored_language:
+        #         refactored_language[key] = [item.replace(keyToReplace, referenceDict[keyToReplace]) for item in refactored_language[key]]
+        #         # for item in refactored_language[key]:
+        #         #     if keyToReplace in item:
+        #         #         item = item.replace(keyToReplace, referenceDict[keyToReplace])
+        #
+        # # refactored_language[referenceDict[key]] = [item.replace(keyToReplace, referenceDict[keyToReplace]) for item in language[key]]
+
+
+        return refactored_language

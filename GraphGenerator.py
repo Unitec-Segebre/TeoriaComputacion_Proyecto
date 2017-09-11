@@ -360,7 +360,23 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
                 continue
 
     def transform_LanguageDescription_PDA(self):
+        import json
         language = {}
+        # try:
+        #     file_name = QFileDialog.getOpenFileName(self, 'Select Description')[0]
+        #     if file_name != '':
+        #         file = open(str(file_name))
+        #         try:
+        #             language = json.load(file)
+        #         except:
+        #             QMessageBox.critical(self, "Select Description",
+        #                                  "The file '%s'does not have the correct format." % (file_name))
+        #             return
+        #         file.close()
+        #     return
+        # except Exception as exception:
+        #     QMessageBox.warning(self, "Select Description", "%s." % (exception))
+        #     print(exception)
         language["E"] = ["E+T", "E-T", "T"]
         language["T"] = ["T*F", "T/F", "F"]
         language["F"] = ["D"]
@@ -370,13 +386,29 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
 
 
     def transform_PDA_LanguageDescription(self):
+        import json
         language = {}
         # language["E"] = ["E+T", "E-T", "T"]
         # language["T"] = ["T*F", "T/F", "F"]
         # language["F"] = ["D"]
         # language["D"] = ["0", "1"]
         langen = self.convert_graph_to_class(languageGenerator)
-        print(langen.solve(self.Epsilon))
+        try:
+            saveName = QFileDialog.getSaveFileName(self, 'Save description as...')
+            saveName = saveName[0]
+            if saveName == "":
+                QMessageBox.warning(self, "Save Description", "%s." % ("Save Failed!"))
+                return
+            if ".json" not in saveName:
+                saveName = ("%s.json" % (saveName))
+            file = open(str(saveName), 'w')
+            json.dump(langen.solve(self.Epsilon), file)
+            file.close()
+            QMessageBox.warning(self, "Save Description", "%s." % ("Save Successfull!"))
+        except Exception as exception:
+            QMessageBox.warning(self, "Save Description", "%s." % (exception))
+            print(exception)
+        # print(langen.solve(self.Epsilon))
 
 
     def save(self):
