@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'GraphWindow.ui'
 #
-# Created by: PyQt5 UI code generator 5.9
+# Created by: PyQt5 UI code generator 5.5.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -21,7 +21,7 @@ class Ui_GraphWindow(object):
         self.verticalLayout.addWidget(self.graphicsView)
         GraphWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(GraphWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 27))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 23))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
@@ -89,6 +89,10 @@ class Ui_GraphWindow(object):
         self.actionPDA_Connect.setObjectName("actionPDA_Connect")
         self.actionPDA = QtWidgets.QAction(GraphWindow)
         self.actionPDA.setObjectName("actionPDA")
+        self.actionLanguage_Descrition_to_PDA = QtWidgets.QAction(GraphWindow)
+        self.actionLanguage_Descrition_to_PDA.setObjectName("actionLanguage_Descrition_to_PDA")
+        self.actionPDA_to_Language_Description = QtWidgets.QAction(GraphWindow)
+        self.actionPDA_to_Language_Description.setObjectName("actionPDA_to_Language_Description")
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionSave_as)
         self.menuFile.addAction(self.actionExit)
@@ -105,6 +109,9 @@ class Ui_GraphWindow(object):
         self.menuTransform.addAction(self.actionRegular_Expression_to_Epsilon_NFA)
         self.menuTransform.addAction(self.actionNFA_to_DFA)
         self.menuTransform.addAction(self.actionEpsilon_NFA_to_DFA)
+        self.menuTransform.addSeparator()
+        self.menuTransform.addAction(self.actionLanguage_Descrition_to_PDA)
+        self.menuTransform.addAction(self.actionPDA_to_Language_Description)
         self.menuProperties.addAction(self.actionUnion)
         self.menuProperties.addAction(self.actionIntersection)
         self.menuProperties.addAction(self.actionDifference)
@@ -159,4 +166,6 @@ class Ui_GraphWindow(object):
         self.actionRegular_Expression_to_Epsilon_NFA.setText(_translate("GraphWindow", "Regular Expression ⇨ Ɛ-NFA"))
         self.actionPDA_Connect.setText(_translate("GraphWindow", "PDA Connect"))
         self.actionPDA.setText(_translate("GraphWindow", "PDA"))
+        self.actionLanguage_Descrition_to_PDA.setText(_translate("GraphWindow", "Language Descrition ⇨ PDA"))
+        self.actionPDA_to_Language_Description.setText(_translate("GraphWindow", "PDA ⇨ Language  Description"))
 
