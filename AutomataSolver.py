@@ -871,7 +871,10 @@ class languageGenerator(Automata_BARE):
                     for popValue in self.transitions[state][condition][destiny]:
                         for pushValueGroup in self.transitions[state][condition][destiny][popValue]:
                             if pushValueGroup == '?':
-                                language["%s%c%s"%(state, popValue, destiny)] = [condition]
+                                if "%s%c%s"%(state, popValue, destiny) not in language:
+                                    language["%s%c%s"%(state, popValue, destiny)] = [condition]
+                                else:
+                                    language["%s%c%s" % (state, popValue, destiny)].append(condition)
                             else:
                                 superTable = list(product(self.states, repeat=len(pushValueGroup)))
                                 for i in range(len(superTable)):
