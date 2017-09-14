@@ -4,7 +4,7 @@ from ui_graphwindow import Ui_GraphWindow
 from Node import Node, State
 from Edge import Edge
 from PDAEdge import PDAEdge
-from AutomataSolver import Automata_BARE, Automata_DFA, Automata_EpsilonNFA, Automata_Union, Automata_Intersection, Automata_Difference, Automata_Complement, Automata_Minimize, Automata_RegularExpression_EpsilonNFA, Automata_Reflection, Automata_PDA, languageDefenition, languageGenerator
+from AutomataSolver import Automata_BARE, Automata_DFA, Automata_EpsilonNFA, Automata_Union, Automata_Intersection, Automata_Difference, Automata_Complement, Automata_Minimize, Automata_RegularExpression_EpsilonNFA, Automata_Reflection, Automata_PDA, Automata_TM, languageDefenition, languageGenerator
 import pickle
 
 class GraphGenerator(QMainWindow, Ui_GraphWindow):
@@ -53,6 +53,9 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
 
         self.actionPDA.triggered.connect(self.solve_PDA)
         self.actionPDA.setShortcut("Ctrl+4")
+
+        self.actionTuring_Machine.triggered.connect(self.solve_TM)
+        self.actionTuring_Machine.setShortcut("Ctrl+5")
 
         self.actionRegular_Expression_to_Epsilon_NFA.triggered.connect(self.transform_RegularExpression_EpsilonNFA)
 
@@ -280,6 +283,9 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
     def solve_PDA(self):
         self.solve(Automata_PDA)
 
+    def solve_TM(self):
+        self.solve(Automata_TM)
+
     def properties_Union(self):
         self.transform(Automata_Union)
 
@@ -394,22 +400,22 @@ class GraphGenerator(QMainWindow, Ui_GraphWindow):
         # language["F"] = ["D"]
         # language["D"] = ["0", "1"]
         langen = self.convert_graph_to_class(languageGenerator)
-        # try:
-        #     saveName = QFileDialog.getSaveFileName(self, 'Save description as...')
-        #     saveName = saveName[0]
-        #     if saveName == "":
-        #         QMessageBox.warning(self, "Save Description", "%s." % ("Save Failed!"))
-        #         return
-        #     if ".json" not in saveName:
-        #         saveName = ("%s.json" % (saveName))
-        #     file = open(str(saveName), 'w')
-        #     json.dump(langen.solve(self.Epsilon), file)
-        #     file.close()
-        #     QMessageBox.warning(self, "Save Description", "%s." % ("Save Successfull!"))
-        # except Exception as exception:
-        #     QMessageBox.warning(self, "Save Description", "%s." % (exception))
-        #     print(exception)
-        print(langen.solve(self.Epsilon))
+        try:
+            saveName = QFileDialog.getSaveFileName(self, 'Save description as...')
+            saveName = saveName[0]
+            if saveName == "":
+                QMessageBox.warning(self, "Save Description", "%s." % ("Save Failed!"))
+                return
+            if ".json" not in saveName:
+                saveName = ("%s.json" % (saveName))
+            file = open(str(saveName), 'w')
+            json.dump(langen.solve(self.Epsilon), file)
+            file.close()
+            QMessageBox.warning(self, "Save Description", "%s." % ("Save Successfull!"))
+        except Exception as exception:
+            QMessageBox.warning(self, "Save Description", "%s." % (exception))
+            print(exception)
+        # print(langen.solve(self.Epsilon))
 
 
     def save(self):

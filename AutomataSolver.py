@@ -825,6 +825,110 @@ class Automata_PDA(Automata_BARE):
                     return
             self.current_states = new_current_states
 
+class Automata_TM(Automata_BARE):
+    def __init__(self, states, input_symbols, transitions, initial_state, final_states):
+        super().__init__(states, input_symbols, transitions, initial_state, final_states)
+
+    def check(self, epsilon=None):
+        if len(self.initial_states) == 0:
+            raise Exception("An initial state is required to solve.")
+        elif len(self.initial_states) > 1:
+            raise Exception("There must only be one initial state to solve.")
+        elif len(self.final_states) == 0:
+            raise Exception("At least one final state is required to solve.")
+
+    def solve(self, sequence, epsilon):
+        tape = []
+        index = 1
+        current_state = list(self.initial_states)[0]
+
+        tape.append('~')
+        for symbol in sequence:
+            tape.append(symbol)
+        tape.append('~')
+
+        while True:
+            if current_state in self.final_states:
+                return
+            try:
+                past_state = current_state
+                tape_symbol = tape[index]
+                current_state = [state for state in self.transitions[past_state][tape_symbol]][0]
+                tape[index] = [symbol for symbol in self.transitions[past_state][tape_symbol][current_state]][0]
+                index += 1 if list(self.transitions[past_state][tape_symbol][current_state][tape[index]])[0] == 'R' else -1
+                if index < 0:
+                    tape.insert(0, '~')
+                    index += 1
+                elif index >= len(tape):
+                    tape.append('~')
+            except:
+                raise Exception('{} is NOT a solution'.format(sequence))
+
+
+
+
+        # def solveSnapshot(snapshot, new_current_states):
+        #     try:
+        #         pileTop = snapshot['pile'].get()
+        #     except:
+        #         self.current_states.remove(snapshot)
+        #         return
+        #     if len(snapshot['sequence']) > 0:
+        #         if snapshot['sequence'][0] in self.transitions[snapshot['state']]:
+        #             for destiny in self.transitions[snapshot['state']][snapshot['sequence'][0]]:
+        #                 for popValue in self.transitions[snapshot['state']][snapshot['sequence'][0]][destiny]:
+        #                     if popValue == pileTop:
+        #                         for pushValueGroup in self.transitions[snapshot['state']][snapshot['sequence'][0]][destiny][popValue]:
+        #                             print(self.transitions[snapshot['state']][snapshot['sequence'][0]][destiny][popValue])
+        #                             print("Separator")
+        #                             print(pushValueGroup)
+        #                             snapshot_to_add = {}
+        #                             snapshot_to_add['pile'] = queue.LifoQueue()
+        #                             for item in snapshot['pile'].queue:
+        #                                 snapshot_to_add['pile'].put(item)
+        #                             for pushValue in pushValueGroup[::-1]:
+        #                                 if pushValue != epsilon:
+        #                                     snapshot_to_add['pile'].put(pushValue)
+        #                             # if len(snapshot_to_add['pile'].queue) * 2 > len(snapshot['sequence']): ############possible hot fix
+        #                             #     continue
+        #                             snapshot_to_add['state'] = destiny
+        #                             snapshot_to_add['sequence'] = snapshot['sequence']
+        #                             snapshot_to_add['sequence'] = snapshot_to_add['sequence'][1:]################pass up################
+        #                             new_current_states.append(snapshot_to_add)
+        #     elif snapshot['state'] in self.final_states:
+        #         return True
+        #     if epsilon in self.transitions[snapshot['state']]:
+        #         for destiny in self.transitions[snapshot['state']][epsilon]:
+        #             for popValue in self.transitions[snapshot['state']][epsilon][destiny]:
+        #                 if popValue == pileTop:
+        #                     for pushValueGroup in self.transitions[snapshot['state']][epsilon][destiny][popValue]:
+        #                         snapshot_to_add = {}
+        #                         snapshot_to_add['pile'] = queue.LifoQueue()
+        #                         for item in snapshot['pile'].queue:
+        #                             snapshot_to_add['pile'].put(item)
+        #                         for pushValue in pushValueGroup[::-1]:
+        #                             if pushValue != epsilon:
+        #                                 snapshot_to_add['pile'].put(pushValue)
+        #                         # if len(snapshot_to_add['pile'].queue) * 2 > len(snapshot['sequence']): ############possible hot fix
+        #                         #     continue
+        #                         snapshot_to_add['state'] = destiny
+        #                         snapshot_to_add['sequence'] = snapshot['sequence']
+        #                         snapshot_to_add['sequence'] = snapshot_to_add['sequence']################remove################
+        #                         new_current_states.append(snapshot_to_add)
+        #     return False
+        #
+        # self.current_states.append({'state': list(self.initial_states)[0], 'sequence': sequence, 'pile': queue.LifoQueue()})
+        # self.current_states[0]['pile'].put('~')
+        # while True:
+        #     if len(self.current_states) == 0:
+        #         raise Exception('{} is NOT a solution'.format(sequence))
+        #     new_current_states = []
+        #     for current_state in self.current_states:
+        #         if solveSnapshot(current_state, new_current_states):
+        #             self.current_states = []
+        #             return
+        #     self.current_states = new_current_states
+
 class languageDefenition:
     def __init__(self, language):
         self.language = language
