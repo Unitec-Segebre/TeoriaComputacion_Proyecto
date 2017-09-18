@@ -164,6 +164,17 @@ class Automata_NFA(Automata_BARE):
     def __init__(self, states, input_symbols, transitions, initial_state, final_states):
         super(Automata_NFA, self).__init__(states, input_symbols, transitions, initial_state, final_states)
 
+    def check(self, epsilon=None):
+        if len(self.initial_states) == 0:
+            raise Exception("An initial state is required to solve.")
+        elif len(self.initial_states) > 1:
+            raise Exception("There must only be one initial state to solve.")
+        elif len(self.final_states) == 0:
+            raise Exception("At least one final state is required to solve.")
+
+        if epsilon in self.input_symbols:
+            raise Exception(("Epsilon('%c') not allowed in DFA graphs" % (epsilon)))
+
     def solve(self, sequence, epsilon):
         if epsilon in self.input_symbols:
             raise Exception(("Epsilon('%c') not allowed in NFA graphs"%(epsilon)))
